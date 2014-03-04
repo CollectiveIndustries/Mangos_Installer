@@ -39,27 +39,7 @@ import MySQLdb
 #
 ##################################################################################################################
 
-# MySQL execution
-def mysqlcon (filename)
-	# MySQL Connection
-	MySQLConnection(user='root', password='ROOT_PASS')
-	# Open and read the fie as a single buffer
-	fd = open(filename, 'r')
-	sqlFile = fd.read()
-	fd.close()
 
-	# all MySQL commands (split on ';')
-	sqlCommands = sqlFile.split(';')
-	
-	# Execute every command from the input file
-	for command in sqlCommands;
-		# this will skip and report errors
-		# For example, if the tables do not yet exist, this will skip over
- 		# the DROP TABLE commands
-		try:
-			c.execute(command)
-		except OperationalError, msg:
-			print "Command skipped: ", msg
 
 ##############################################################################################################################
 #
@@ -171,6 +151,7 @@ keep_s_dir = raw_input('Would you like to save source code? [n] ')
 if keep_s_dir == 'n':
 	print "Source code directory will be erased after full install is finished" #only remove /opt/SOURCE/mangos3_ci_code/*
 
+#TODO add URL swapping function
 subprocess.call(shlex.split('sudo git clone https://github.com/mangosthree/server.git '+SERV_CODE+'/server'))#will clone server code to working directory
 subprocess.call(shlex.split('sudo git clone https://github.com/mangosthree/database.git '+SERV_CODE+'/database'))#will clone server code to working directory
 subprocess.call(shlex.split('sudo git clone https://github.com/mangosthree/scripts.git '+SERV_CODE+'/scripts'))#will clone server code to working directory
@@ -186,7 +167,7 @@ with cd(SERV_CODE+"/server/objdir"):
 	subprocess.call(shlex.split('sudo make install')) 
 
 
-#------------------------------------------- MaNGOS-CI BataBase install
+#------------------------------------------- MaNGOS-CI Bata Base install
 
 subprocess.call('clear') # clear screen and wait for user
 
@@ -217,7 +198,7 @@ if CI_MANGOS_VER == '':
 #TODO add in a "switch" for URL replacement for the CI-MANGOS code
 #we need to tell the user we dont have any other version just yet
 if CI_MANGOS_VER != '4':
-	print "The version of MaNGOS you have chosen (%s) is not avalible at this time we are defualting to: CATA 4.3.4 (15595)"
+	print "The version of MaNGOS you have chosen (%s) is not available at this time we are defaulting to: CATA 4.3.4 (15595)"
 	CI_MANGOS_VER = '4'
 
 
