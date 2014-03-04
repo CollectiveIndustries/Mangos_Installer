@@ -265,10 +265,10 @@ time.sleep(4)
 
 #------------------------------ MySQL File Write
 mangos_ci_sql_inst.write(ADD_MANGOS_CI_USR_MYSQL)
-mangos_ci_sql_inst.write(CREATE_MANGOS_CI_DB_MYSQL)
-mangos_ci_sql_inst.write(CREATE_CHAR_CI_DB_MYSQL)
-mangos_ci_sql_inst.write(CREATE_ACCOUNT_CI_DB_MYSQL)
-mangos_ci_sql_inst.write(CREATE_REALMD_CI_DB_MYSQL)
+#mangos_ci_sql_inst.write(CREATE_MANGOS_CI_DB_MYSQL)
+#mangos_ci_sql_inst.write(CREATE_CHAR_CI_DB_MYSQL)
+#mangos_ci_sql_inst.write(CREATE_ACCOUNT_CI_DB_MYSQL)
+#mangos_ci_sql_inst.write(CREATE_REALMD_CI_DB_MYSQL)
 
 #file has been written
 mangos_ci_sql_inst.close()
