@@ -292,7 +292,7 @@ mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
 
 #finalize the SQL file
 mangos_ci_sql_inst.close()
-print "SQL file for MaNGOS DB install has been written to your home directory:"
+print "SQL file for MaNGOS DB install has been written to your home directory: ["+'/home/'+SYS_USR+'/mangos-ci-usr.sql'+"]"
 
 # run the upload
 MYSQL_FILE_LOC = '/home/'+SYS_USR+'/mangos-ci-usr.sql'
