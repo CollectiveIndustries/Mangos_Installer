@@ -180,11 +180,11 @@ CI_MANGOS_DB = raw_input('Hostname for MANGOS database (mangosd): [localhost] ')
 if CI_MANGOS_DB == '':
 	CI_MANGOS_DB = 'localhost'
 	#MANGOS_PORT
-CI_MANGOS_DB_PORT = raw_input('Port number for MySQL Server on (' + CI_MANGOS_DB + '): [3306] ')
+CI_MANGOS_DB_PORT = raw_input('Port number for MySQL Server on MaNGOS_DB (' + CI_MANGOS_DB + '): [3306] ')
 if CI_MANGOS_DB_PORT == '':
 	CI_MANGOS_DB_PORT = '3306'
 	#realm port number
-CI_REALM_DB_PORT = raw_input('Port number for MySQL Server on (' + CI_ACCOUNT_DB + '): [3306] ')
+CI_REALM_DB_PORT = raw_input('Port number for MySQL Server on Realm_DB(' + CI_ACCOUNT_DB + '): [3306] ')
 if CI_REALM_DB_PORT == '':
 	CI_REALM_DB_PORT = '3306'
 	#USR and password for NEW MANGOS USER
@@ -230,9 +230,7 @@ if CI_MANGOS_VER != '4':
 
 ## MaNGOS Configuration Questions for the realmd.conf and the mangosd.conf
 # Config directory INSTALL_DIR + '/etc'
-# RealmID = 1
-# DataDir = "../data"
-# LogsDir = "../logs"
+
 
 	# Log directory for mangos to use
 CI_MANGOS_LOGS_DIR = raw_input('Log directory to use: [../logs] ')
@@ -291,6 +289,30 @@ print "SQL file for MaNGOS DB install has been written to your home directory:"
 
 #TODO use the mysql < databse to load in the new settings we just created
 
+#TODO add configuration file section for file writing
+
+# File Formatted Strings
+##realmd.conf
+# LoginDatabaseInfo = "HOST;PORT;USR;PASSWORD;DATABASE"
+# LogsDir = "../logs"
+# WrongPass.MaxCount = 0 
+# WrongPass.BanTime = 600
+# WrongPass.BanType = 0
+# BindIP = "0.0.0.0"
+
+##mangosd.conf
+# RealmID = 1
+# DataDir = "../data"
+# LogsDir = "../logs"
+# LoginDatabaseInfo = "HOST;PORT;USR;PASSWORD;DATABASE"
+# WorldDatabaseInfo = "HOST;PORT;USR;PASSWORD;DATABASE"
+# CharacterDatabaseInfo = "127.0.0.1;3306;mangos;mangos;characters"
+# BindIP = "0.0.0.0"
+
+
+#TODO add rc.local script section
+# add lines to a file for running the mangosd and realmd services
+# see local CI_START file for line refrances
 
 #final clean up steps
 if keep_s_dir == 'n':

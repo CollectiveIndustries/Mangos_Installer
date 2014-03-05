@@ -1,32 +1,20 @@
 #!/bin/bash
-sleep 15
-# MaNGOS realmd authentication server startup
-/bin/su mangos -c "/usr/bin/screen -dmS mangosd bash -c '/opt/mangos-server/bin/
-/bin/su Morketh -c "/usr/bin/screen -dmS slurm bash -c 'slurm -I eth0'"
-/bin/su Morketh -c "/usr/bin/screen -dmS bmon bash -c 'bmon'"
-
-
 echo "CI_Startup Script started"
 echo "Waiting for all other server startup processes to finish: 15 seconds"
 sleep 15
 
+# MaNGOS realmd authentication server startup
+echo "Starting Realmd --> Account Server"
+/bin/su mangos -c "/usr/bin/screen -dmS realm_d bash -c '/opt/mangos3_ci_server/bin/realmd'"
+
+# MaNGOS world server 
+echo "Starting Mangosd --> World Server"
+/bin/su mangos -c "/usr/bin/screen -dmS mangos_d bash -c '/opt/mangos3_ci_server/bin/mangosd'"
+
 #screen daemon for eth0 Network traffic monitoring
 echo "slurm_eth0 network monitor daemon"
-screen -dmS slurm_eth0 bash -c 'slurm -i 'eth0''
-
-
-#screen daemon for MaNGOSd and RealmD
-
-echo "Starting Realmd --> Account Server"
-screen -dmS realm_d bash -c '/opt/mangos3_ci_server/bin/realmd'
-
-echo "Starting Mangosd --> World Server"
-screen -dmS mangos_ci bash -c '/opt/mangos3_ci_server/bin/mangosd'
-
+/bin/su Morketh -c "/usr/bin/screen -dmS slurm bash -c 'slurm -I eth0'"
 
 #screen daemon TeamSpeak3
 echo "Starting Teamspeak 3"
-screen -dmS TeamSpeak3 bash -c '/opt/teamspeak3-server_linux-x86/teamspeak_startscript.sh start'
-
-#screen daemon
-
+/bin/su teamspeak -c "/usr/bin/screen -dmS TeamSpeak3 bash -c '/opt/teamspeak3-server_linux-x86/teamspeak_startscript.sh start'"
