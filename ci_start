@@ -13,7 +13,7 @@ echo "Starting Mangosd --> World Server"
 
 #screen daemon for eth0 Network traffic monitoring
 echo "slurm_eth0 network monitor daemon"
-/bin/su Morketh -c "/usr/bin/screen -dmS slurm bash -c 'slurm -I eth0'"
+/bin/su morketh -c "/usr/bin/screen -dmS slurm bash -c 'slurm -I eth0'"
 
 #screen daemon TeamSpeak3
 echo "Starting Teamspeak 3"
