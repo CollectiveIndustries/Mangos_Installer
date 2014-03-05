@@ -298,7 +298,9 @@ print "SQL file for MaNGOS DB install has been written to your home directory: [
 MYSQL_FILE_LOC = '/home/'+SYS_USR+'/mangos-ci-usr.sql'
 os.system("mysql -u " + mysql_root_ci_usr + " -p" + mysql_root_ci_pass + " -h localhost" + " < " + MYSQL_FILE_LOC )#TODO add in -h CONFIG OPTION for REMOTE upload
 
-#TODO add configuration file section for file writing
+#file handles for Realmd and Mangosd Configuration settings
+#FILE_REALMD_CONF = open('/home/'+SYS_USR+'/realmd.conf','w')
+#FILE_MANGOSD_CONF = open('/home/'+SYS_USR+'/mangosd.conf','w')
 
 # File Formatted Strings
 ##realmd.conf
