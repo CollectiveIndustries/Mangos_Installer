@@ -131,7 +131,7 @@ print ""
 
 # END LOGO
 
-print "We will now begin to process all dependancies required to build the MaNGOS server" 
+print "We will now begin to process all dependencies required to build the MaNGOS server" 
 print "Running Update as user: " 
 subprocess.call(shlex.split('sudo id -nu')) 
 subprocess.call(shlex.split('sudo apt-get update -q --force-yes'))
@@ -191,7 +191,7 @@ if CI_REALM_DB_PORT == '':
 CI_MANGOS_USR = raw_input('Name of the MaNGOS mysql user you wish to use: ') 
 CI_MANGOS_USR_PASS = raw_input('Password for new user: ')
 
-print "Before we can setup the new MaNGOS user we need to log into mysql as root or another administrators acount"
+print "Before we can set-up the new MaNGOS user we need to log into mysql as root or another administrators account"
 mysql_root_ci_usr = raw_input('MySQL ADMIN username: ')
 mysql_root_ci_pass = raw_input('ADMIN password: ')
 
@@ -220,7 +220,7 @@ if ACC_DATABASE == '':
 	# Mangos Realm Ver
 CI_MANGOS_VER = raw_input('Which version of MaNGOS do you wish to use (1 vanilla - 5 MoP): [4] ')
 if CI_MANGOS_VER == '':
-	CI_MANGOS_VER = '4' #defualt cata
+	CI_MANGOS_VER = '4' #default cata
 
 #TODO add in a "switch" for URL replacement for the CI-MANGOS code
 #we need to tell the user we dont have any other version just yet
