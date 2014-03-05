@@ -201,7 +201,9 @@ if CI_MANGOS_VER != '4':
 	print "The version of MaNGOS you have chosen (%s) is not available at this time we are defaulting to: CATA 4.3.4 (15595)"
 	CI_MANGOS_VER = '4'
 
-
+## MaNGOS Configuration Questions for the relmd.conf and the mangosd.conf
+# Config directory INSTALL_DIR + '/etc'
+# 
 #------------------------------------------ DataBase Strings
 
 #CREATE USER 'newuser'@'localhost' IDENTIFIED BY 'password';
