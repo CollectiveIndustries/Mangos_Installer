@@ -181,11 +181,11 @@ if CI_MANGOS_DB == '':
 	CI_MANGOS_DB = 'localhost'
 	#MANGOS_PORT
 CI_MANGOS_DB_PORT = raw_input('Port number for MySQL Server on (' + CI_MANGOS_DB + '): [3306] ')
-if CI_MANGOS_DB_PORT == ''
+if CI_MANGOS_DB_PORT == '':
 	CI_MANGOS_DB_PORT = '3306'
 	#realm port number
 CI_REALM_DB_PORT = raw_input('Port number for MySQL Server on (' + CI_ACCOUNT_DB + '): [3306] ')
-if CI_REALM_DB_PORT == ''
+if CI_REALM_DB_PORT == '':
 	CI_REALM_DB_PORT = '3306'
 	#USR and password for NEW MANGOS USER
 CI_MANGOS_USR = raw_input('Name of the MaNGOS mysql user you wish to use: ') 
