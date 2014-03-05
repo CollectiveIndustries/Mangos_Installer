@@ -223,9 +223,9 @@ if SCRDEV2_DATABASE == '':
 	SCRDEV2_DATABASE = 'scriptdev2-'+CI_IN_REALM_NAME
 
 	# Account 
-ACC_DATABASE = raw_input('New Account Database: [account] ')
+ACC_DATABASE = raw_input('New Account Database: [account' + CI_IN_REALM_NAME + '] ')
 if ACC_DATABASE == '':
-	ACC_DATABASE = 'account'
+	ACC_DATABASE = 'account-'+CI_IN_REALM_NAME
 
 	# Mangos Realm Ver
 CI_MANGOS_VER = raw_input('Which version of MaNGOS do you wish to use (1 vanilla - 5 MoP): [4] ')
