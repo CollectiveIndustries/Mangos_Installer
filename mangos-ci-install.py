@@ -172,13 +172,13 @@ subprocess.call('clear') # clear screen and wait for user
 
 #generated Install Answers
 
-# Realm name (using server hostname TODO ??? automatic name generator ??? )
+# Realm name
 CI_REALM_NAME = subprocess.check_output(["uname", "-n"])
 if CI_REALM_NAME[-1] == '\n':
         CI_REALM_NAME = CI_REALM_NAME[:-1] # strip ONLY the new line at the end of the word
 #install questions
 	#Realm Name
-CI_IN_REALM_NAME = raw_input('RealmName: [' + CI_REALM_NAME +'] ')
+CI_IN_REALM_NAME = raw_input('Realm Name: [' + CI_REALM_NAME +'] ')
 if CI_IN_REALM_NAME == '':
 	CI_IN_REALM_NAME = CI_REALM_NAME #blank input default set to hostname
 	#Realmd DB hostname
@@ -194,7 +194,7 @@ CI_MANGOS_DB_PORT = raw_input('Port number for MySQL Server on MaNGOS_DB (' + CI
 if CI_MANGOS_DB_PORT == '':
 	CI_MANGOS_DB_PORT = '3306'
 	#realm port number
-CI_REALM_DB_PORT = raw_input('Port number for MySQL Server on Realm_DB(' + CI_ACCOUNT_DB + '): [3306] ')
+CI_REALM_DB_PORT = raw_input('Port number for MySQL Server on Realm_DB (' + CI_ACCOUNT_DB + '): [3306] ')
 if CI_REALM_DB_PORT == '':
 	CI_REALM_DB_PORT = '3306'
 	#USR and password for NEW MANGOS USER
@@ -208,17 +208,17 @@ mysql_root_ci_pass = raw_input('ADMIN password: ')
 print "Almost ready to start installing the Database\'s We need a few more things and then we\'re ready"
 
 	# WORLD DB Questions
-WORLD_DATABASE = raw_input('New World Database name: [mangos-'+CI_IN_REALM_NAME+'] ')
+WORLD_DATABASE = raw_input('New World Database name: [mangos-' + CI_IN_REALM_NAME + '] ')
 if WORLD_DATABASE == '':
 	WORLD_DATABASE = 'mangos-'+CI_IN_REALM_NAME
 
 	# CHAR db questions
-CHAR_DATABASE = raw_input('New Character Database: [characters-'+CI_IN_REALM_NAME+'] ')
+CHAR_DATABASE = raw_input('New Character Database: [characters-' + CI_IN_REALM_NAME + '] ')
 if CHAR_DATABASE == '':
 	CHAR_DATABASE = 'characters-'+CI_IN_REALM_NAME
 
 	# ScriptDev2	
-SCRDEV2_DATABASE = raw_input('New ScriptDev2 Database: [scriptdev2-'+CI_IN_REALM_NAME+'] ')
+SCRDEV2_DATABASE = raw_input('New ScriptDev2 Database: [scriptdev2-' + CI_IN_REALM_NAME + '] ')
 if SCRDEV2_DATABASE == '':
 	SCRDEV2_DATABASE = 'scriptdev2-'+CI_IN_REALM_NAME
 
@@ -260,37 +260,43 @@ if CI_MANGOS_REALM_ID == '':
 # TODO open file for configuration of the realmd and mangosd configs and get them ready to place in the config dir
 
 #------------------------------------------ DataBase Strings
-
-#CREATE USER 'newuser'@'localhost' IDENTIFIED BY 'password';
-ADD_MANGOS_CI_USR_MYSQL = ('CREATE USER '+
-                           CI_MANGOS_USR +
-                           '@localhost '+ #TODO make this configurable so you can addin a login FROM location
-                           'IDENTIFIED BY ' +
-                           CI_MANGOS_USR_PASS)
-
-#TODO create MySQL database
-#TODO merge sh script with Python to bring up a unified installer for the CI databases
-# 'SERV_CODE'+make_full_db.sh
-#TODO add SQL statement for granting permissions to user for databases 
-#TODO setup databases before importing them from github
-# DATABASE QUERY FORMAT STRING: INSERT INTO `user` (`Host`, `User`, `Password`, `Select_priv`, `Insert_priv`, `Update_priv`, `Delete_priv`, `Create_priv`, `Drop_priv`, `Reload_priv`, `Shutdown_priv`, `Process_priv`, `File_priv`, `Grant_priv`, `References_priv`, `Index_priv`, `Alter_priv`, `Show_db_priv`, `Super_priv`, `Create_tmp_table_priv`, `Lock_tables_priv`, `Execute_priv`, `Repl_slave_priv`, `Repl_client_priv`, `Create_view_priv`, `Show_view_priv`, `Create_routine_priv`, `Alter_routine_priv`, `Create_user_priv`, `Event_priv`, `Trigger_priv`, `Create_tablespace_priv`, `ssl_type`, `ssl_cipher`, `x509_issuer`, `x509_subject`, `max_questions`, `max_updates`, `max_connections`, `max_user_connections`, `plugin`, `authentication_string`) VALUES ('%', 'mangos-ci', '*27921E15B85D135E57090C99DB45DC24444A1798', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'Y', 'N', 'N', 'Y', 'Y', 'Y', 'Y', 'N', 'Y', 'Y', 'Y', 'N', 'N', 'Y', 'Y', 'Y', 'Y', 'N', 'Y', 'Y', 'Y', '', '', '', '', 0, 0, 0, 0, '', NULL);
-# CREATE DATABASE `testdbname`
-PERMS_MANGOS_CI_USR_MYSQL = ('CREATE DATABASE' +
-			     '`' +
-			     WORLD_DATABASE +
-			     '`')
-
-#---------------------------------- OPEN FILE
 mangos_ci_sql_inst = open('/home/'+SYS_USR+'/mangos-ci-usr.sql','w')#open a temporary file for writing our config we will switch to root and move it later
 
-#------------------------------ MySQL File Write
-mangos_ci_sql_inst.write(ADD_MANGOS_CI_USR_MYSQL)
+#CREATE DATABASE `mangos` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+ADD_MANGOS_MYSQL = ('CREATE DATABASE `' + WORLD_DATABASE + '` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;')
+mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
 
-#------------------------------ CLOSE FILE
+#CREATE DATABASE `characters` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+ADD_MANGOS_MYSQL = ('CREATE DATABASE `' + CHAR_DATABASE + '` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;')
+mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
+
+#CREATE DATABASE `realmd` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+ADD_MANGOS_MYSQL = ('CREATE DATABASE `' + ACC_DATABASE + '` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;')
+mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
+
+#CREATE USER 'mangos'@'localhost' IDENTIFIED BY 'mangos';
+ADD_MANGOS_MYSQL = ('CREATE USER '+ CI_MANGOS_USR + '@localhost ' + 'IDENTIFIED BY ' + CI_MANGOS_USR_PASS+';')
+mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
+
+#GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES ON `mangos`.* TO 'mangos'@'localhost';
+ADD_MANGOS_MYSQL = ('GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES ON `'+WORLD_DATABASE+'`.* TO '+ CI_MANGOS_USR + '@localhost;')
+mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
+
+#GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES ON `characters`.* TO 'mangos'@'localhost';
+ADD_MANGOS_MYSQL = ('GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES ON `'+CHAR_DATABASE+'`.* TO '+ CI_MANGOS_USR + '@localhost;')
+mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
+
+#GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES ON `realmd`.* TO 'mangos'@'localhost';
+ADD_MANGOS_MYSQL = ('GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES ON `'+ACC_DATABASE+'`.* TO '+ CI_MANGOS_USR + '@localhost;')
+mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
+
+#finalize the SQL file
 mangos_ci_sql_inst.close()
 print "SQL file for MaNGOS DB install has been written to your home directory:"
 
-#TODO use the mysql < databse to load in the new settings we just created
+# run the upload
+MYSQL_FILE_LOC = '/home/'+SYS_USR+'/mangos-ci-usr.sql'
+os.system("mysql -u " + mysql_root_ci_usr + " -p" + mysql_root_ci_pass + " -h localhost" + " < " + MYSQL_FILE_LOC )#TODO add in -h CONFIG OPTION for REMOTE upload
 
 #TODO add configuration file section for file writing
 
