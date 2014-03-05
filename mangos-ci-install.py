@@ -213,8 +213,8 @@ if CI_MANGOS_VER != '4':
 ## MaNGOS Configuration Questions for the realmd.conf and the mangosd.conf
 # Config directory INSTALL_DIR + '/etc'
 # RealmID = 1
-# DataDir = "."
-# LogsDir = ""
+# DataDir = "../data"
+# LogsDir = "../logs"
 
 	# Log directory for mangos to use
 CI_MANGOS_LOGS_DIR = raw_input('Log directory to use: [../logs] ')
@@ -231,7 +231,7 @@ print "Please enter the Realm ID below (if first realm installed use default)"
 CI_MANGOS_REALM_ID = raw_input('RealmID: [1] ')
 if CI_MANGOS_REALM_ID == '':
 	CI_MANGOS_REALM_ID = '1'	
-	# TODO open file for configuration of the realmd and mangosd configs and get them ready to place in the config dir
+# TODO open file for configuration of the realmd and mangosd configs and get them ready to place in the config dir
 
 # Realm name (using server hostname TODO ??? automatic name generator ??? )
 CI_REALM_NAME = subprocess.check_output(["uname", "-n"])
