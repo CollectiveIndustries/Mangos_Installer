@@ -144,14 +144,13 @@ subprocess.call(shlex.split('sudo apt-get install -q --force-yes build-essential
 
 #make our code directory
 os.makedirs(os.path.join(SERV_CODE, "SOURCE", "mangos3_ci_code")) #main code directory
-os.makedirs(os.path.join(SERV_CODE, "mangos3_ci_server")) #main server bin directory
 subprocess.call('clear') #clear the screen after update + install
 print "Directory paths created for install and compile"
 keep_s_dir = raw_input('Would you like to save source code? [n] ')
 if keep_s_dir == 'n':
 	print "Source code directory will be erased after full install is finished" #only remove /opt/SOURCE/mangos3_ci_code/*
 
-#TODO add URL swapping function
+#TODO SWAP out urls for CI github repo AFTER code clean up and repo creation
 subprocess.call(shlex.split('sudo git clone https://github.com/mangosthree/server.git '+SERV_CODE+'/server'))#will clone server code to working directory
 subprocess.call(shlex.split('sudo git clone https://github.com/mangosthree/database.git '+SERV_CODE+'/database'))#will clone server code to working directory
 subprocess.call(shlex.split('sudo git clone https://github.com/mangosthree/scripts.git '+SERV_CODE+'/scripts'))#will clone server code to working directory
@@ -179,18 +178,28 @@ mysql_root_ci_usr = raw_input('MySQL ADMIN username: ')
 mysql_root_ci_pass = raw_input('ADMIN password: ')
 
 print "Almost ready to start installing the Database\'s We need a few more things and then we\'re ready"
+
+	# WORLD DB Questions
 WORLD_DATABASE = raw_input('New World Database name: [mangos] ')
 if WORLD_DATABASE == '':
 	WORLD_DATABASE = 'mangos'
+
+	# CHAR db questions
 CHAR_DATABASE = raw_input('New Character Database: [characters] ')
 if CHAR_DATABASE == '':
 	CHAR_DATABASE = 'characters'
-CHAR_DATABASE = raw_input('New ScriptDev2 Database: [scriptdev2] ')
-if CHAR_DATABASE == '':
+
+	# ScriptDev2	
+SCRDEV2_DATABASE = raw_input('New ScriptDev2 Database: [scriptdev2] ')
+if SCRDEV2_DATABASE == '':
 	SCRDEV2_DATABASE = 'scriptdev2'
-CHAR_DATABASE = raw_input('New Account Database: [account] ')
-if CHAR_DATABASE == '':
+
+	# Account 
+ACC_DATABASE = raw_input('New Account Database: [account] ')
+if ACC_DATABASE == '':
 	ACC_DATABASE = 'account'
+
+	# Mangos Realm Ver
 CI_MANGOS_VER = raw_input('Which version of MaNGOS do you wish to use (1 vanilla - 5 MoP): [4] ')
 if CI_MANGOS_VER == '':
 	CI_MANGOS_VER = '4' #defualt cata
@@ -198,12 +207,39 @@ if CI_MANGOS_VER == '':
 #TODO add in a "switch" for URL replacement for the CI-MANGOS code
 #we need to tell the user we dont have any other version just yet
 if CI_MANGOS_VER != '4':
-	print "The version of MaNGOS you have chosen (%s) is not available at this time we are defaulting to: CATA 4.3.4 (15595)"
+	print "The version of MaNGOS you have chosen (%s) is not available at this time we are defaulting to: CATA 4.3.4 (15595)" %(CI_MANGOS_VER)
 	CI_MANGOS_VER = '4'
 
-## MaNGOS Configuration Questions for the relmd.conf and the mangosd.conf
+## MaNGOS Configuration Questions for the realmd.conf and the mangosd.conf
 # Config directory INSTALL_DIR + '/etc'
-# 
+# RealmID = 1
+# DataDir = "."
+# LogsDir = ""
+
+	# Log directory for mangos to use
+CI_MANGOS_LOGS_DIR = raw_input('Log directory to use: [../logs] ')
+if CI_MANGOS_LOGS_DIR == '':
+	CI_MANGOS_LOGS_DIR = '../logs'
+
+		# Data directory for mangos to use
+CI_MANGOS_DATA_DIR = raw_input('data directory for maps: [../data] ')
+if CI_MANGOS_DATA_DIR == '':
+	CI_MANGOS_DATA_DIR = '../data'
+
+	# RealmID 
+print "Please enter the Realm ID below (if first realm installed use default)"
+CI_MANGOS_REALM_ID = raw_input('RealmID: [1] ')
+if CI_MANGOS_REALM_ID == '':
+	CI_MANGOS_REALM_ID = '1'	
+	# TODO open file for configuration of the realmd and mangosd configs and get them ready to place in the config dir
+
+# Realm name (using server hostname TODO ??? automatic name generator ??? )
+CI_REALM_NAME = subprocess.check_output(["uname", "-n"])
+if CI_REALM_NAME[-1] == '\n':
+        CI_REALM_NAME = CI_REALM_NAME[:-1] # strip ONLY the new line at the end of the word
+subprocess.call('clear')
+print "Using Local host name as realm name: %s" % (CI_REALM_NAME)
+	
 #------------------------------------------ DataBase Strings
 
 #CREATE USER 'newuser'@'localhost' IDENTIFIED BY 'password';
@@ -214,46 +250,24 @@ ADD_MANGOS_CI_USR_MYSQL = ('CREATE USER '+
                            mangos_new_ci_usr_pass)
 
 #TODO create MySQL database
-ROOT_PASS = raw_input('What is the root username password for MySQL: [password] ')
-if ROOT_PASS == '':
-	ROOT_PASS = 'password'
-
-
-# TODO merge sh script with Python to bring up a unified installer for the CI databases
-#'SERV_CODE'+make_full_db.sh
-
-
+#TODO merge sh script with Python to bring up a unified installer for the CI databases
+# 'SERV_CODE'+make_full_db.sh
 #TODO add SQL statement for granting permissions to user for databases 
 #TODO setup databases before importing them from github
-
 # DATABASE QUERY FORMAT STRING: INSERT INTO `user` (`Host`, `User`, `Password`, `Select_priv`, `Insert_priv`, `Update_priv`, `Delete_priv`, `Create_priv`, `Drop_priv`, `Reload_priv`, `Shutdown_priv`, `Process_priv`, `File_priv`, `Grant_priv`, `References_priv`, `Index_priv`, `Alter_priv`, `Show_db_priv`, `Super_priv`, `Create_tmp_table_priv`, `Lock_tables_priv`, `Execute_priv`, `Repl_slave_priv`, `Repl_client_priv`, `Create_view_priv`, `Show_view_priv`, `Create_routine_priv`, `Alter_routine_priv`, `Create_user_priv`, `Event_priv`, `Trigger_priv`, `Create_tablespace_priv`, `ssl_type`, `ssl_cipher`, `x509_issuer`, `x509_subject`, `max_questions`, `max_updates`, `max_connections`, `max_user_connections`, `plugin`, `authentication_string`) VALUES ('%', 'mangos-ci', '*27921E15B85D135E57090C99DB45DC24444A1798', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'Y', 'N', 'N', 'Y', 'Y', 'Y', 'Y', 'N', 'Y', 'Y', 'Y', 'N', 'N', 'Y', 'Y', 'Y', 'Y', 'N', 'Y', 'Y', 'Y', '', '', '', '', 0, 0, 0, 0, '', NULL);
-
-
-#CREATE DATABASE `testdbname`
+# CREATE DATABASE `testdbname`
 PERMS_MANGOS_CI_USR_MYSQL = ('CREATE DATABASE' +
 			     '`' +
 			     WORLD_DATABASE +
 			     '`')
 
-#open a new file for writing 
+#---------------------------------- OPEN FILE
 mangos_ci_sql_inst = open('/home/'+SYS_USR+'/mangos-ci-usr.sql','w')#open a temporary file for writing our config we will switch to root and move it later
-
-# Realm name (using server hostname TODO ??? automatic name generator ??? )
-hostname = subprocess.check_output(["uname", "-n"])
-if hostname[-1] == '\n':
-        hostname = hostname[:-1] # strip ONLY the new line at the end of the word
-subprocess.call('clear')
-print "Host Name found: %s\nBuilding database......" % (hostname)
-time.sleep(4)
 
 #------------------------------ MySQL File Write
 mangos_ci_sql_inst.write(ADD_MANGOS_CI_USR_MYSQL)
-#mangos_ci_sql_inst.write(CREATE_MANGOS_CI_DB_MYSQL)
-#mangos_ci_sql_inst.write(CREATE_CHAR_CI_DB_MYSQL)
-#mangos_ci_sql_inst.write(CREATE_ACCOUNT_CI_DB_MYSQL)
-#mangos_ci_sql_inst.write(CREATE_REALMD_CI_DB_MYSQL)
 
-#file has been written
+#------------------------------ CLOSE FILE
 mangos_ci_sql_inst.close()
 print "SQL file for MaNGOS DB install has been written to your home directory:"
 
