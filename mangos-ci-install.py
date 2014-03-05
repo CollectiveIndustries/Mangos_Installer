@@ -170,7 +170,17 @@ with cd(SERV_CODE+"/server/objdir"):
 
 subprocess.call('clear') # clear screen and wait for user
 
+#generated Install Answers
+
+# Realm name (using server hostname TODO ??? automatic name generator ??? )
+CI_REALM_NAME = subprocess.check_output(["uname", "-n"])
+if CI_REALM_NAME[-1] == '\n':
+        CI_REALM_NAME = CI_REALM_NAME[:-1] # strip ONLY the new line at the end of the word
 #install questions
+	#Realm Name
+CI_IN_REALM_NAME = raw_input('RealmName: [' + CI_REALM_NAME +'] ')
+if CI_IN_REALM_NAME == '':
+	CI_IN_REALM_NAME = CI_REALM_NAME #blank input default set to hostname
 	#Realmd DB hostname
 CI_ACCOUNT_DB = raw_input('hostname for ACCOUNT database (realmd): [localhost] ')
 if CI_ACCOUNT_DB == '':
@@ -198,19 +208,19 @@ mysql_root_ci_pass = raw_input('ADMIN password: ')
 print "Almost ready to start installing the Database\'s We need a few more things and then we\'re ready"
 
 	# WORLD DB Questions
-WORLD_DATABASE = raw_input('New World Database name: [mangos] ')
+WORLD_DATABASE = raw_input('New World Database name: [mangos-'+CI_IN_REALM_NAME+'] ')
 if WORLD_DATABASE == '':
-	WORLD_DATABASE = 'mangos'
+	WORLD_DATABASE = 'mangos-'+CI_IN_REALM_NAME
 
 	# CHAR db questions
-CHAR_DATABASE = raw_input('New Character Database: [characters] ')
+CHAR_DATABASE = raw_input('New Character Database: [characters-'+CI_IN_REALM_NAME+'] ')
 if CHAR_DATABASE == '':
-	CHAR_DATABASE = 'characters'
+	CHAR_DATABASE = 'characters-'+CI_IN_REALM_NAME
 
 	# ScriptDev2	
-SCRDEV2_DATABASE = raw_input('New ScriptDev2 Database: [scriptdev2] ')
+SCRDEV2_DATABASE = raw_input('New ScriptDev2 Database: [scriptdev2-'+CI_IN_REALM_NAME+'] ')
 if SCRDEV2_DATABASE == '':
-	SCRDEV2_DATABASE = 'scriptdev2'
+	SCRDEV2_DATABASE = 'scriptdev2-'+CI_IN_REALM_NAME
 
 	# Account 
 ACC_DATABASE = raw_input('New Account Database: [account] ')
@@ -249,13 +259,6 @@ if CI_MANGOS_REALM_ID == '':
 	CI_MANGOS_REALM_ID = '1'	
 # TODO open file for configuration of the realmd and mangosd configs and get them ready to place in the config dir
 
-# Realm name (using server hostname TODO ??? automatic name generator ??? )
-CI_REALM_NAME = subprocess.check_output(["uname", "-n"])
-if CI_REALM_NAME[-1] == '\n':
-        CI_REALM_NAME = CI_REALM_NAME[:-1] # strip ONLY the new line at the end of the word
-subprocess.call('clear')
-print "Using Local host name as realm name: %s" % (CI_REALM_NAME)
-	
 #------------------------------------------ DataBase Strings
 
 #CREATE USER 'newuser'@'localhost' IDENTIFIED BY 'password';
