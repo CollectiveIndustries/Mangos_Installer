@@ -7,7 +7,7 @@ sleep 15
 echo "Starting Realmd --> Account Server"
 /bin/su mangos -c "/usr/bin/screen -dmS realm_d bash -c '/opt/mangos3_ci_server/bin/realmd'"
 
-# MaNGOS world server 
+# MaNGOS world server
 echo "Starting Mangosd --> World Server"
 /bin/su mangos -c "/usr/bin/screen -dmS mangos_d bash -c '/opt/mangos3_ci_server/bin/mangosd'"
 
@@ -17,4 +17,4 @@ echo "slurm_eth0 network monitor daemon"
 
 #screen daemon TeamSpeak3
 echo "Starting Teamspeak 3"
-/bin/su teamspeak -c "/usr/bin/screen -dmS TeamSpeak3 bash -c '/opt/teamspeak3-server_linux-x86/teamspeak_startscript.sh start'"
+/bin/su zaine -c "/usr/bin/screen -dmS TeamSpeak3 bash -c '/opt/teamspeak3-server_linux-x86/teamspeak_startscript.sh start'"
