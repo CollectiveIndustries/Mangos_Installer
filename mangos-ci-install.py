@@ -171,8 +171,26 @@ with cd(SERV_CODE+"/server/objdir"):
 subprocess.call('clear') # clear screen and wait for user
 
 #install questions
-mangos_new_ci_usr = raw_input('Name of the MaNGOS mysql user you wish to use: ') #im having problems with this line here
-mangos_new_ci_usr_pass = raw_input('Password for new user: ')
+	#Realmd DB hostname
+CI_ACCOUNT_DB = raw_input('hostname for ACCOUNT database (realmd): [localhost] ')
+if CI_ACCOUNT_DB == '':
+	CI_ACCOUNT_DB = 'localhost'
+	#Mangos DB hostname
+CI_MANGOS_DB = raw_input('Hostname for MANGOS database (mangosd): [localhost] ')
+if CI_MANGOS_DB == '':
+	CI_MANGOS_DB = 'localhost'
+	#MANGOS_PORT
+CI_MANGOS_DB_PORT = raw_input('Port number for MySQL Server on (' + CI_MANGOS_DB + '): [3306] ')
+if CI_MANGOS_DB_PORT == ''
+	CI_MANGOS_DB_PORT = '3306'
+	#realm port number
+CI_REALM_DB_PORT = raw_input('Port number for MySQL Server on (' + CI_ACCOUNT_DB + '): [3306] ')
+if CI_REALM_DB_PORT == ''
+	CI_REALM_DB_PORT = '3306'
+	#USR and password for NEW MANGOS USER
+CI_MANGOS_USR = raw_input('Name of the MaNGOS mysql user you wish to use: ') 
+CI_MANGOS_USR_PASS = raw_input('Password for new user: ')
+
 print "Before we can setup the new MaNGOS user we need to log into mysql as root or another administrators acount"
 mysql_root_ci_usr = raw_input('MySQL ADMIN username: ')
 mysql_root_ci_pass = raw_input('ADMIN password: ')
@@ -244,10 +262,10 @@ print "Using Local host name as realm name: %s" % (CI_REALM_NAME)
 
 #CREATE USER 'newuser'@'localhost' IDENTIFIED BY 'password';
 ADD_MANGOS_CI_USR_MYSQL = ('CREATE USER '+
-                           mangos_new_ci_usr+
-                           '@localhost'+ #TODO make this configurable
-                           'IDENTIFIED BY '+
-                           mangos_new_ci_usr_pass)
+                           CI_MANGOS_USR +
+                           '@localhost '+ #TODO make this configurable so you can addin a login FROM location
+                           'IDENTIFIED BY ' +
+                           CI_MANGOS_USR_PASS)
 
 #TODO create MySQL database
 #TODO merge sh script with Python to bring up a unified installer for the CI databases
