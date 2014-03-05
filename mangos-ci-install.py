@@ -7,11 +7,11 @@
 #
 ##################################################################################################
 
-
 # configurable globals also can be set using the full install option these are defualt values
-# TODO: write an user input section to set variables or have the option to use all defaults
+#TODO: write an user input section to set variables or have the option to use all defaults
+#TODO add in a system user creation section
 
-INSTALL_DIR = '/opt/mangos3_ci_server' 
+INSTALL_DIR = '/opt/mangos3_ci_server'
 SYS_USR = 'mangos'
 
 # DO NOT EDIT BELOW LINE
@@ -114,7 +114,7 @@ print "CCC     ====    III"
 print "CCC             III"
 print "CCC CCC         III"
 print "CCC CCC         III"
-print " CCCCC       IIIIIIIII   http://ci-main.comule.com/"
+print " CCCCC       IIIIIIIII   http://ci-main.no-ip.org/"
 print ""
 print "MM   MM         NN   NN  GGGGG   OOOO   SSSSS"
 print "MM   MM         NN   NN GGG GGG OO  OO SSS SSS"
