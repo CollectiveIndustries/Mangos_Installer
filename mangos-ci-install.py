@@ -11,7 +11,7 @@
 #TODO: write an user input section to set variables or have the option to use all defaults
 #TODO add in a system user creation section
 
-INSTALL_DIR = '/opt/mangos3_ci_server'
+INSTALL_DIR = '/opt/mangos3_ci_server/'
 SYS_USR = 'mangos'
 
 # DO NOT EDIT BELOW LINE
@@ -21,7 +21,7 @@ host_name = ''#will be set using uname and check_output
 SYS_PASS = '' #will be set using RAW_INPUT 
 SERV_CODE = '/home/' + SYS_USR + '/SOURCE/mangos3_ci_code' #will be used to clone all the code and compile the software (can be removed after the install)
 SQL_USR_INST = 'mangos-ci-usr.sql'
-_LOC_SQL_UPDATES_ = SERV_CODE + '/server/sql/updates'
+_LOC_SQL_UPDATES_ = SERV_CODE + '/server/sql/updates/'
 # import all of our needed functions
 from subprocess import call 
 import os 
@@ -46,6 +46,13 @@ def mysql_call(usr, psw, host, db, sql):
 	
 # mysql_call()
 
+# Collective Industries git + compile functions
+# clone https://github.com/mangosthree/EventAI.git '+SERV_CODE+'/EventAI'))
+def git_api(command, args)
+	"""Function for handling git commands"""
+	#subprocess.call(shlex.split('sudo git '+command+' '+args)
+
+# git_api()
 ##############################################################################################################################
 #
 #
@@ -158,23 +165,23 @@ if keep_s_dir == 'n':
 #TODO add a commit log viewer (git log) option after each clone request
 	
 #TODO SWAP out urls for CI github repo AFTER code clean up and repo creation
-subprocess.call(shlex.split('sudo git clone https://github.com/mangosthree/server.git '+SERV_CODE+'/server'))#will clone server code to working directory
-subprocess.call(shlex.split('sudo git clone https://github.com/mangosthree/database.git '+SERV_CODE+'/database'))#will clone server code to working directory
+git_api("clone", 'https://github.com/mangosthree/server.git '+SERV_CODE+'/server')
+git_api("clone", 'https://github.com/mangosthree/database.git '+SERV_CODE+'/database')
 
 #Clone ScriptDev2  - execute from within src/bindings directory
 print "Chaging Directory to: "+SERV_CODE+"/server/src/bindings"
 with cd(SERV_CODE+"/server/src/bindings"):
-	subprocess.call(shlex.split('sudo git clone https://github.com/mangosthree/scripts.git ScriptDev2'))#will clone server code to working directory
-subprocess.call(shlex.split('sudo git clone https://github.com/mangosthree/EventAI.git '+SERV_CODE+'/EventAI'))#will clone server code to working directory
-subprocess.call(shlex.split('sudo git clone https://github.com/mangosthree/tools.git '+SERV_CODE+'/tools'))#will clone server code to working directory
+	git_api("clone", 'https://github.com/mangosthree/scripts.git ./ScriptDev2')
+git_api("clone", 'https://github.com/mangosthree/EventAI.git '+SERV_CODE+'/EventAI')
+git_api("clone", 'https://github.com/mangosthree/tools.git '+SERV_CODE+'/tools')
 
 # START compile and begin install
 os.makedirs(os.path.join(SERV_CODE+"/server/", "objdir")) #main server bin directory
 #change to our compile directory and run the compile
 with cd(SERV_CODE+"/server/objdir"):
-	subprocess.call(shlex.split('sudo cmake .. -DCMAKE_INSTALL_PREFIX='+INSTALL_DIR+' -DINCLUDE_BINDINGS_DIR=ScriptDev2'))
-	subprocess.call(shlex.split('sudo make'))
-	subprocess.call(shlex.split('sudo make install')) 
+	#subprocess.call(shlex.split('sudo cmake .. -DCMAKE_INSTALL_PREFIX='+INSTALL_DIR+' -DINCLUDE_BINDINGS_DIR=ScriptDev2'))
+	#subprocess.call(shlex.split('sudo make'))
+	#subprocess.call(shlex.split('sudo make install')) 
 
 
 #------------------------------------------- MaNGOS-CI Bata Base install
@@ -385,6 +392,8 @@ for x in patches: #set up a loop to run through the current working directory
 # CharacterDatabaseInfo = "127.0.0.1;3306;mangos;mangos;characters"
 # BindIP = "0.0.0.0"
 
+# ADD Map_data to server
+git_api("clone", 'https://github.com/CollectiveIndustries/server-maps.git '+INSTALL_DIR+CI_MANGOS_DATA_DIR)
 
 #TODO add rc.local script section
 # add lines to a file for running the mangosd and realmd services
