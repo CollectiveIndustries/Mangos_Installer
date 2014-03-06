@@ -39,7 +39,12 @@ import MySQLdb
 #
 ##################################################################################################################
 
-
+# Collective Industries mysql call
+def mysql_call(usr, psw, host, db, sql):
+	"""Function for Adding sql files to MySQL Host"""
+	os.system("mysql -u " + usr + " -p" + psw + " -h " + host + db + "  < " + sql )
+	
+# mysql_call()
 
 ##############################################################################################################################
 #
@@ -301,6 +306,9 @@ print "SQL file for MaNGOS DB install has been written to your home directory: [
 
 # run the upload
 MYSQL_FILE_LOC = '/home/'+SYS_USR+'/mangos-ci-usr.sql'
+#TODO get MySQL syntax for port number 
+#edit -h for configurable host by DB NAME (realmd and mangosd) 
+#IDEA set up host/port for each database (could be usefull in a multi server platform) (ENTERPRISE INSTALLER)
 os.system("mysql -u " + mysql_root_ci_usr + " -p" + mysql_root_ci_pass + " -h localhost" + " < " + MYSQL_FILE_LOC )#TODO add in -h CONFIG OPTION for REMOTE upload
 
 #install WORLD DB
