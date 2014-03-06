@@ -22,6 +22,7 @@ SYS_PASS = '' #will be set using RAW_INPUT
 SERV_CODE = '/home/' + SYS_USR + '/SOURCE/mangos3_ci_code' #will be used to clone all the code and compile the software (can be removed after the install)
 SQL_USR_INST = 'mangos-ci-usr.sql'
 _LOC_SQL_UPDATES_ = SERV_CODE + '/server/sql/updates/'
+
 # import all of our needed functions
 from subprocess import call 
 import os 
@@ -50,7 +51,7 @@ def mysql_call(usr, psw, host, db, sql):
 # clone https://github.com/mangosthree/EventAI.git '+SERV_CODE+'/EventAI'))
 def git_api(command, args):
 	"""Function for handling git commands"""
-	#subprocess.call(shlex.split('sudo git '+command+' '+args)
+	subprocess.call(shlex.split('sudo git '+command+' '+args)
 
 # git_api()
 ##############################################################################################################################
@@ -179,10 +180,10 @@ git_api("clone", 'https://github.com/mangosthree/tools.git '+SERV_CODE+'/tools')
 os.makedirs(os.path.join(SERV_CODE+"/server/", "objdir")) #main server bin directory
 #change to our compile directory and run the compile
 with cd(SERV_CODE+"/server/objdir"):
-	print "COMMENTED OUT"
-	#subprocess.call(shlex.split('sudo cmake .. -DCMAKE_INSTALL_PREFIX='+INSTALL_DIR+' -DINCLUDE_BINDINGS_DIR=ScriptDev2'))
-	#subprocess.call(shlex.split('sudo make'))
-	#subprocess.call(shlex.split('sudo make install')) 
+	#print "COMMENTED OUT"
+	subprocess.call(shlex.split('sudo cmake .. -DCMAKE_INSTALL_PREFIX='+INSTALL_DIR+' -DINCLUDE_BINDINGS_DIR=ScriptDev2'))
+	subprocess.call(shlex.split('sudo make'))
+	subprocess.call(shlex.split('sudo make install')) 
 
 
 #------------------------------------------- MaNGOS-CI Bata Base install
