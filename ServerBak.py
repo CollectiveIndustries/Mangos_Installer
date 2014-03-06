@@ -5,8 +5,8 @@ import zipfile
 import subprocess 
 import shlex 
 #GLOBAL VARIABLES
-SSH_REMOTE = "ci-main.no-ip.org"
-SSH_PORT = "33"
+SSH_REMOTE = ""
+SSH_PORT = ""
 
 
 def main():
