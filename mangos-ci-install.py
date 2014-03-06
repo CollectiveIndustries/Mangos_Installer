@@ -21,7 +21,7 @@ host_name = ''#will be set using uname and check_output
 SYS_PASS = '' #will be set using RAW_INPUT 
 SERV_CODE = '/home/' + SYS_USR + '/SOURCE/mangos3_ci_code' #will be used to clone all the code and compile the software (can be removed after the install)
 SQL_USR_INST = 'mangos-ci-usr.sql'
-
+_LOC_SQL_UPDATES_ = SERV_CODE + '/server/sql/updates'
 # import all of our needed functions
 from subprocess import call 
 import os 
@@ -346,7 +346,22 @@ for sql in full_db:
 #Update ScriptNames::
 #Execute `sql\mangos_scriptname_full.sql` on WORLD_DATABASE	
 
+#Data Base Update
+patches = glob.glob(_LOC_SQL_UPDATES_ + '*.sql')
+patches = sorted(patches)#sort the patches to upload in correct order
+print "Starting Patching Process"
+_DB_ = ''
 
+for x in patches: #set up a loop to run through the current working directory
+  print "Patching File: " + x #tell user what file is being added to the Database
+  db = x.split("_")[2].replace('.sql', '')#this is for the Mangos FileName structure we have to sort them and find the database names
+  if db == 'characters':
+  	_DB_  = CHAR_DATABASE
+  if db == 'realmd':
+        _DB_ = ACC_DATABASE
+  if db == 'mangos':
+        _DB_ = WORLD_DATABASE  #block was for determining the database from the file name and the users input
+  mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', _DB_, x)#no host config set up yet
 
 #file handles for Realmd, Mangosd, ScriptDev2 Configuration settings
 #FILE_REALMD_CONF = open('/home/'+SYS_USR+'/realmd.conf','w')
