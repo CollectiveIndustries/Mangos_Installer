@@ -265,6 +265,8 @@ if CI_MANGOS_REALM_ID == '':
 #------------------------------------------ DataBase Strings
 mangos_ci_sql_inst = open('/home/'+SYS_USR+'/mangos-ci-usr.sql','w')#open a temporary file for writing our config we will switch to root and move it later
 
+### TODO change all DB strings to DROP IF EXIST then CREATE
+
 #CREATE DATABASE `mangos` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 ADD_MANGOS_MYSQL = ('CREATE DATABASE `' + WORLD_DATABASE + '` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;\n\n')
 mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
