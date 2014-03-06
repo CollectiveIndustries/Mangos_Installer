@@ -164,7 +164,7 @@ subprocess.call(shlex.split('sudo git clone https://github.com/mangosthree/tools
 os.makedirs(os.path.join(SERV_CODE+"/server/", "objdir")) #main server bin directory
 #change to our compile directory and run the compile
 with cd(SERV_CODE+"/server/objdir"):
-	subprocess.call(shlex.split('sudo cmake .. -DCMAKE_INSTALL_PREFIX='+INSTALL_DIR))
+	subprocess.call(shlex.split('sudo cmake .. -DCMAKE_INSTALL_PREFIX='+INSTALL_DIR+' -D INCLUDE_BINDINGS_DIR=ScriptDev2'))
 	subprocess.call(shlex.split('sudo make'))
 	subprocess.call(shlex.split('sudo make install')) 
 
@@ -302,23 +302,38 @@ MYSQL_FILE_LOC = '/home/'+SYS_USR+'/mangos-ci-usr.sql'
 os.system("mysql -u " + mysql_root_ci_usr + " -p" + mysql_root_ci_pass + " -h localhost" + " < " + MYSQL_FILE_LOC )#TODO add in -h CONFIG OPTION for REMOTE upload
 
 #install WORLD DB
+full_db = glob.glob(SERV_CODE + '/database/full_db/*.sql')
+full_db = sorted(patches)
+print "Starting Patching Process"
 print "User and Databases have been created now running MySQL installer for World Content"
-full_db = SERV_CODE + '/database/full_db/*.sql'
+#full_db = SERV_CODE + '/database/full_db/*.sql'
 for sql in full_db:
 	print "Adding: " + sql + " ---> " + WORLD_DATABASE
 	os.system("mysql -u " + mysql_root_ci_usr + " -p" + mysql_root_ci_pass + " -h localhost " + WORLD_DATABASE + "  < " + sql )#TODO add in -h CONFIG OPTION for REMOTE upload
 
 #Install EventAI
+full_db = glob.glob(SERV_CODE + '/EventAI/*.sql')
+full_db = sorted(patches)
 print "Now loading EventAI DataBase"
-full_db = SERV_CODE + '/EventAI/*.sql'
+#full_db = SERV_CODE + '/EventAI/*.sql'
 for sql in full_db:
 	print "Adding: " + sql + " ---> " + WORLD_DATABASE
 	os.system("mysql -u " + mysql_root_ci_usr + " -p" + mysql_root_ci_pass + " -h localhost " + WORLD_DATABASE + "  < " + sql )#TODO add in -h CONFIG OPTION for REMOTE upload
-	
 
-#file handles for Realmd and Mangosd Configuration settings
+#Install SCRDEV2_DATABASE
+#Execute `sql\scriptdev2_create_database.sql` ## check file and make sure it matches installer options ##
+#Execute `sql\scriptdev2_create_structure.sql` on SCRDEV2_DATABASE
+#Add content to ScriptDev2-Database::
+#Execute `sql\scriptdev2_script_full.sql` on SCRDEV2_DATABASE
+#Update ScriptNames::
+#Execute `sql\mangos_scriptname_full.sql` on WORLD_DATABASE	
+
+
+
+#file handles for Realmd, Mangosd, ScriptDev2 Configuration settings
 #FILE_REALMD_CONF = open('/home/'+SYS_USR+'/realmd.conf','w')
 #FILE_MANGOSD_CONF = open('/home/'+SYS_USR+'/mangosd.conf','w')
+#FILE_SCRIPTDEV2_CONF = open('/home/'+SYS_USR+'/scriptdev2.conf','w')
 
 # File Formatted Strings
 ##realmd.conf
