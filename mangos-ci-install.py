@@ -309,7 +309,9 @@ MYSQL_FILE_LOC = '/home/'+SYS_USR+'/mangos-ci-usr.sql'
 #TODO get MySQL syntax for port number 
 #edit -h for configurable host by DB NAME (realmd and mangosd) 
 #IDEA set up host/port for each database (could be usefull in a multi server platform) (ENTERPRISE INSTALLER)
-os.system("mysql -u " + mysql_root_ci_usr + " -p" + mysql_root_ci_pass + " -h localhost" + " < " + MYSQL_FILE_LOC )#TODO add in -h CONFIG OPTION for REMOTE upload
+
+# DEPRECIATED os.system("mysql -u " + mysql_root_ci_usr + " -p" + mysql_root_ci_pass + " -h localhost" + " < " + MYSQL_FILE_LOC )#TODO add in -h CONFIG OPTION for REMOTE upload
+mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', ' ', MYSQL_FILE_LOC) #import user generated sql
 
 #install WORLD DB
 full_db = glob.glob(SERV_CODE + '/database/full_db/*.sql')
@@ -319,7 +321,8 @@ print "User and Databases have been created now running MySQL installer for Worl
 #full_db = SERV_CODE + '/database/full_db/*.sql'
 for sql in full_db:
 	print "Adding: " + sql + " ---> " + WORLD_DATABASE
-	os.system("mysql -u " + mysql_root_ci_usr + " -p" + mysql_root_ci_pass + " -h localhost " + WORLD_DATABASE + "  < " + sql )#TODO add in -h CONFIG OPTION for REMOTE upload
+	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', WORLD_DATABASE, sql)#no host config set up yet 
+	# DEPRECIATED os.system("mysql -u " + mysql_root_ci_usr + " -p" + mysql_root_ci_pass + " -h localhost " + WORLD_DATABASE + "  < " + sql )#TODO add in -h CONFIG OPTION for REMOTE upload
 
 #Install EventAI
 full_db = glob.glob(SERV_CODE + '/EventAI/*.sql')
@@ -328,7 +331,8 @@ print "Now loading EventAI DataBase"
 #full_db = SERV_CODE + '/EventAI/*.sql'
 for sql in full_db:
 	print "Adding: " + sql + " ---> " + WORLD_DATABASE
-	os.system("mysql -u " + mysql_root_ci_usr + " -p" + mysql_root_ci_pass + " -h localhost " + WORLD_DATABASE + "  < " + sql )#TODO add in -h CONFIG OPTION for REMOTE upload
+	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', WORLD_DATABASE, sql)#no host config set up yet
+	# DEPRECIATED os.system("mysql -u " + mysql_root_ci_usr + " -p" + mysql_root_ci_pass + " -h localhost " + WORLD_DATABASE + "  < " + sql )#TODO add in -h CONFIG OPTION for REMOTE upload
 
 #Install SCRDEV2_DATABASE
 #Execute `sql\scriptdev2_create_database.sql` ## check file and make sure it matches installer options ##
