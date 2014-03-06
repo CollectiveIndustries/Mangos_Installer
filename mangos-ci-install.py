@@ -154,8 +154,9 @@ if keep_s_dir == 'n':
 subprocess.call(shlex.split('sudo git clone https://github.com/mangosthree/server.git '+SERV_CODE+'/server'))#will clone server code to working directory
 subprocess.call(shlex.split('sudo git clone https://github.com/mangosthree/database.git '+SERV_CODE+'/database'))#will clone server code to working directory
 
-#Clone ScriptDev2 `git clone git://github.com/scriptdev2/scriptdev2.git ScriptDev2` - execute from within src/bindings directory
-subprocess.call(shlex.split('sudo git clone https://github.com/mangosthree/scripts.git '+SERV_CODE+'/scripts'))#will clone server code to working directory
+#Clone ScriptDev2  - execute from within src/bindings directory
+with cd(SERV_CODE+"/server/src/bindings"):
+	subprocess.call(shlex.split('sudo git clone https://github.com/mangosthree/scripts.git ScriptDev2'))#will clone server code to working directory
 subprocess.call(shlex.split('sudo git clone https://github.com/mangosthree/EventAI.git '+SERV_CODE+'/EventAI'))#will clone server code to working directory
 subprocess.call(shlex.split('sudo git clone https://github.com/mangosthree/tools.git '+SERV_CODE+'/tools'))#will clone server code to working directory
 
