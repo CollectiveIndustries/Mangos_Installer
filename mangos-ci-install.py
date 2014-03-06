@@ -153,6 +153,8 @@ if keep_s_dir == 'n':
 #TODO SWAP out urls for CI github repo AFTER code clean up and repo creation
 subprocess.call(shlex.split('sudo git clone https://github.com/mangosthree/server.git '+SERV_CODE+'/server'))#will clone server code to working directory
 subprocess.call(shlex.split('sudo git clone https://github.com/mangosthree/database.git '+SERV_CODE+'/database'))#will clone server code to working directory
+
+#Clone ScriptDev2 `git clone git://github.com/scriptdev2/scriptdev2.git ScriptDev2` - execute from within src/bindings directory
 subprocess.call(shlex.split('sudo git clone https://github.com/mangosthree/scripts.git '+SERV_CODE+'/scripts'))#will clone server code to working directory
 subprocess.call(shlex.split('sudo git clone https://github.com/mangosthree/EventAI.git '+SERV_CODE+'/EventAI'))#will clone server code to working directory
 subprocess.call(shlex.split('sudo git clone https://github.com/mangosthree/tools.git '+SERV_CODE+'/tools'))#will clone server code to working directory
@@ -298,11 +300,20 @@ print "SQL file for MaNGOS DB install has been written to your home directory: [
 MYSQL_FILE_LOC = '/home/'+SYS_USR+'/mangos-ci-usr.sql'
 os.system("mysql -u " + mysql_root_ci_usr + " -p" + mysql_root_ci_pass + " -h localhost" + " < " + MYSQL_FILE_LOC )#TODO add in -h CONFIG OPTION for REMOTE upload
 
+#install WORLD DB
 print "User and Databases have been created now running MySQL installer for World Content"
 full_db = SERV_CODE + '/database/full_db/*.sql'
 for sql in full_db:
 	print "Adding: " + sql + " ---> " + WORLD_DATABASE
 	os.system("mysql -u " + mysql_root_ci_usr + " -p" + mysql_root_ci_pass + " -h localhost " + WORLD_DATABASE + "  < " + sql )#TODO add in -h CONFIG OPTION for REMOTE upload
+
+#Install EventAI
+print "Now loading EventAI DataBase"
+full_db = SERV_CODE + '/EventAI/*.sql'
+for sql in full_db:
+	print "Adding: " + sql + " ---> " + WORLD_DATABASE
+	os.system("mysql -u " + mysql_root_ci_usr + " -p" + mysql_root_ci_pass + " -h localhost " + WORLD_DATABASE + "  < " + sql )#TODO add in -h CONFIG OPTION for REMOTE upload
+	
 
 #file handles for Realmd and Mangosd Configuration settings
 #FILE_REALMD_CONF = open('/home/'+SYS_USR+'/realmd.conf','w')
