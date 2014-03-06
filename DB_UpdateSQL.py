@@ -37,7 +37,7 @@ print "Welcome: " + getpass.getuser()
 print "Durring the rest of this script we will install updates to the CI-Mangos server" 
 
 
-# TODO add port number question for non stadard mysql server setups (also see the os.system(mysql) syntav for port number
+# TODO add port number question for non stadard mysql server setups (also see the os.system(mysql) syntax for port number
 _IN_MYSQL_USR_ = raw_input('Database UserName [mangos]: ')
 if _IN_MYSQL_USR_ == '':
 	_IN_MYSQL_USR_ = 'mangos' #defualt user name
