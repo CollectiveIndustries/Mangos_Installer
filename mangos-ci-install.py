@@ -161,6 +161,7 @@ subprocess.call(shlex.split('sudo git clone https://github.com/mangosthree/serve
 subprocess.call(shlex.split('sudo git clone https://github.com/mangosthree/database.git '+SERV_CODE+'/database'))#will clone server code to working directory
 
 #Clone ScriptDev2  - execute from within src/bindings directory
+print "Chaging Directory to: "+SERV_CODE+"/server/src/bindings"
 with cd(SERV_CODE+"/server/src/bindings"):
 	subprocess.call(shlex.split('sudo git clone https://github.com/mangosthree/scripts.git ScriptDev2'))#will clone server code to working directory
 subprocess.call(shlex.split('sudo git clone https://github.com/mangosthree/EventAI.git '+SERV_CODE+'/EventAI'))#will clone server code to working directory
@@ -191,7 +192,7 @@ CI_IN_REALM_NAME = raw_input('Realm Name: [' + CI_REALM_NAME +'] ')
 if CI_IN_REALM_NAME == '':
 	CI_IN_REALM_NAME = CI_REALM_NAME #blank input default set to hostname
 	#Realmd DB hostname
-CI_ACCOUNT_DB = raw_input('hostname for ACCOUNT database (realmd): [localhost] ')
+CI_ACCOUNT_DB = raw_input('Hostname for ACCOUNT database (realmd): [localhost] ')
 if CI_ACCOUNT_DB == '':
 	CI_ACCOUNT_DB = 'localhost'
 	#Mangos DB hostname
@@ -232,9 +233,9 @@ if SCRDEV2_DATABASE == '':
 	SCRDEV2_DATABASE = 'scriptdev2-'+CI_IN_REALM_NAME
 
 	# Account 
-ACC_DATABASE = raw_input('New Account Database: [mangos-account] ')
+ACC_DATABASE = raw_input('New Account Database: [realmd-account] ')
 if ACC_DATABASE == '':
-	ACC_DATABASE = 'mangos-account'
+	ACC_DATABASE = 'realmd-account'
 
 	# Mangos Realm Ver
 CI_MANGOS_VER = raw_input('Which version of MaNGOS do you wish to use (1 vanilla - 5 MoP): [4] ')
@@ -316,7 +317,7 @@ mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', ' ', MYSQL_FILE_L
 
 #install WORLD DB
 full_db = glob.glob(SERV_CODE + '/database/full_db/*.sql')
-full_db = sorted(patches)
+full_db = sorted(full_db)
 print "Starting Patching Process"
 print "User and Databases have been created now running MySQL installer for World Content"
 #full_db = SERV_CODE + '/database/full_db/*.sql'
@@ -327,7 +328,7 @@ for sql in full_db:
 
 #Install EventAI
 full_db = glob.glob(SERV_CODE + '/EventAI/*.sql')
-full_db = sorted(patches)
+full_db = sorted(full_db)
 print "Now loading EventAI DataBase"
 #full_db = SERV_CODE + '/EventAI/*.sql'
 for sql in full_db:
