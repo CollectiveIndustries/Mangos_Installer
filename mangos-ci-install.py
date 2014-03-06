@@ -43,7 +43,7 @@ import glob
 # Collective Industries mysql call
 def mysql_call(usr, psw, host, db, sql):
 	"""Function for Adding sql files to MySQL Host"""
-	os.system("mysql -u " + usr + " -p" + psw + " -h " + host + db + "  < " + sql )
+	os.system("mysql -u " + usr + " -p" + psw + " -h " + host + ' ' + db + "  < " + sql )
 	
 # mysql_call()
 
