@@ -156,6 +156,8 @@ keep_s_dir = raw_input('Would you like to save source code? [n] ')
 if keep_s_dir == 'n':
 	print "Source code directory will be erased after full install is finished" #only remove /opt/SOURCE/mangos3_ci_code/*
 
+#TODO add a commit log viewer (git log) option after each clone request
+	
 #TODO SWAP out urls for CI github repo AFTER code clean up and repo creation
 subprocess.call(shlex.split('sudo git clone https://github.com/mangosthree/server.git '+SERV_CODE+'/server'))#will clone server code to working directory
 subprocess.call(shlex.split('sudo git clone https://github.com/mangosthree/database.git '+SERV_CODE+'/database'))#will clone server code to working directory
