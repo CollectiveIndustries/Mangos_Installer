@@ -48,10 +48,9 @@ def mysql_call(usr, psw, host, db, sql):
 # mysql_call()
 
 # Collective Industries git + compile functions
-# clone https://github.com/mangosthree/EventAI.git '+SERV_CODE+'/EventAI'))
 def git_api(command, args):
 	"""Function for handling git commands"""
-	subprocess.call(shlex.split('sudo git '+command+' '+args)
+	subprocess.call(shlex.split('sudo git '+command+' '+args))
 
 # git_api()
 ##############################################################################################################################
