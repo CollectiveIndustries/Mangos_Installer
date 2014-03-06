@@ -179,6 +179,7 @@ git_api("clone", 'https://github.com/mangosthree/tools.git '+SERV_CODE+'/tools')
 os.makedirs(os.path.join(SERV_CODE+"/server/", "objdir")) #main server bin directory
 #change to our compile directory and run the compile
 with cd(SERV_CODE+"/server/objdir"):
+	print "COMMENTED OUT"
 	#subprocess.call(shlex.split('sudo cmake .. -DCMAKE_INSTALL_PREFIX='+INSTALL_DIR+' -DINCLUDE_BINDINGS_DIR=ScriptDev2'))
 	#subprocess.call(shlex.split('sudo make'))
 	#subprocess.call(shlex.split('sudo make install')) 
