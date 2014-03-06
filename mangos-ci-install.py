@@ -223,9 +223,9 @@ if SCRDEV2_DATABASE == '':
 	SCRDEV2_DATABASE = 'scriptdev2-'+CI_IN_REALM_NAME
 
 	# Account 
-ACC_DATABASE = raw_input('New Account Database: [account' + CI_IN_REALM_NAME + '] ')
+ACC_DATABASE = raw_input('New Account Database: [mangos-account] ')
 if ACC_DATABASE == '':
-	ACC_DATABASE = 'account-'+CI_IN_REALM_NAME
+	ACC_DATABASE = 'mangos-account'
 
 	# Mangos Realm Ver
 CI_MANGOS_VER = raw_input('Which version of MaNGOS do you wish to use (1 vanilla - 5 MoP): [4] ')
@@ -298,6 +298,12 @@ print "SQL file for MaNGOS DB install has been written to your home directory: [
 MYSQL_FILE_LOC = '/home/'+SYS_USR+'/mangos-ci-usr.sql'
 os.system("mysql -u " + mysql_root_ci_usr + " -p" + mysql_root_ci_pass + " -h localhost" + " < " + MYSQL_FILE_LOC )#TODO add in -h CONFIG OPTION for REMOTE upload
 
+print "User and Databases have been created now running MySQL installer for World Content"
+full_db = SERV_CODE + '/database/full_db/*.sql'
+for sql in full_db:
+	print "Adding: " + sql + " ---> " + WORLD_DATABASE
+	os.system("mysql -u " + mysql_root_ci_usr + " -p" + mysql_root_ci_pass + " -h localhost " + WORLD_DATABASE + "  < " + sql )#TODO add in -h CONFIG OPTION for REMOTE upload
+
 #file handles for Realmd and Mangosd Configuration settings
 #FILE_REALMD_CONF = open('/home/'+SYS_USR+'/realmd.conf','w')
 #FILE_MANGOSD_CONF = open('/home/'+SYS_USR+'/mangosd.conf','w')
@@ -323,7 +329,7 @@ os.system("mysql -u " + mysql_root_ci_usr + " -p" + mysql_root_ci_pass + " -h lo
 
 #TODO add rc.local script section
 # add lines to a file for running the mangosd and realmd services
-# see local CI_START file for line refrances
+# see local CI_START file for line references
 
 #final clean up steps
 if keep_s_dir == 'n':
