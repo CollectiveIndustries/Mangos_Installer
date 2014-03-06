@@ -56,9 +56,9 @@ if _IN_MYSQL_DB_CHAR_ == '':
 _IN_MYSQL_DB_REALM_ = raw_input('Database realmd [realmd]: ')
 if _IN_MYSQL_DB_REALM_ == '':
         _IN_MYSQL_DB_REALM_ = 'realmd' #defualt name
+
 patches = glob.glob(_LOC_SQL_UPDATES_ + '*.sql')
 patches = sorted(patches)
-
 print "Starting Patching Process"
 _DB_ = ''
 
