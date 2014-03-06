@@ -394,6 +394,8 @@ for x in patches: #set up a loop to run through the current working directory
 # BindIP = "0.0.0.0"
 
 # ADD Map_data to server
+if CI_MANGOS_DATA_DIR == '../data':
+	CI_MANGOS_DATA_DIR = 'data'
 git_api("clone", 'https://github.com/CollectiveIndustries/server-maps.git '+INSTALL_DIR+CI_MANGOS_DATA_DIR)
 
 #TODO add rc.local script section
