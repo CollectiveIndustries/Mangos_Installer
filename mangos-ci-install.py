@@ -358,10 +358,11 @@ patches = glob.glob(_LOC_SQL_UPDATES_ + '*.sql')
 patches = sorted(patches)#sort the patches to upload in correct order
 print "Starting Patching Process"
 _DB_ = ''
-
+# PatchFile Formatting 12752_01_mangos_reputation_spillover_template.sql
 for x in patches: #set up a loop to run through the current working directory
   print "Patching File: " + x #tell user what file is being added to the Database
   db = x.split("_")[2].replace('.sql', '')#this is for the Mangos FileName structure we have to sort them and find the database names
+  print "Selecting Database: "+db
   if db == 'characters':
   	_DB_  = CHAR_DATABASE
   if db == 'realmd':
