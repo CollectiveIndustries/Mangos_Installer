@@ -55,7 +55,8 @@ def git_api(command, args):
 # git_api()
 
 #mysql_update()
-def mysql_update(update_path, usr_name, usr_pwd, db_list)
+def mysql_update(update_path, usr_name, usr_pwd, db_list):
+	"""mysql update api for MaNGOS database"""
 	with cd(update_path):
 		patches = glob.glob('*.sql')
 	patches = sorted(patches)#sort the patches to upload in correct order
