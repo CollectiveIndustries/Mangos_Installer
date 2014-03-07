@@ -1,15 +1,23 @@
 #!/usr/bin/env python
+##################################################################################################
+#
+# Copyright (C) 2013 Collective Industries code provided by Andrew Malone 
+# python code for pulling a Mangos backup and saving the backup in either a local directory
+# or a remote server (easy way to clone MaNGOS World server configurations)
+#
+##################################################################################################
 
 import os
 import zipfile
 import subprocess 
 import shlex 
+
 #GLOBAL VARIABLES
 SSH_REMOTE = ""
 SSH_PORT = ""
 
 
-def main():
+def main(): #main function all commands will be called from here
     DIR_IN = raw_input ("Please enter the dir you wish to ZIP: ")
     ZIP_PATH = raw_input("Name full path of ZIP File: ")		
     zipper(DIR_IN, ZIP_PATH)
@@ -32,7 +40,9 @@ def zipper(dir, zip_file):
     zip.close()
     return zip_file
 
-
+def mysql_bak(usr_name, usr_pass, db_name)
+	subprocess.call(shlex.split("mysqldump --user="+usr_name+" --password"+usr_pass+" "+db_name))
+	
 if __name__ == '__main__':
     main()
 
