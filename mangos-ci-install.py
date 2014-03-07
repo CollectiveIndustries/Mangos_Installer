@@ -53,6 +53,27 @@ def git_api(command, args):
 	subprocess.call(shlex.split('sudo git '+command+' '+args))
 
 # git_api()
+
+#mysql_update()
+def mysql_update(update_path, usr_name, usr_pwd, db_list)
+	with cd(update_path):
+		patches = glob.glob('*.sql')
+	patches = sorted(patches)#sort the patches to upload in correct order
+	print "Starting Patching Process"
+	_DB_ = ''
+	# PatchFile Formatting 12752_01_mangos_reputation_spillover_template.sql
+	for x in patches: #set up a loop to run through the current working directory
+		print "Patching File: " + x #tell user what file is being added to the Database
+		db = x.split("_")[2].replace('.sql', '')#this is for the Mangos FileName structure we have to sort them and find the database names
+		print "Selecting Database: " + db
+		if db == 'characters':
+			_DB_  = db_list[0]
+		if db == 'realmd':
+			_DB_ = db_list[1]
+		if db == 'mangos':
+			_DB_ = db_list[2]  #block was for determining the database from the file name and the users input
+	mysql_call(usr_name, usr_pwd, 'localhost', _DB_, update_path + x)#no host config set up yet
+
 ##############################################################################################################################
 #
 #
@@ -353,23 +374,8 @@ for sql in full_db:
 #Update ScriptNames::
 #Execute `sql\mangos_scriptname_full.sql` on WORLD_DATABASE	
 
-#Data Base Update
-patches = glob.glob(_LOC_SQL_UPDATES_ + '*.sql')
-patches = sorted(patches)#sort the patches to upload in correct order
-print "Starting Patching Process"
-_DB_ = ''
-# PatchFile Formatting 12752_01_mangos_reputation_spillover_template.sql
-for x in patches: #set up a loop to run through the current working directory
-  print "Patching File: " + x #tell user what file is being added to the Database
-  db = x.split("_")[2].replace('.sql', '')#this is for the Mangos FileName structure we have to sort them and find the database names
-  print "Selecting Database: "+db
-  if db == 'characters':
-  	_DB_  = CHAR_DATABASE
-  if db == 'realmd':
-        _DB_ = ACC_DATABASE
-  if db == 'mangos':
-        _DB_ = WORLD_DATABASE  #block was for determining the database from the file name and the users input
-  mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', _DB_, x)#no host config set up yet
+#mysql_update(update_path, usr_name, usr_pwd, db_list)
+mysql_update(_LOC_SQL_UPDATES_, mysql_root_ci_usr, mysql_root_ci_pass , [CHAR_DATABASE,ACC_DATABASE,WORLD_DATABASE])
 
 #file handles for Realmd, Mangosd, ScriptDev2 Configuration settings
 #FILE_REALMD_CONF = open('/home/'+SYS_USR+'/realmd.conf','w')
