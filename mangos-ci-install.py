@@ -410,6 +410,9 @@ git_api("clone", 'https://github.com/CollectiveIndustries/server-maps.git '+INST
 # add lines to a file for running the mangosd and realmd services
 # see local CI_START file for line references
 
+#TODO add CronTab entry for MaNGOS Backup
+#TODO add config file for backup script for automatic mode
+
 #final clean up steps
 if keep_s_dir == 'n':
 	keep_s_dir_confirm = raw_input('/!\\ WARNING: this will erase ALL code for CI-MaNGOS/!\\ continue? [n] ')

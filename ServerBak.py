@@ -17,6 +17,11 @@ SSH_REMOTE = ""
 SSH_PORT = ""
 
 
+#TODO add config file with defaults
+#TODO add to mangos_installer
+#TODO create CronTab install with user input on install 
+#TODO make configurable variable for either automatic or manual backups
+
 def main(): #main function all commands will be called from here
     DIR_IN = raw_input ("Please enter the dir you wish to ZIP: ")
     ZIP_PATH = raw_input("Name full path of ZIP File: ")		
