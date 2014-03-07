@@ -34,46 +34,18 @@ import urllib2
 import os.path
 import glob
 
-##################################################################################################################
+#duck punch include in we need it for our libs
+def INCLUDE(filename):
+    if os.path.exists(filename): 
+        execfile(filename)
+
+##############################################################################################################################
 #
-# Functions
+# INCLUDE('path/file_name')
 #
-##################################################################################################################
+##############################################################################################################################
 
-# Collective Industries mysql call
-def mysql_call(usr, psw, host, db, sql):
-	"""Function for Adding sql files to MySQL Host"""
-	os.system("mysql -u " + usr + " -p" + psw + " -h " + host + ' ' + db + "  < " + sql )
-	
-# mysql_call()
-
-# Collective Industries git + compile functions
-def git_api(command, args):
-	"""Function for handling git commands"""
-	subprocess.call(shlex.split('sudo git '+command+' '+args))
-
-# git_api()
-
-#mysql_update()
-def mysql_update(update_path, usr_name, usr_pwd, db_list):
-	"""mysql update api for MaNGOS database"""
-	with cd(update_path):
-		patches = glob.glob('*.sql')
-	patches = sorted(patches)#sort the patches to upload in correct order
-	print "Starting Patching Process"
-	_DB_ = ''
-	# PatchFile Formatting 12752_01_mangos_reputation_spillover_template.sql
-	for x in patches: #set up a loop to run through the current working directory
-		print "Patching File: " + x #tell user what file is being added to the Database
-		db = x.split("_")[2].replace('.sql', '')#this is for the Mangos FileName structure we have to sort them and find the database names
-		print "Selecting Database: " + db
-		if db == 'characters':
-			_DB_  = db_list[0]
-		if db == 'realmd':
-			_DB_ = db_list[1]
-		if db == 'mangos':
-			_DB_ = db_list[2]  #block was for determining the database from the file name and the users input
-	mysql_call(usr_name, usr_pwd, 'localhost', _DB_, update_path + x)#no host config set up yet
+INCLUDE('./lib/ci-mangos.py')
 
 ##############################################################################################################################
 #
@@ -124,7 +96,7 @@ subprocess.call('clear')
 print "Welcome: " + getpass.getuser() 
 
 if getpass.getuser() == 'root':
-	print "/!\\ WARNING: script is being run as root /!\\\ndurring this script we will change to root as needed so system files do not get messed up durrning this install procedure"
+	print "/!\\ WARNING: Script is being run as root /!\\\nDurring this script we will change to root as needed so system files do not get messed up durrning this install procedure"
 	override = raw_input('override root security locks-outs? [n] ')
 	if override == '':
 		override = 'n'
@@ -193,8 +165,8 @@ git_api("clone", 'https://github.com/CollectiveIndustries/Mangos_world_database.
 #Clone ScriptDev2  - execute from within src/bindings directory
 print "Chaging Directory to: "+SERV_CODE+"/server/src/bindings"
 with cd(SERV_CODE+"/server/src/bindings"):
-	git_api("clone", 'https://github.com/mangosthree/scripts.git ./ScriptDev2')
-git_api("clone", 'https://github.com/mangosthree/EventAI.git '+SERV_CODE+'/EventAI')
+	git_api("clone", 'git://github.com/scriptdev2/scriptdev2.git ./ScriptDev2')
+# tools directory
 git_api("clone", 'https://github.com/mangosthree/tools.git '+SERV_CODE+'/tools')
 
 # START compile and begin install
