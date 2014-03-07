@@ -188,7 +188,7 @@ if keep_s_dir == 'n':
 	
 #TODO SWAP out urls for CI github repo AFTER code clean up and repo creation
 git_api("clone", 'https://github.com/mangosthree/server.git '+SERV_CODE+'/server')
-git_api("clone", 'https://github.com/mangosthree/database.git '+SERV_CODE+'/database')
+git_api("clone", 'https://github.com/CollectiveIndustries/Mangos_world_database.git '+SERV_CODE+'/world_database')
 
 #Clone ScriptDev2  - execute from within src/bindings directory
 print "Chaging Directory to: "+SERV_CODE+"/server/src/bindings"
@@ -347,7 +347,7 @@ MYSQL_FILE_LOC = '/home/'+SYS_USR+'/mangos-ci-usr.sql'
 mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', ' ', MYSQL_FILE_LOC) #import user generated sql
 
 #install WORLD DB
-full_db = glob.glob(SERV_CODE + '/database/full_db/*.sql')
+full_db = glob.glob(SERV_CODE + '/world_database/*.sql')
 full_db = sorted(full_db)
 print "Starting Patching Process"
 print "User and Databases have been created now running MySQL installer for World Content"
@@ -357,15 +357,6 @@ for sql in full_db:
 	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', WORLD_DATABASE, sql)#no host config set up yet 
 	# DEPRECIATED os.system("mysql -u " + mysql_root_ci_usr + " -p" + mysql_root_ci_pass + " -h localhost " + WORLD_DATABASE + "  < " + sql )#TODO add in -h CONFIG OPTION for REMOTE upload
 
-#Install EventAI
-full_db = glob.glob(SERV_CODE + '/EventAI/*.sql')
-full_db = sorted(full_db)
-print "Now loading EventAI DataBase"
-#full_db = SERV_CODE + '/EventAI/*.sql'
-for sql in full_db:
-	print "Adding: " + sql + " ---> " + WORLD_DATABASE
-	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', WORLD_DATABASE, sql)#no host config set up yet
-	# DEPRECIATED os.system("mysql -u " + mysql_root_ci_usr + " -p" + mysql_root_ci_pass + " -h localhost " + WORLD_DATABASE + "  < " + sql )#TODO add in -h CONFIG OPTION for REMOTE upload
 
 #Install SCRDEV2_DATABASE
 #Execute `sql\scriptdev2_create_database.sql` ## check file and make sure it matches installer options ##
