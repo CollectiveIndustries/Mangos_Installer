@@ -30,7 +30,7 @@ def git_api(command, args):
 
 #mysql_update()
 def mysql_update(update_path, usr_name, usr_pwd, db_list):
-	"""mysql update api for MaNGOS database"""
+	"""MySQL update API for MaNGOS database"""
 	with cd(update_path):
 		patches = glob.glob('*.sql')
 	patches = sorted(patches)#sort the patches to upload in correct order
@@ -48,3 +48,4 @@ def mysql_update(update_path, usr_name, usr_pwd, db_list):
 		if db == 'mangos':
 			_DB_ = db_list[2]  #block was for determining the database from the file name and the users input
 	mysql_call(usr_name, usr_pwd, 'localhost', _DB_, update_path + x)#no host config set up yet
+#mysql_update()
