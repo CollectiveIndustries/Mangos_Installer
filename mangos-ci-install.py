@@ -33,7 +33,7 @@ import time
 import urllib2 
 import os.path
 import glob
-from lib import ci-mangos as ci
+from lib import *
 
 #duck punch include in we need it for our libs
 def INCLUDE(filename):
