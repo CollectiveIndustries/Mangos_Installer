@@ -33,11 +33,7 @@ import time
 import urllib2 
 import os.path
 import glob
-<<<<<<< HEAD
-from lib import *
-=======
-from lib import mlib as ci
->>>>>>> e5cef54cd35e6792459ea812f6350b7b59dec7c7
+
 
 #duck punch include in we need it for our libs
 def INCLUDE(filename):
@@ -50,7 +46,42 @@ def INCLUDE(filename):
 #
 ##############################################################################################################################
 
-INCLUDE('./lib/ci-mangos.py')
+# Collective Industries mysql call
+def mysql_call(usr, psw, host, db, sql):
+        """Function for Adding sql files to MySQL Host"""
+        os.system("mysql -u " + usr + " -p" + psw + " -h " + host + ' ' + db + "  < " + sql )
+
+# mysql_call()
+
+# Collective Industries git + compile functions
+def git_api(command, args):
+        """Function for handling git commands"""
+        subprocess.call(shlex.split('sudo git '+command+' '+args))
+
+# git_api()
+
+#mysql_update()
+def mysql_update(update_path, usr_name, usr_pwd, db_list):
+        """MySQL update API for MaNGOS database"""
+        with cd(update_path):
+                patches = glob.glob('*.sql')
+        patches = sorted(patches)#sort the patches to upload in correct order
+        print "Starting Patching Process"
+        _DB_ = ''
+        # PatchFile Formatting 12752_01_mangos_reputation_spillover_template.sql
+        for x in patches: #set up a loop to run through the current working directory
+                print "Patching File: " + x #tell user what file is being added to the Database
+                db = x.split("_")[2].replace('.sql', '')#this is for the Mangos FileName structure we have to sort them and find the database names
+                print "Selecting Database: " + db
+                if db == 'characters':
+                        _DB_  = db_list[0]
+                if db == 'realmd':
+                        _DB_ = db_list[1]
+                if db == 'mangos':
+                        _DB_ = db_list[2]  #block was for determining the database from the file name and the users input
+        mysql_call(usr_name, usr_pwd, 'localhost', _DB_, update_path + x)#no host config set up yet
+		
+#INCLUDE('./lib/ci-mangos.py')
 
 ##############################################################################################################################
 #
@@ -164,15 +195,15 @@ if keep_s_dir == 'n':
 #TODO add a commit log viewer (git log) option after each clone request
 	
 #TODO SWAP out urls for CI github repo AFTER code clean up and repo creation
-ci.git_api("clone", 'https://github.com/mangosthree/server.git '+SERV_CODE+'/server')
-ci.git_api("clone", 'https://github.com/CollectiveIndustries/Mangos_world_database.git '+SERV_CODE+'/world_database')
+git_api("clone", 'https://github.com/mangosthree/server.git '+SERV_CODE+'/server')
+git_api("clone", 'https://github.com/CollectiveIndustries/Mangos_world_database.git '+SERV_CODE+'/world_database')
 
 #Clone ScriptDev2  - execute from within src/bindings directory
 print "Chaging Directory to: "+SERV_CODE+"/server/src/bindings"
 with cd(SERV_CODE+"/server/src/bindings"):
-	ci.git_api("clone", 'git://github.com/scriptdev2/scriptdev2.git ./ScriptDev2')
+	git_api("clone", 'git://github.com/scriptdev2/scriptdev2.git ./ScriptDev2')
 # tools directory
-ci.git_api("clone", 'https://github.com/mangosthree/tools.git '+SERV_CODE+'/tools')
+git_api("clone", 'https://github.com/mangosthree/tools.git '+SERV_CODE+'/tools')
 
 # START compile and begin install
 os.makedirs(os.path.join(SERV_CODE+"/server/", "objdir")) #main server bin directory
@@ -321,7 +352,7 @@ MYSQL_FILE_LOC = '/home/'+SYS_USR+'/mangos-ci-usr.sql'
 #IDEA set up host/port for each database (could be usefull in a multi server platform) (ENTERPRISE INSTALLER)
 
 # DEPRECIATED os.system("mysql -u " + mysql_root_ci_usr + " -p" + mysql_root_ci_pass + " -h localhost" + " < " + MYSQL_FILE_LOC )#TODO add in -h CONFIG OPTION for REMOTE upload
-ci.mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', ' ', MYSQL_FILE_LOC) #import user generated sql
+mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', ' ', MYSQL_FILE_LOC) #import user generated sql
 
 #install WORLD DB
 full_db = glob.glob(SERV_CODE + '/world_database/*.sql')
@@ -331,7 +362,7 @@ print "User and Databases have been created now running MySQL installer for Worl
 #full_db = SERV_CODE + '/database/full_db/*.sql'
 for sql in full_db:
 	print "Adding: " + sql + " ---> " + WORLD_DATABASE
-	ci.mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', WORLD_DATABASE, sql)#no host config set up yet 
+	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', WORLD_DATABASE, sql)#no host config set up yet 
 	# DEPRECIATED os.system("mysql -u " + mysql_root_ci_usr + " -p" + mysql_root_ci_pass + " -h localhost " + WORLD_DATABASE + "  < " + sql )#TODO add in -h CONFIG OPTION for REMOTE upload
 
 
@@ -344,7 +375,7 @@ for sql in full_db:
 #Execute `sql\mangos_scriptname_full.sql` on WORLD_DATABASE	
 
 #mysql_update(update_path, usr_name, usr_pwd, db_list)
-ci.mysql_update(_LOC_SQL_UPDATES_, mysql_root_ci_usr, mysql_root_ci_pass , [CHAR_DATABASE,ACC_DATABASE,WORLD_DATABASE])
+mysql_update(_LOC_SQL_UPDATES_, mysql_root_ci_usr, mysql_root_ci_pass , [CHAR_DATABASE,ACC_DATABASE,WORLD_DATABASE])
 
 #file handles for Realmd, Mangosd, ScriptDev2 Configuration settings
 #FILE_REALMD_CONF = open('/home/'+SYS_USR+'/realmd.conf','w')
@@ -372,7 +403,7 @@ ci.mysql_update(_LOC_SQL_UPDATES_, mysql_root_ci_usr, mysql_root_ci_pass , [CHAR
 # ADD Map_data to server
 if CI_MANGOS_DATA_DIR == '../data':
 	CI_MANGOS_DATA_DIR = 'data'
-ci.git_api("clone", 'https://github.com/CollectiveIndustries/server-maps.git '+INSTALL_DIR+CI_MANGOS_DATA_DIR)
+git_api("clone", 'https://github.com/CollectiveIndustries/server-maps.git '+INSTALL_DIR+CI_MANGOS_DATA_DIR)
 
 #TODO add rc.local script section
 # add lines to a file for running the mangosd and realmd services
@@ -380,6 +411,7 @@ ci.git_api("clone", 'https://github.com/CollectiveIndustries/server-maps.git '+I
 
 #TODO add CronTab entry for MaNGOS Backup
 #TODO add config file for backup script for automatic mode
+
 
 #final clean up steps
 if keep_s_dir == 'n':
