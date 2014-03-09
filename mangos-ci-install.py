@@ -278,7 +278,7 @@ if ScriptDev2_lib == '':
 	ScriptDev2_lib = "https://github.com/mangosthree/scripts.git"
 if ScriptDev2_lib == '1':
 	ScriptDev2_lib = "https://github.com/scriptdev2/scriptdev2-cata.git"
-if ScriptDev2_lib = '2':
+if ScriptDev2_lib == '2':
 	ScriptDev2_lib = "https://github.com/mangosthree/scripts.git"
 if ScriptDev2_lib == '3':
 	ScriptDev2_lib == "https://github.com/CollectiveIndustries/scripts.git"
