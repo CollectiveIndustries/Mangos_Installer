@@ -373,7 +373,7 @@ MYSQL_FILE_LOC = '/home/'+SYS_USR+'/mangos-ci-usr.sql'
 mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', ' ', MYSQL_FILE_LOC) #import user generated sql
 
 #install WORLD DB
-full_db = glob.glob(SERV_CODE + '/database/*.sql')
+full_db = glob.glob(SERV_CODE + '/database/mangos/*.sql')
 full_db = sorted(full_db)
 print "Starting Patching Process"
 print "User and Databases have been created now running MySQL installer for World Content"
@@ -381,9 +381,17 @@ print "User and Databases have been created now running MySQL installer for Worl
 for sql in full_db:
 	print "Adding: " + sql + " ---> " + WORLD_DATABASE
 	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', WORLD_DATABASE, sql)#no host config set up yet 
-	# DEPRECIATED os.system("mysql -u " + mysql_root_ci_usr + " -p" + mysql_root_ci_pass + " -h localhost " + WORLD_DATABASE + "  < " + sql )#TODO add in -h CONFIG OPTION for REMOTE upload
-
-
+	
+#insert Char DB
+full_db = glob.glob(SERV_CODE + '/database/character/*.sql')
+full_db = sorted(full_db)
+print "Starting Patching Process"
+print "User and Databases have been created now running MySQL installer for World Content"
+#full_db = SERV_CODE + '/database/full_db/*.sql'
+for sql in full_db:
+	print "Adding: " + sql + " ---> " + CHAR_DATABASE
+	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', CHAR_DATABASE, sql)#no host config set up yet 
+	
 #Install SCRDEV2_DATABASE
 #Execute `sql\scriptdev2_create_database.sql` ## check file and make sure it matches installer options ##
 #Execute `sql\scriptdev2_create_structure.sql` on SCRDEV2_DATABASE
@@ -421,7 +429,7 @@ for sql in full_db:
 # ADD Map_data to server
 if CI_MANGOS_DATA_DIR == '../data':
 	CI_MANGOS_DATA_DIR = 'data'
-git_api("clone", 'https://github.com/CollectiveIndustries/server-maps.git '+INSTALL_DIR+CI_MANGOS_DATA_DIR)
+#git_api("clone", 'https://github.com/CollectiveIndustries/server-maps.git '+INSTALL_DIR+CI_MANGOS_DATA_DIR)
 
 #TODO add rc.local script section
 # add lines to a file for running the mangosd and realmd services
