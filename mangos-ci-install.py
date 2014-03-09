@@ -13,7 +13,7 @@
 
 INSTALL_DIR = '/opt/mangos3_ci_server/'
 SYS_USR = 'mangos'
-
+ScriptDev2_lib = 'https://github.com/mangosthree/scripts.git'
 # DO NOT EDIT BELOW LINE
 #-----------------------------------------------------------------------------------------------#
 
@@ -198,10 +198,6 @@ if keep_s_dir == 'n':
 git_api("clone", 'https://github.com/mangosthree/server.git '+SERV_CODE+'/server')
 git_api("clone", 'https://github.com/CollectiveIndustries/Mangos_world_database.git '+SERV_CODE+'/world_database')
 
-#Clone ScriptDev2  - execute from within src/bindings directory
-print "Chaging Directory to: "+SERV_CODE+"/server/src/bindings"
-with cd(SERV_CODE+"/server/src/bindings"):
-	git_api("clone", 'git://github.com/scriptdev2/scriptdev2.git ./ScriptDev2')
 # tools directory
 git_api("clone", 'https://github.com/mangosthree/tools.git '+SERV_CODE+'/tools')
 
@@ -271,6 +267,25 @@ SCRDEV2_DATABASE = raw_input('New ScriptDev2 Database: [scriptdev2-' + CI_IN_REA
 if SCRDEV2_DATABASE == '':
 	SCRDEV2_DATABASE = 'scriptdev2-'+CI_IN_REALM_NAME
 
+	# SCriptDev2 Library
+subprocess.call('clear')#clear screen
+print "which script library would you like to install [2]\n"
+print "[1] https://github.com/scriptdev2/scriptdev2-cata.git\n"
+print "[2] https://github.com/mangosthree/scripts.git\n"
+print "[3] https://github.com/CollectiveIndustries/scripts.git\n"
+ScriptDev2_lib = raw_input('ScriptDev2 [2]: ')
+if ScriptDev2_lib == '':
+	ScriptDev2_lib = "https://github.com/mangosthree/scripts.git"
+if ScriptDev2_lib == '1':
+	ScriptDev2_lib = "https://github.com/scriptdev2/scriptdev2-cata.git"
+if ScriptDev2_lib = '2':
+	ScriptDev2_lib = "https://github.com/mangosthree/scripts.git"
+if ScriptDev2_lib == '3'
+	ScriptDev2_lib == "https://github.com/CollectiveIndustries/scripts.git"
+#Clone ScriptDev2  - execute from within src/bindings directory
+print "Chaging Directory to: "+SERV_CODE+"/server/src/bindings"
+with cd(SERV_CODE+"/server/src/bindings"):
+	git_api("clone", ScriptDev2_lib+' ./ScriptDev2')
 	# Account 
 ACC_DATABASE = raw_input('New Account Database: [realmd-account] ')
 if ACC_DATABASE == '':
@@ -323,6 +338,10 @@ mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
 
 #CREATE DATABASE `realmd` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 ADD_MANGOS_MYSQL = ('CREATE DATABASE `' + ACC_DATABASE + '` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;\n\n')
+mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
+
+#CREATE DATABASE `scriptdev2` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+ADD_MANGOS_MYSQL = ('CREATE DATABASE `' + SCRDEV2_DATABASE + '` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;\n\n')
 mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
 
 #CREATE USER 'mangos'@'localhost' IDENTIFIED BY 'mangos';
@@ -411,7 +430,6 @@ git_api("clone", 'https://github.com/CollectiveIndustries/server-maps.git '+INST
 
 #TODO add CronTab entry for MaNGOS Backup
 #TODO add config file for backup script for automatic mode
-
 
 #final clean up steps
 if keep_s_dir == 'n':
