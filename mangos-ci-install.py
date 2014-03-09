@@ -363,6 +363,11 @@ mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
 ADD_MANGOS_MYSQL = ('GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES ON `'+SCRDEV2_DATABASE+'`.* TO '+ CI_MANGOS_USR + '@localhost;\n\n')
 mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
 
+#set up realm-list and with user input
+#INSERT INTO `realmlist` VALUES ('MaNGOS', '127.0.0.1', 8085, 0, 2, 0, 0, 0, '');
+
+#TODO setup User input Section + loop for manual install of realms to account server
+
 #finalize the SQL file
 mangos_ci_sql_inst.close()
 print "SQL file for MaNGOS DB install has been written to your home directory: ["+'/home/'+SYS_USR+'/mangos-ci-usr.sql'+"]"
@@ -386,7 +391,7 @@ for sql in full_db:
 	print "Adding: " + sql + " ---> " + WORLD_DATABASE
 	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', WORLD_DATABASE, sql)#no host config set up yet 
 	
-#insert Char DB
+#Install Char DB
 full_db = glob.glob(SERV_CODE + '/database/characters/*.sql')
 full_db = sorted(full_db)
 print "Starting Patching Process"
@@ -397,7 +402,6 @@ for sql in full_db:
 	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', CHAR_DATABASE, sql)#no host config set up yet 
 
 #Install SCRDEV2_DATABASE
-#insert Char DB
 full_db = glob.glob(SERV_CODE + '/database/ScriptDev2/*.sql')
 full_db = sorted(full_db)
 print "Starting Patching Process"
@@ -406,6 +410,7 @@ print "User and Databases have been created now running MySQL installer for Char
 for sql in full_db:
 	print "Adding: " + sql + " ---> " + CHAR_DATABASE
 	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', CHAR_DATABASE, sql)#no host config set up yet
+
 #Execute `sql\scriptdev2_create_database.sql` ## check file and make sure it matches installer options ##
 #Execute `sql\scriptdev2_create_structure.sql` on SCRDEV2_DATABASE
 #Add content to ScriptDev2-Database::
@@ -413,8 +418,16 @@ for sql in full_db:
 #Update ScriptNames::
 #Execute `sql\mangos_scriptname_full.sql` on WORLD_DATABASE	
 
-#ALL MySQL files were imported using the ci-database repository
-#mysql_update(_LOC_SQL_UPDATES_, mysql_root_ci_usr, mysql_root_ci_pass , [CHAR_DATABASE,ACC_DATABASE,WORLD_DATABASE])
+#Install RealmD database
+#Install SCRDEV2_DATABASE
+full_db = glob.glob(SERV_CODE + '/database/realmd/*.sql')
+full_db = sorted(full_db)
+print "Starting Patching Process"
+print "User and Databases have been created now running MySQL installer for Account Data"
+#full_db = SERV_CODE + '/database/full_db/*.sql'
+for sql in full_db:
+	print "Adding: " + sql + " ---> " + CHAR_DATABASE
+	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', CHAR_DATABASE, sql)#no host config set up yet
 
 #file handles for Realmd, Mangosd, ScriptDev2 Configuration settings
 #FILE_REALMD_CONF = open('/home/'+SYS_USR+'/realmd.conf','w')
