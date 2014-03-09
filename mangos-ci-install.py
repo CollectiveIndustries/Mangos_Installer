@@ -383,7 +383,7 @@ for sql in full_db:
 	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', WORLD_DATABASE, sql)#no host config set up yet 
 	
 #insert Char DB
-full_db = glob.glob(SERV_CODE + '/database/character/*.sql')
+full_db = glob.glob(SERV_CODE + '/database/characters/*.sql')
 full_db = sorted(full_db)
 print "Starting Patching Process"
 print "User and Databases have been created now running MySQL installer for Character Content"
