@@ -426,8 +426,8 @@ print "Starting Patching Process"
 print "User and Databases have been created now running MySQL installer for Account Data"
 #full_db = SERV_CODE + '/database/full_db/*.sql'
 for sql in full_db:
-	print "Adding: " + sql + " ---> " + CHAR_DATABASE
-	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', CHAR_DATABASE, sql)#no host config set up yet
+	print "Adding: " + sql + " ---> " + ACC_DATABASE
+	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', ACC_DATABASE, sql)#no host config set up yet
 
 #file handles for Realmd, Mangosd, ScriptDev2 Configuration settings
 #FILE_REALMD_CONF = open('/home/'+SYS_USR+'/realmd.conf','w')
