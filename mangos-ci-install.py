@@ -359,6 +359,10 @@ mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
 ADD_MANGOS_MYSQL = ('GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES ON `'+ACC_DATABASE+'`.* TO '+ CI_MANGOS_USR + '@localhost;\n\n')
 mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
 
+#GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES ON `realmd`.* TO 'mangos'@'localhost';
+ADD_MANGOS_MYSQL = ('GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES ON `'+SCRDEV2_DATABASE+'`.* TO '+ CI_MANGOS_USR + '@localhost;\n\n')
+mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
+
 #finalize the SQL file
 mangos_ci_sql_inst.close()
 print "SQL file for MaNGOS DB install has been written to your home directory: ["+'/home/'+SYS_USR+'/mangos-ci-usr.sql'+"]"
@@ -391,8 +395,17 @@ print "User and Databases have been created now running MySQL installer for Char
 for sql in full_db:
 	print "Adding: " + sql + " ---> " + CHAR_DATABASE
 	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', CHAR_DATABASE, sql)#no host config set up yet 
-	
+
 #Install SCRDEV2_DATABASE
+#insert Char DB
+full_db = glob.glob(SERV_CODE + '/database/characters/*.sql')
+full_db = sorted(full_db)
+print "Starting Patching Process"
+print "User and Databases have been created now running MySQL installer for Character Content"
+#full_db = SERV_CODE + '/database/full_db/*.sql'
+for sql in full_db:
+	print "Adding: " + sql + " ---> " + CHAR_DATABASE
+	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', CHAR_DATABASE, sql)#no host config set up yet
 #Execute `sql\scriptdev2_create_database.sql` ## check file and make sure it matches installer options ##
 #Execute `sql\scriptdev2_create_structure.sql` on SCRDEV2_DATABASE
 #Add content to ScriptDev2-Database::
