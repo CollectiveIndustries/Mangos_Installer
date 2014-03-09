@@ -386,7 +386,7 @@ for sql in full_db:
 full_db = glob.glob(SERV_CODE + '/database/character/*.sql')
 full_db = sorted(full_db)
 print "Starting Patching Process"
-print "User and Databases have been created now running MySQL installer for World Content"
+print "User and Databases have been created now running MySQL installer for Character Content"
 #full_db = SERV_CODE + '/database/full_db/*.sql'
 for sql in full_db:
 	print "Adding: " + sql + " ---> " + CHAR_DATABASE
