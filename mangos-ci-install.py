@@ -141,7 +141,17 @@ if getpass.getuser() == 'root':
 		exit(1)#exit code 1 (debug info for calling scripts or for user need documentation in readme on exit codes)
 
 
-subprocess.call(shlex.split('clear')) #clear the screen
+print "We will now begin to process all dependencies required to build the MaNGOS server" 
+print "Running Update as user: " 
+subprocess.call(shlex.split('sudo id -nu')) 
+subprocess.call(shlex.split('sudo apt-get update -q --force-yes'))
+subprocess.call(shlex.split('sudo apt-get dist-upgrade -q --force-yes'))
+# END of system UPDATE
+
+subprocess.call(shlex.split('sudo apt-get install -q --force-yes build-essential gcc g++ automake git-core autoconf make patch libmysql++-dev mysql-server libtool libssl-dev grep binutils zlibc libc6 libbz2-dev cmake'))
+# END Preparation
+
+subprocess.call('clear') # clear screen and wait for user
 
 # CI MANGOS LOGO HERE
 # Idea by Levi Modl
@@ -173,16 +183,7 @@ print ""
 
 # END LOGO
 
-print "We will now begin to process all dependencies required to build the MaNGOS server" 
-print "Running Update as user: " 
-subprocess.call(shlex.split('sudo id -nu')) 
-subprocess.call(shlex.split('sudo apt-get update -q --force-yes'))
-subprocess.call(shlex.split('sudo apt-get dist-upgrade -q --force-yes'))
-# END of system UPDATE
 
-subprocess.call(shlex.split('clear'))
-subprocess.call(shlex.split('sudo apt-get install -q --force-yes build-essential gcc g++ automake git-core autoconf make patch libmysql++-dev mysql-server libtool libssl-dev grep binutils zlibc libc6 libbz2-dev cmake'))
-# END Preparation
 
 #make our code directory
 os.makedirs(os.path.join(SERV_CODE, "SOURCE", "mangos3_ci_code")) #main code directory
@@ -193,13 +194,11 @@ if keep_s_dir == 'n':
 	print "Source code directory will be erased after full install is finished" #only remove /opt/SOURCE/mangos3_ci_code/*
 
 #TODO add a commit log viewer (git log) option after each clone request
+
 #------------------------------------------- MaNGOS-CI Bata Base install
 
-subprocess.call('clear') # clear screen and wait for user
-
 #generated Install Answers
-
-# Realm name
+	# Realm name
 CI_REALM_NAME = subprocess.check_output(["uname", "-n"])
 if CI_REALM_NAME[-1] == '\n':
         CI_REALM_NAME = CI_REALM_NAME[:-1] # strip ONLY the new line at the end of the word
@@ -303,7 +302,7 @@ if CI_MANGOS_REALM_ID == '':
 	
 #TODO SWAP out urls for CI github repo AFTER code clean up and repo creation
 git_api("clone", 'https://github.com/mangosthree/server.git '+SERV_CODE+'/server')
-git_api("clone", 'https://github.com/CollectiveIndustries/Mangos_world_database.git '+SERV_CODE+'/world_database')
+git_api("clone", 'https://github.com/CollectiveIndustries/Mangos_world_database.git '+SERV_CODE+'/database')
 #Clone ScriptDev2  - execute from within src/bindings directory
 print "Chaging Directory to: "+SERV_CODE+"/server/src/bindings\nINSTALLING: "+ScriptDev2_lib
 with cd(SERV_CODE+"/server/src/bindings"):
@@ -374,7 +373,7 @@ MYSQL_FILE_LOC = '/home/'+SYS_USR+'/mangos-ci-usr.sql'
 mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', ' ', MYSQL_FILE_LOC) #import user generated sql
 
 #install WORLD DB
-full_db = glob.glob(SERV_CODE + '/world_database/*.sql')
+full_db = glob.glob(SERV_CODE + '/database/*.sql')
 full_db = sorted(full_db)
 print "Starting Patching Process"
 print "User and Databases have been created now running MySQL installer for World Content"
