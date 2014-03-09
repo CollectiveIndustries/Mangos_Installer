@@ -193,24 +193,6 @@ if keep_s_dir == 'n':
 	print "Source code directory will be erased after full install is finished" #only remove /opt/SOURCE/mangos3_ci_code/*
 
 #TODO add a commit log viewer (git log) option after each clone request
-	
-#TODO SWAP out urls for CI github repo AFTER code clean up and repo creation
-git_api("clone", 'https://github.com/mangosthree/server.git '+SERV_CODE+'/server')
-git_api("clone", 'https://github.com/CollectiveIndustries/Mangos_world_database.git '+SERV_CODE+'/world_database')
-
-# tools directory
-git_api("clone", 'https://github.com/mangosthree/tools.git '+SERV_CODE+'/tools')
-
-# START compile and begin install
-os.makedirs(os.path.join(SERV_CODE+"/server/", "objdir")) #main server bin directory
-#change to our compile directory and run the compile
-with cd(SERV_CODE+"/server/objdir"):
-	#print "COMMENTED OUT"
-	subprocess.call(shlex.split('sudo cmake .. -DCMAKE_INSTALL_PREFIX='+INSTALL_DIR+' -DINCLUDE_BINDINGS_DIR=ScriptDev2'))
-	subprocess.call(shlex.split('sudo make'))
-	subprocess.call(shlex.split('sudo make install')) 
-
-
 #------------------------------------------- MaNGOS-CI Bata Base install
 
 subprocess.call('clear') # clear screen and wait for user
@@ -282,10 +264,6 @@ if ScriptDev2_lib == '2':
 	ScriptDev2_lib = "https://github.com/mangosthree/scripts.git"
 if ScriptDev2_lib == '3':
 	ScriptDev2_lib == "https://github.com/CollectiveIndustries/scripts.git"
-#Clone ScriptDev2  - execute from within src/bindings directory
-print "Chaging Directory to: "+SERV_CODE+"/server/src/bindings"
-with cd(SERV_CODE+"/server/src/bindings"):
-	git_api("clone", ScriptDev2_lib+' ./ScriptDev2')
 	# Account 
 ACC_DATABASE = raw_input('New Account Database: [realmd-account] ')
 if ACC_DATABASE == '':
@@ -322,6 +300,28 @@ CI_MANGOS_REALM_ID = raw_input('RealmID: [1] ')
 if CI_MANGOS_REALM_ID == '':
 	CI_MANGOS_REALM_ID = '1'	
 # TODO open file for configuration of the realmd and mangosd configs and get them ready to place in the config dir
+	
+#TODO SWAP out urls for CI github repo AFTER code clean up and repo creation
+git_api("clone", 'https://github.com/mangosthree/server.git '+SERV_CODE+'/server')
+git_api("clone", 'https://github.com/CollectiveIndustries/Mangos_world_database.git '+SERV_CODE+'/world_database')
+#Clone ScriptDev2  - execute from within src/bindings directory
+print "Chaging Directory to: "+SERV_CODE+"/server/src/bindings\nINSTALLING: "+ScriptDev2_lib
+with cd(SERV_CODE+"/server/src/bindings"):
+	git_api("clone", ScriptDev2_lib+' ./ScriptDev2')
+
+# tools directory
+git_api("clone", 'https://github.com/mangosthree/tools.git '+SERV_CODE+'/tools')
+
+# START compile and begin install
+os.makedirs(os.path.join(SERV_CODE+"/server/", "objdir")) #main server bin directory
+#change to our compile directory and run the compile
+with cd(SERV_CODE+"/server/objdir"):
+	#print "COMMENTED OUT"
+	subprocess.call(shlex.split('sudo cmake .. -DCMAKE_INSTALL_PREFIX='+INSTALL_DIR+' -DINCLUDE_BINDINGS_DIR=ScriptDev2'))
+	subprocess.call(shlex.split('sudo make'))
+	subprocess.call(shlex.split('sudo make install')) 
+
+
 
 #------------------------------------------ DataBase Strings
 mangos_ci_sql_inst = open('/home/'+SYS_USR+'/mangos-ci-usr.sql','w')#open a temporary file for writing our config we will switch to root and move it later
@@ -393,8 +393,8 @@ for sql in full_db:
 #Update ScriptNames::
 #Execute `sql\mangos_scriptname_full.sql` on WORLD_DATABASE	
 
-#mysql_update(update_path, usr_name, usr_pwd, db_list)
-mysql_update(_LOC_SQL_UPDATES_, mysql_root_ci_usr, mysql_root_ci_pass , [CHAR_DATABASE,ACC_DATABASE,WORLD_DATABASE])
+#ALL MySQL files were imported using the ci-database repository
+#mysql_update(_LOC_SQL_UPDATES_, mysql_root_ci_usr, mysql_root_ci_pass , [CHAR_DATABASE,ACC_DATABASE,WORLD_DATABASE])
 
 #file handles for Realmd, Mangosd, ScriptDev2 Configuration settings
 #FILE_REALMD_CONF = open('/home/'+SYS_USR+'/realmd.conf','w')
