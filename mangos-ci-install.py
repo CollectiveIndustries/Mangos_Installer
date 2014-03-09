@@ -408,8 +408,8 @@ print "Starting Patching Process"
 print "User and Databases have been created now running MySQL installer for Character Content"
 #full_db = SERV_CODE + '/database/full_db/*.sql'
 for sql in full_db:
-	print "Adding: " + sql + " ---> " + CHAR_DATABASE
-	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', CHAR_DATABASE, sql)#no host config set up yet
+	print "Adding: " + sql + " ---> " + SCRDEV2_DATABASE
+	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', SCRDEV2_DATABASE, sql)#no host config set up yet
 
 #Execute `sql\scriptdev2_create_database.sql` ## check file and make sure it matches installer options ##
 #Execute `sql\scriptdev2_create_structure.sql` on SCRDEV2_DATABASE
