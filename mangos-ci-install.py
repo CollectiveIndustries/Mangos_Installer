@@ -419,7 +419,6 @@ for sql in full_db:
 #Execute `sql\mangos_scriptname_full.sql` on WORLD_DATABASE	
 
 #Install RealmD database
-#Install SCRDEV2_DATABASE
 full_db = glob.glob(SERV_CODE + '/database/realmd/*.sql')
 full_db = sorted(full_db)
 print "Starting Patching Process"
