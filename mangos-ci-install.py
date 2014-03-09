@@ -83,6 +83,36 @@ def mysql_update(update_path, usr_name, usr_pwd, db_list):
 		
 #INCLUDE('./lib/ci-mangos.py')
 
+# CI MANGOS LOGO HERE
+# Idea by Levi Modl
+# adapted to work with Python by Andrew Malone
+def logo()
+	print ""
+	print " CCCCC       IIIIIIIII"
+	print "CCC CCC         III"
+	print "CCC CCC         III"
+	print "CCC             III"
+	print "CCC     ====    III"
+	print "CCC     ====    III"
+	print "CCC             III"
+	print "CCC CCC         III"
+	print "CCC CCC         III"
+	print " CCCCC       IIIIIIIII   http://ci-main.no-ip.org/"
+	print ""
+	print "MM   MM         NN   NN  GGGGG   OOOO   SSSSS"
+	print "MM   MM         NN   NN GGG GGG OO  OO SSS SSS"
+	print "MMM MMM         NNN  NN GGG GGG OO  OO SSS"
+	print "MM M MM         NNNN NN GGG     OO  OO  SSS"
+	print "	MM M MM  AAAAA  NN NNNN GGG     OO  OO   SSS"
+	print "MM M MM A   AAA NN  NNN GGGGGGG OO  OO    SSS"
+	print "MM   MM     AAA NN   NN GG  GGG OO  OO     SSS"
+	print "MM   MM AAAAAAA NN   NN GGG GGG OO  OO SSS SSS"
+	print "MM   MM AA  AAA NN   NN  GGGGGG  OOOO   SSSSS"
+	print "        AA  AAA"
+	print "        AAAAAA           http://www.getmangos.co.uk/"
+	print ""
+# END LOGO
+
 ##############################################################################################################################
 #
 #
@@ -146,48 +176,15 @@ print "Running Update as user: "
 subprocess.call(shlex.split('sudo id -nu')) 
 subprocess.call(shlex.split('sudo apt-get update -q --force-yes'))
 subprocess.call(shlex.split('sudo apt-get dist-upgrade -q --force-yes'))
-# END of system UPDATE
-
 subprocess.call(shlex.split('sudo apt-get install -q --force-yes build-essential gcc g++ automake git-core autoconf make patch libmysql++-dev mysql-server libtool libssl-dev grep binutils zlibc libc6 libbz2-dev cmake'))
 # END Preparation
 
 subprocess.call('clear') # clear screen and wait for user
 
-# CI MANGOS LOGO HERE
-# Idea by Levi Modl
-# adapted to work with Python by Andrew Malone
-print ""
-print " CCCCC       IIIIIIIII"
-print "CCC CCC         III"
-print "CCC CCC         III"
-print "CCC             III"
-print "CCC     ====    III"
-print "CCC     ====    III"
-print "CCC             III"
-print "CCC CCC         III"
-print "CCC CCC         III"
-print " CCCCC       IIIIIIIII   http://ci-main.no-ip.org/"
-print ""
-print "MM   MM         NN   NN  GGGGG   OOOO   SSSSS"
-print "MM   MM         NN   NN GGG GGG OO  OO SSS SSS"
-print "MMM MMM         NNN  NN GGG GGG OO  OO SSS"
-print "MM M MM         NNNN NN GGG     OO  OO  SSS"
-print "MM M MM  AAAAA  NN NNNN GGG     OO  OO   SSS"
-print "MM M MM A   AAA NN  NNN GGGGGGG OO  OO    SSS"
-print "MM   MM     AAA NN   NN GG  GGG OO  OO     SSS"
-print "MM   MM AAAAAAA NN   NN GGG GGG OO  OO SSS SSS"
-print "MM   MM AA  AAA NN   NN  GGGGGG  OOOO   SSSSS"
-print "        AA  AAA"
-print "        AAAAAA           http://www.getmangos.co.uk/"
-print ""
-
-# END LOGO
-
-
+logo()#display the logo
 
 #make our code directory
 os.makedirs(os.path.join(SERV_CODE, "SOURCE", "mangos3_ci_code")) #main code directory
-subprocess.call('clear') #clear the screen after update + install
 print "Directory paths created for install and compile"
 keep_s_dir = raw_input('Would you like to save source code? [n] ')
 if keep_s_dir == 'n':
@@ -469,3 +466,4 @@ if keep_s_dir == 'n':
 	if keep_s_dir_confirm == 'y':
 		print "Removing source code directory per user request"
 		subprocess.call(shlex.split('sudo rm -Rf /home/mangos/SOURCE/mangos3_ci_code'))
+logo()
