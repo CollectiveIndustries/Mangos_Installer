@@ -398,7 +398,7 @@ for sql in full_db:
 
 #Install SCRDEV2_DATABASE
 #insert Char DB
-full_db = glob.glob(SERV_CODE + '/database/characters/*.sql')
+full_db = glob.glob(SERV_CODE + '/database/ScriptDev2/*.sql')
 full_db = sorted(full_db)
 print "Starting Patching Process"
 print "User and Databases have been created now running MySQL installer for Character Content"
