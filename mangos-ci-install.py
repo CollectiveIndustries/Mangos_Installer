@@ -466,4 +466,5 @@ if keep_s_dir == 'n':
 	if keep_s_dir_confirm == 'y':
 		print "Removing source code directory per user request"
 		subprocess.call(shlex.split('sudo rm -Rf /home/mangos/SOURCE/mangos3_ci_code'))
+
 logo()
