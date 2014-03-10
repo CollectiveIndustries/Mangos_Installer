@@ -103,7 +103,7 @@ def logo():
 	print "MM   MM         NN   NN GGG GGG OO  OO SSS SSS"
 	print "MMM MMM         NNN  NN GGG GGG OO  OO SSS"
 	print "MM M MM         NNNN NN GGG     OO  OO  SSS"
-	print "	MM M MM  AAAAA  NN NNNN GGG     OO  OO   SSS"
+	print "MM M MM  AAAAA  NN NNNN GGG     OO  OO   SSS"
 	print "MM M MM A   AAA NN  NNN GGGGGGG OO  OO    SSS"
 	print "MM   MM     AAA NN   NN GG  GGG OO  OO     SSS"
 	print "MM   MM AAAAAAA NN   NN GGG GGG OO  OO SSS SSS"
@@ -259,7 +259,7 @@ if ScriptDev2_lib == '1':
 if ScriptDev2_lib == '2':
 	ScriptDev2_lib = "https://github.com/mangosthree/scripts.git"
 if ScriptDev2_lib == '3':
-	ScriptDev2_lib == "https://github.com/CollectiveIndustries/scripts.git"
+	ScriptDev2_lib = "https://github.com/CollectiveIndustries/scripts.git"
 	# Account 
 ACC_DATABASE = raw_input('New Account Database: [realmd-account] ')
 if ACC_DATABASE == '':
