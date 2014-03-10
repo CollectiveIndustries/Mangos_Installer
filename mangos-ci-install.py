@@ -86,7 +86,7 @@ def mysql_update(update_path, usr_name, usr_pwd, db_list):
 # CI MANGOS LOGO HERE
 # Idea by Levi Modl
 # adapted to work with Python by Andrew Malone
-def logo()
+def logo():
 	print ""
 	print " CCCCC       IIIIIIIII"
 	print "CCC CCC         III"
