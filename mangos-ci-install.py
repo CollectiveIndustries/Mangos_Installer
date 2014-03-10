@@ -451,7 +451,7 @@ for sql in full_db:
 # ADD Map_data to server
 if CI_MANGOS_DATA_DIR == '../data':
 	CI_MANGOS_DATA_DIR = 'data'
-#git_api("clone", 'https://github.com/CollectiveIndustries/server-maps.git '+INSTALL_DIR+CI_MANGOS_DATA_DIR)
+git_api("clone", 'https://github.com/CollectiveIndustries/Maps-VMaps-DBC.git '+INSTALL_DIR+CI_MANGOS_DATA_DIR)
 
 #TODO add rc.local script section
 # add lines to a file for running the mangosd and realmd services
