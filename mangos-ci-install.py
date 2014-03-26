@@ -87,6 +87,7 @@ def mysql_update(update_path, usr_name, usr_pwd, db_list):
 # Idea by Levi Modl
 # adapted to work with Python by Andrew Malone
 def logo():
+	subprocess.call('clear') # clear screen and wait for user
 	print ""
 	print " CCCCC       IIIIIIIII"
 	print "CCC CCC         III"
@@ -171,15 +172,15 @@ if getpass.getuser() == 'root':
 		exit(1)#exit code 1 (debug info for calling scripts or for user need documentation in readme on exit codes)
 
 
-print "We will now begin to process all dependencies required to build the MaNGOS server" 
-print "Running Update as user: " 
-subprocess.call(shlex.split('sudo id -nu')) 
-subprocess.call(shlex.split('sudo apt-get update -q --force-yes'))
-subprocess.call(shlex.split('sudo apt-get dist-upgrade -q --force-yes'))
-subprocess.call(shlex.split('sudo apt-get install -q --force-yes build-essential gcc g++ automake git-core autoconf make patch libmysql++-dev mysql-server libtool libssl-dev grep binutils zlibc libc6 libbz2-dev cmake'))
-# END Preparation
-
-subprocess.call('clear') # clear screen and wait for user
+CI_UPDATE_YN = raw_input('Preform Pre-Install + updates?: [y] ')
+if CI_UPDATE_YN == 'y':
+	print "We will now begin to process all dependencies required to build the MaNGOS server" 
+	print "Running Update as user: " 
+	subprocess.call(shlex.split('sudo id -nu')) 
+	subprocess.call(shlex.split('sudo apt-get update -q --force-yes'))
+	subprocess.call(shlex.split('sudo apt-get dist-upgrade -q --force-yes'))
+	subprocess.call(shlex.split('sudo apt-get install -q --force-yes build-essential gcc g++ automake git-core autoconf make patch libmysql++-dev mysql-server libtool libssl-dev grep binutils zlibc libc6 libbz2-dev cmake'))
+	# END Preparation
 
 logo()#display the logo
 
@@ -326,48 +327,44 @@ mangos_ci_sql_inst = open('/home/'+SYS_USR+'/mangos-ci-usr.sql','w')#open a temp
 
 #CREATE DATABASE `mangos` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 ADD_MANGOS_MYSQL = ('CREATE DATABASE `' + WORLD_DATABASE + '` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;\n\n')
-mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
+#mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
 
 #CREATE DATABASE `characters` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 ADD_MANGOS_MYSQL = ('CREATE DATABASE `' + CHAR_DATABASE + '` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;\n\n')
-mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
+#mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
 
 #CREATE DATABASE `realmd` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 ADD_MANGOS_MYSQL = ('CREATE DATABASE `' + ACC_DATABASE + '` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;\n\n')
-mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
+#mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
 
 #CREATE DATABASE `scriptdev2` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 ADD_MANGOS_MYSQL = ('CREATE DATABASE `' + SCRDEV2_DATABASE + '` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;\n\n')
-mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
+#mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
 
 #CREATE USER 'mangos'@'localhost' IDENTIFIED BY 'mangos';
 ADD_MANGOS_MYSQL = ('CREATE USER '+ CI_MANGOS_USR + '@localhost ' + 'IDENTIFIED BY ' + CI_MANGOS_USR_PASS+';\n\n')
-mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
+#mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
 
 #GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES ON `mangos`.* TO 'mangos'@'localhost';
 ADD_MANGOS_MYSQL = ('GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES ON `'+WORLD_DATABASE+'`.* TO '+ CI_MANGOS_USR + '@localhost;\n\n')
-mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
+#mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
 
 #GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES ON `characters`.* TO 'mangos'@'localhost';
 ADD_MANGOS_MYSQL = ('GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES ON `'+CHAR_DATABASE+'`.* TO '+ CI_MANGOS_USR + '@localhost;\n\n')
-mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
+#mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
 
 #GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES ON `realmd`.* TO 'mangos'@'localhost';
 ADD_MANGOS_MYSQL = ('GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES ON `'+ACC_DATABASE+'`.* TO '+ CI_MANGOS_USR + '@localhost;\n\n')
-mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
+#mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
 
 #GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES ON `realmd`.* TO 'mangos'@'localhost';
 ADD_MANGOS_MYSQL = ('GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES ON `'+SCRDEV2_DATABASE+'`.* TO '+ CI_MANGOS_USR + '@localhost;\n\n')
-mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
+#mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
 
 #set up realm-list and with user input
 #INSERT INTO `realmlist` VALUES ('MaNGOS', '127.0.0.1', 8085, 0, 2, 0, 0, 0, '');
 
 #TODO setup User input Section + loop for manual install of realms to account server
-
-#finalize the SQL file
-mangos_ci_sql_inst.close()
-print "SQL file for MaNGOS DB install has been written to your home directory: ["+'/home/'+SYS_USR+'/mangos-ci-usr.sql'+"]"
 
 # run the upload
 MYSQL_FILE_LOC = '/home/'+SYS_USR+'/mangos-ci-usr.sql'
@@ -376,7 +373,7 @@ MYSQL_FILE_LOC = '/home/'+SYS_USR+'/mangos-ci-usr.sql'
 #IDEA set up host/port for each database (could be usefull in a multi server platform) (ENTERPRISE INSTALLER)
 
 # DEPRECIATED os.system("mysql -u " + mysql_root_ci_usr + " -p" + mysql_root_ci_pass + " -h localhost" + " < " + MYSQL_FILE_LOC )#TODO add in -h CONFIG OPTION for REMOTE upload
-mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', ' ', MYSQL_FILE_LOC) #import user generated sql
+#mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', ' ', MYSQL_FILE_LOC) #import user generated sql
 
 #install WORLD DB
 full_db = glob.glob(SERV_CODE + '/database/mangos/*.sql')
@@ -386,7 +383,7 @@ print "User and Databases have been created now running MySQL installer for Worl
 #full_db = SERV_CODE + '/database/full_db/*.sql'
 for sql in full_db:
 	print "Adding: " + sql + " ---> " + WORLD_DATABASE
-	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', WORLD_DATABASE, sql)#no host config set up yet 
+	#mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', WORLD_DATABASE, sql)#no host config set up yet 
 	
 #Install Char DB
 full_db = glob.glob(SERV_CODE + '/database/characters/*.sql')
@@ -396,7 +393,7 @@ print "User and Databases have been created now running MySQL installer for Char
 #full_db = SERV_CODE + '/database/full_db/*.sql'
 for sql in full_db:
 	print "Adding: " + sql + " ---> " + CHAR_DATABASE
-	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', CHAR_DATABASE, sql)#no host config set up yet 
+	#mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', CHAR_DATABASE, sql)#no host config set up yet 
 
 #Install SCRDEV2_DATABASE
 full_db = glob.glob(SERV_CODE + '/database/ScriptDev2/*.sql')
@@ -406,7 +403,7 @@ print "User and Databases have been created now running MySQL installer for Char
 #full_db = SERV_CODE + '/database/full_db/*.sql'
 for sql in full_db:
 	print "Adding: " + sql + " ---> " + SCRDEV2_DATABASE
-	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', SCRDEV2_DATABASE, sql)#no host config set up yet
+	#mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', SCRDEV2_DATABASE, sql)#no host config set up yet
 
 #Execute `sql\scriptdev2_create_database.sql` ## check file and make sure it matches installer options ##
 #Execute `sql\scriptdev2_create_structure.sql` on SCRDEV2_DATABASE
@@ -423,7 +420,7 @@ print "User and Databases have been created now running MySQL installer for Acco
 #full_db = SERV_CODE + '/database/full_db/*.sql'
 for sql in full_db:
 	print "Adding: " + sql + " ---> " + ACC_DATABASE
-	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', ACC_DATABASE, sql)#no host config set up yet
+	#mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', ACC_DATABASE, sql)#no host config set up yet
 
 #file handles for Realmd, Mangosd, ScriptDev2 Configuration settings
 #FILE_REALMD_CONF = open('/home/'+SYS_USR+'/realmd.conf','w')
