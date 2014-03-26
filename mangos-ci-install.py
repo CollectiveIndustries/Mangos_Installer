@@ -237,7 +237,7 @@ except mysql.connector.Error as err:
     print("Database does not exists")
   else:
     print(err)
-else:
+#else:
 
 print "Almost ready to start installing the Database\'s We need a few more things and then we\'re ready"
 
