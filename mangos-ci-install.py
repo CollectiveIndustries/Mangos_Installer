@@ -35,16 +35,7 @@ import os.path
 import glob
 
 
-#duck punch include in we need it for our libs
-def INCLUDE(filename):
-    if os.path.exists(filename): 
-        execfile(filename)
-
-##############################################################################################################################
-#
-# INCLUDE('path/file_name')
-#
-##############################################################################################################################
+import mysql.connector
 
 # Collective Industries mysql call
 def mysql_call(usr, psw, host, db, sql):
@@ -228,6 +219,25 @@ CI_MANGOS_USR_PASS = raw_input('Password for new user: ')
 print "Before we can set-up the new MaNGOS user we need to log into mysql as root or another administrators account"
 mysql_root_ci_usr = raw_input('MySQL ADMIN username: ')
 mysql_root_ci_pass = raw_input('ADMIN password: ')
+
+WORLD_DB_config = {
+  'user': mysql_root_ci_usr,
+  'password': mysql_root_ci_pass,
+  'host': CI_MANGOS_DB,
+  #'database': 'employees',
+  'raise_on_warnings': True,
+}
+
+try:
+	CI_MANGOS_DB_CNX = mysql.connector.connect(**WORLD_DB_config)
+except mysql.connector.Error as err:
+  if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+    print("Something is wrong with your user name or password")
+  elif err.errno == errorcode.ER_BAD_DB_ERROR:
+    print("Database does not exists")
+  else:
+    print(err)
+else:
 
 print "Almost ready to start installing the Database\'s We need a few more things and then we\'re ready"
 
@@ -465,3 +475,4 @@ if keep_s_dir == 'n':
 		subprocess.call(shlex.split('sudo rm -Rf /home/mangos/SOURCE/mangos3_ci_code'))
 
 logo()
+cnx.close()
