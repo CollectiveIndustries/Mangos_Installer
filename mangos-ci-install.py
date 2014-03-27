@@ -385,7 +385,7 @@ print "User and Databases have been created now running MySQL installer for Char
 #full_db = SERV_CODE + '/database/full_db/*.sql'
 for sql in full_db:
 	print "Adding: " + sql + " ---> " + CHAR_DATABASE
-	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, CI_MANGOS_DB, CHAR_DATABASE, sql)#no host config set up yet 
+	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, CI_MANGOS_DB, CHAR_DATABASE, sql) 
 
 #Install SCRDEV2_DATABASE
 full_db = glob.glob(SERV_CODE + '/database/ScriptDev2/*.sql')
@@ -395,7 +395,7 @@ print "User and Databases have been created now running MySQL installer for Char
 #full_db = SERV_CODE + '/database/full_db/*.sql'
 for sql in full_db:
 	print "Adding: " + sql + " ---> " + SCRDEV2_DATABASE
-	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, CI_MANGOS_DB, SCRDEV2_DATABASE, sql)#no host config set up yet
+	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, CI_MANGOS_DB, SCRDEV2_DATABASE, sql)
 
 #Execute `sql\scriptdev2_create_database.sql` ## check file and make sure it matches installer options ##
 #Execute `sql\scriptdev2_create_structure.sql` on SCRDEV2_DATABASE
@@ -414,28 +414,53 @@ for sql in full_db:
 	print "Adding: " + sql + " ---> " + ACC_DATABASE
 	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, CI_ACCOUNT_DB, ACC_DATABASE, sql)#no host config set up yet
 
-#file handles for Realmd, Mangosd, ScriptDev2 Configuration settings
-#FILE_REALMD_CONF = open('/home/'+SYS_USR+'/realmd.conf','w')
-#FILE_MANGOSD_CONF = open('/home/'+SYS_USR+'/mangosd.conf','w')
-#FILE_SCRIPTDEV2_CONF = open('/home/'+SYS_USR+'/scriptdev2.conf','w')
+#print "New Configuration files are being written with these Settings: \n"
 
-# File Formatted Strings
-##realmd.conf
-# LoginDatabaseInfo = "HOST;PORT;USR;PASSWORD;DATABASE"
-# LogsDir = "../logs"
-# WrongPass.MaxCount = 0 
-# WrongPass.BanTime = 600
-# WrongPass.BanType = 0
-# BindIP = "0.0.0.0"
+LoginDatabaseInfo = CI_ACCOUNT_DB+";"+CI_REALM_DB_PORT+";"+CI_MANGOS_USR+";"+CI_MANGOS_USR_PASS+";"+ACC_DATABASE
+WorldDatabaseInfo = CI_MANGOS_DB+";"+CI_MANGOS_DB_PORT+";"+CI_MANGOS_USR+";"+CI_MANGOS_USR_PASS+";"+WORLD_DATABASE
+CharacterDatabaseInfo = CI_MANGOS_DB+";"+CI_MANGOS_DB_PORT+";"+CI_MANGOS_USR+";"+CI_MANGOS_USR_PASS+";"+CHAR_DATABASE
+ScriptDev2DatabaseInfo = CI_MANGOS_DB+";"+CI_MANGOS_DB_PORT+";"+CI_MANGOS_USR+";"+CI_MANGOS_USR_PASS+";"+SCRDEV2_DATABASE
+#Open the Mangosd CONF file and set our values up and write the file into our install location
+with open('./lib/mangosd.conf','r') as infile, open(INSTALL_DIR+"etc/mangosd.conf","w") as outfile:
+    for i,line in enumerate(infile):
+        if line[-1]=="RealmID":
+            outfile.write("RealmID = "+CI_MANGOS_REALM_ID+"\n")
+        elif line[-1] == "DataDir":
+			outfile.write("DataDir = \""+CI_MANGOS_DATA_DIR+"\"\n")
+        elif line[-1] == "LogsDir":
+			outfile.write("LogsDir = \""+CI_MANGOS_LOGS_DIR+"\"\n")
+		elif line[-1] == "LoginDatabaseInfo":
+			outfile.write("LoginDatabaseInfo = \""+LoginDatabaseInfo+"\"\n")
+		elif line[-1] == "WorldDatabaseInfo":
+			outfile.write("WorldDatabaseInfo = \""+WorldDatabaseInfo+"\"\n")
+		elif line[-1] == "CharacterDatabaseInfo":
+			outfile.write("CharacterDatabaseInfo = \""+CharacterDatabaseInfo+"\"\n")
+        else:
+            outfile.write(line)
 
-##mangosd.conf
-# RealmID = 1
-# DataDir = "../data"
-# LogsDir = "../logs"
-# LoginDatabaseInfo = "HOST;PORT;USR;PASSWORD;DATABASE"
-# WorldDatabaseInfo = "HOST;PORT;USR;PASSWORD;DATABASE"
-# CharacterDatabaseInfo = "127.0.0.1;3306;mangos;mangos;characters"
-# BindIP = "0.0.0.0"
+#Realmd Account server settings
+with open('./lib/realmd.conf','r') as infile, open(INSTALL_DIR+"etc/realmd.conf","w") as outfile:
+    for i,line in enumerate(infile):
+        if line[-1]=="LoginDatabaseInfo":
+            outfile.write("LoginDatabaseInfo = \""+LoginDatabaseInfo+"\"\n")
+		elif line[-1] == "LogsDir":
+			outfile.write("LogsDir = \""+CI_MANGOS_LOGS_DIR+"\"\n")
+		else:
+			outfile.write(line)
+
+#AH Bot settings
+with open('./lib/ahbot.conf','r') as infile, open(INSTALL_DIR+"etc/ahbot.conf","w") as outfile:
+    for i,line in enumerate(infile):
+		outfile.write(line)
+#scriptDev 2 Config settings		
+with open('./lib/scriptdev2.conf','r') as infile, open(INSTALL_DIR+"etc/scriptdev2.conf","w") as outfile:
+    for i,line in enumerate(infile):
+        if line[-1]=="ScriptDev2DatabaseInfo":
+            outfile.write("ScriptDev2DatabaseInfo = \""+ScriptDev2DatabaseInfo+"\"\n")
+		elif line[-1] == "SD2ErrorLogFile":
+			outfile.write("SD2ErrorLogFile = \""+CI_MANGOS_LOGS_DIR+"/SD2Errors.log\"\n")
+		else:
+			outfile.write(line)
 
 # ADD Map_data to server
 if CI_MANGOS_DATA_DIR == '../data':
