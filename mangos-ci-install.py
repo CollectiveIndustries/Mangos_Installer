@@ -154,21 +154,22 @@ print "Welcome: " + getpass.getuser()
 
 if getpass.getuser() == 'root':
 	print "/!\\ WARNING: Script is being run as root /!\\\nDurring this script we will change to root as needed so system files do not get messed up durrning this install procedure"
-	override = raw_input('override root security locks-outs? [n] ')
-	if override == '':
-		override = 'n'
-	if override == 'n':
-		print "Root Security Lockout: ENABLED\nthis script will now terminate"
-		exit(1)#exit code 1 (debug info for calling scripts or for user need documentation in readme on exit codes)
+override = raw_input('override root security locks-outs? [n] ')
+if override == '':
+	override = 'n'
+if override == 'n':
+	print "Root Security Lockout: ENABLED\nthis script will now terminate"
+	exit(1)#exit code 1 (debug info for calling scripts or for user need documentation in readme on exit codes)
 
-
-print "We will now begin to process all dependencies required to build the MaNGOS server" 
-print "Running Update as user: " 
-subprocess.call(shlex.split('sudo id -nu')) 
-subprocess.call(shlex.split('sudo apt-get update -q --force-yes'))
-subprocess.call(shlex.split('sudo apt-get dist-upgrade -q --force-yes'))
-subprocess.call(shlex.split('sudo apt-get install -q --force-yes build-essential gcc g++ automake git-core autoconf make patch libmysql++-dev mysql-server libtool libssl-dev grep binutils zlibc libc6 libbz2-dev cmake'))
-# END Preparation
+CI_UPDATE_YN = raw_input('Preform Pre-Install + updates?: [y] ')
+	if CI_UPDATE_YN == 'y':
+		print "We will now begin to process all dependencies required to build the MaNGOS server" 
+		print "Running Update as user: " 
+		subprocess.call(shlex.split('sudo id -nu')) 
+		subprocess.call(shlex.split('sudo apt-get update -q --force-yes'))
+		subprocess.call(shlex.split('sudo apt-get dist-upgrade -q --force-yes'))
+		subprocess.call(shlex.split('sudo apt-get install -q --force-yes build-essential gcc g++ automake git-core autoconf make patch libmysql++-dev mysql-server libtool libssl-dev grep binutils zlibc libc6 libbz2-dev cmake'))
+		# END Preparation
 
 subprocess.call('clear') # clear screen and wait for user
 
@@ -218,25 +219,6 @@ CI_MANGOS_USR_PASS = raw_input('Password for new user: ')
 print "Before we can set-up the new MaNGOS user we need to log into mysql as root or another administrators account"
 mysql_root_ci_usr = raw_input('MySQL ADMIN username: ')
 mysql_root_ci_pass = raw_input('ADMIN password: ')
-
-WORLD_DB_config = {
-  'user': mysql_root_ci_usr,
-  'password': mysql_root_ci_pass,
-  'host': CI_MANGOS_DB,
-  #'database': 'employees',
-  'raise_on_warnings': True,
-}
-
-try:
-	CI_MANGOS_DB_CNX = mysql.connector.connect(**WORLD_DB_config)
-except mysql.connector.Error as err:
-  if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-    print("Something is wrong with your user name or password")
-  elif err.errno == errorcode.ER_BAD_DB_ERROR:
-    print("Database does not exists")
-  else:
-    print(err)
-#else:
 
 print "Almost ready to start installing the Database\'s We need a few more things and then we\'re ready"
 
@@ -478,4 +460,3 @@ if keep_s_dir == 'n':
 		subprocess.call(shlex.split('sudo rm -Rf /home/mangos/SOURCE/mangos3_ci_code'))
 
 logo()
-cnx.close()
