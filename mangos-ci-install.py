@@ -378,7 +378,7 @@ print "User and Databases have been created now running MySQL installer for Worl
 #full_db = SERV_CODE + '/database/full_db/*.sql'
 for sql in full_db:
 	print "Adding: " + sql + " ---> " + WORLD_DATABASE
-	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', WORLD_DATABASE, sql)#no host config set up yet 
+	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, CI_MANGOS_DB, WORLD_DATABASE, sql)#no host config set up yet 
 	
 #Install Char DB
 full_db = glob.glob(SERV_CODE + '/database/characters/*.sql')
@@ -388,7 +388,7 @@ print "User and Databases have been created now running MySQL installer for Char
 #full_db = SERV_CODE + '/database/full_db/*.sql'
 for sql in full_db:
 	print "Adding: " + sql + " ---> " + CHAR_DATABASE
-	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', CHAR_DATABASE, sql)#no host config set up yet 
+	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, CI_MANGOS_DB, CHAR_DATABASE, sql)#no host config set up yet 
 
 #Install SCRDEV2_DATABASE
 full_db = glob.glob(SERV_CODE + '/database/ScriptDev2/*.sql')
@@ -398,7 +398,7 @@ print "User and Databases have been created now running MySQL installer for Char
 #full_db = SERV_CODE + '/database/full_db/*.sql'
 for sql in full_db:
 	print "Adding: " + sql + " ---> " + SCRDEV2_DATABASE
-	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', SCRDEV2_DATABASE, sql)#no host config set up yet
+	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, CI_MANGOS_DB, SCRDEV2_DATABASE, sql)#no host config set up yet
 
 #Execute `sql\scriptdev2_create_database.sql` ## check file and make sure it matches installer options ##
 #Execute `sql\scriptdev2_create_structure.sql` on SCRDEV2_DATABASE
@@ -415,7 +415,7 @@ print "User and Databases have been created now running MySQL installer for Acco
 #full_db = SERV_CODE + '/database/full_db/*.sql'
 for sql in full_db:
 	print "Adding: " + sql + " ---> " + ACC_DATABASE
-	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', ACC_DATABASE, sql)#no host config set up yet
+	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, CI_ACCOUNT_DB, ACC_DATABASE, sql)#no host config set up yet
 
 #file handles for Realmd, Mangosd, ScriptDev2 Configuration settings
 #FILE_REALMD_CONF = open('/home/'+SYS_USR+'/realmd.conf','w')
