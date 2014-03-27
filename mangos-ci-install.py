@@ -34,9 +34,6 @@ import urllib2
 import os.path
 import glob
 
-
-import mysql.connector
-
 # Collective Industries mysql call
 def mysql_call(usr, psw, host, db, sql):
         """Function for Adding sql files to MySQL Host"""
