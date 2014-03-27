@@ -426,7 +426,7 @@ CharacterDatabaseInfo = CI_MANGOS_DB+";"+CI_MANGOS_DB_PORT+";"+CI_MANGOS_USR+";"
 ScriptDev2DatabaseInfo = CI_MANGOS_DB+";"+CI_MANGOS_DB_PORT+";"+CI_MANGOS_USR+";"+CI_MANGOS_USR_PASS+";"+SCRDEV2_DATABASE
 print "Building Configuration Files"
 #Open the Mangosd CONF file and set our values up and write the file into our install location
-with open('./lib/mangosd.conf','r') as infile
+with open('./lib/mangosd.conf','r') as infile:
 	with open(INSTALL_DIR+"etc/mangosd.conf","w") as outfile:
 		for i,line in enumerate(infile):
 			if line[:-1]=="RealmID":
