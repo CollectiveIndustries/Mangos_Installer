@@ -162,14 +162,14 @@ if override == 'n':
 	exit(1)#exit code 1 (debug info for calling scripts or for user need documentation in readme on exit codes)
 
 CI_UPDATE_YN = raw_input('Preform Pre-Install + updates?: [y] ')
-	if CI_UPDATE_YN == 'y':
-		print "We will now begin to process all dependencies required to build the MaNGOS server" 
-		print "Running Update as user: " 
-		subprocess.call(shlex.split('sudo id -nu')) 
-		subprocess.call(shlex.split('sudo apt-get update -q --force-yes'))
-		subprocess.call(shlex.split('sudo apt-get dist-upgrade -q --force-yes'))
-		subprocess.call(shlex.split('sudo apt-get install -q --force-yes build-essential gcc g++ automake git-core autoconf make patch libmysql++-dev mysql-server libtool libssl-dev grep binutils zlibc libc6 libbz2-dev cmake'))
-		# END Preparation
+if CI_UPDATE_YN == 'y':
+	print "We will now begin to process all dependencies required to build the MaNGOS server" 
+	print "Running Update as user: " 
+	subprocess.call(shlex.split('sudo id -nu')) 
+	subprocess.call(shlex.split('sudo apt-get update -q --force-yes'))
+	subprocess.call(shlex.split('sudo apt-get dist-upgrade -q --force-yes'))
+	subprocess.call(shlex.split('sudo apt-get install -q --force-yes build-essential gcc g++ automake git-core autoconf make patch libmysql++-dev mysql-server libtool libssl-dev grep binutils zlibc libc6 libbz2-dev cmake'))
+	# END Preparation
 
 subprocess.call('clear') # clear screen and wait for user
 
