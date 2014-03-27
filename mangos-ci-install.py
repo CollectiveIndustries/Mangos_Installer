@@ -167,17 +167,17 @@ if CI_UPDATE_YN == 'y':
 	subprocess.call(shlex.split('sudo apt-get dist-upgrade -q --force-yes'))
 	subprocess.call(shlex.split('sudo apt-get install -q --force-yes build-essential gcc g++ automake git-core autoconf make patch libmysql++-dev mysql-server libtool libssl-dev grep binutils zlibc libc6 libbz2-dev cmake'))
 	# END Preparation
-CI_COMPILE_YN = raw_input('Do you want to bypass compile? [y]')
+CI_COMPILE_YN = raw_input('Do you want to bypass compile? [n] ')
 if CI_COMPILE_YN == '':
-	CI_COMPILE_YN = 'y'
+	CI_COMPILE_YN = 'n'
 subprocess.call('clear') # clear screen and wait for user
 
 logo()#display the logo
 
-if CI_COMPILE_YN == 'y':
+if CI_COMPILE_YN == 'n':
 	#make our code directory
-	os.makedirs(os.path.join(SERV_CODE, "SOURCE", "mangos3_ci_code")) #main code directory
-print "Directory paths created for install and compile"
+	os.makedirs(os.path.join(SERV_CODE)) #main code directory
+	print "Directory paths created for install and compile"
 keep_s_dir = raw_input('Would you like to save source code? [n] ')
 if keep_s_dir == 'n':
 	print "Source code directory will be erased after full install is finished" #only remove /opt/SOURCE/mangos3_ci_code/*
@@ -239,7 +239,7 @@ if SCRDEV2_DATABASE == '':
 
 	# SCriptDev2 Library
 subprocess.call('clear')#clear screen
-if CI_COMPILE_YN == 'y':
+if CI_COMPILE_YN == 'n':
 	print "which script library would you like to install [2]\n"
 	print "[1] https://github.com/scriptdev2/scriptdev2-cata.git\n"
 	print "[2] https://github.com/mangosthree/scripts.git\n"
@@ -290,7 +290,7 @@ if CI_MANGOS_REALM_ID == '':
 	CI_MANGOS_REALM_ID = '1'	
 # TODO open file for configuration of the realmd and mangosd configs and get them ready to place in the config dir
 
-if CI_COMPILE_YN == 'y':	
+if CI_COMPILE_YN == 'n':	
 	#TODO SWAP out urls for CI github repo AFTER code clean up and repo creation
 	git_api("clone", 'https://github.com/mangosthree/server.git '+SERV_CODE+'/server')
 	git_api("clone", 'https://github.com/CollectiveIndustries/Mangos_world_database.git '+SERV_CODE+'/database')
@@ -472,10 +472,11 @@ with open('./lib/scriptdev2.conf','r') as infile:
 			else:
 				outfile.write(line)
 
-# ADD Map_data to server
-if CI_MANGOS_DATA_DIR == '../data':
-	CI_MANGOS_DATA_DIR = 'data'
-git_api("clone", 'https://github.com/CollectiveIndustries/Maps-VMaps-DBC.git '+INSTALL_DIR+CI_MANGOS_DATA_DIR)
+if CI_COMPILE_YN == 'n':
+	# ADD Map_data to server
+	if CI_MANGOS_DATA_DIR == '../data':
+		CI_MANGOS_DATA_DIR = 'data'
+	git_api("clone", 'https://github.com/CollectiveIndustries/Maps-VMaps-DBC.git '+INSTALL_DIR+CI_MANGOS_DATA_DIR)
 
 #TODO add rc.local script section
 # add lines to a file for running the mangosd and realmd services
