@@ -58,4 +58,4 @@ SERVER_LOGS = 'Server.log'
 ### globals ###
 MYSQL_TABLE_WORLD_LOGS = 'world_logs'
 
-log2sql(DB_LOGS,"/tmp/CI-MANGOS3_DB-logs.sql")#parse the log into the tmp directory
+log2sql(CI_MANGOS_LOG_LOC+"/"+DB_LOGS,"/tmp/CI-MANGOS3_DB-logs.sql")#parse the log into the tmp directory
