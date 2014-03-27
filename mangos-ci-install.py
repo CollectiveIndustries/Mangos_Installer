@@ -174,8 +174,9 @@ subprocess.call('clear') # clear screen and wait for user
 
 logo()#display the logo
 
-#make our code directory
-os.makedirs(os.path.join(SERV_CODE, "SOURCE", "mangos3_ci_code")) #main code directory
+if CI_COMPILE_YN == 'y':
+	#make our code directory
+	os.makedirs(os.path.join(SERV_CODE, "SOURCE", "mangos3_ci_code")) #main code directory
 print "Directory paths created for install and compile"
 keep_s_dir = raw_input('Would you like to save source code? [n] ')
 if keep_s_dir == 'n':
