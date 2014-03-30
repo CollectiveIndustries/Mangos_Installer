@@ -34,18 +34,6 @@ import urllib2
 import os.path
 import glob
 
-
-#duck punch include in we need it for our libs
-def INCLUDE(filename):
-    if os.path.exists(filename): 
-        execfile(filename)
-
-##############################################################################################################################
-#
-# INCLUDE('path/file_name')
-#
-##############################################################################################################################
-
 # Collective Industries mysql call
 def mysql_call(usr, psw, host, db, sql):
         """Function for Adding sql files to MySQL Host"""
@@ -163,29 +151,33 @@ print "Welcome: " + getpass.getuser()
 
 if getpass.getuser() == 'root':
 	print "/!\\ WARNING: Script is being run as root /!\\\nDurring this script we will change to root as needed so system files do not get messed up durrning this install procedure"
-	override = raw_input('override root security locks-outs? [n] ')
-	if override == '':
-		override = 'n'
-	if override == 'n':
-		print "Root Security Lockout: ENABLED\nthis script will now terminate"
-		exit(1)#exit code 1 (debug info for calling scripts or for user need documentation in readme on exit codes)
+override = raw_input('override root security locks-outs? [n] ')
+if override == '':
+	override = 'n'
+if override == 'n':
+	print "Root Security Lockout: ENABLED\nthis script will now terminate"
+	exit(1)#exit code 1 (debug info for calling scripts or for user need documentation in readme on exit codes)
 
-
-print "We will now begin to process all dependencies required to build the MaNGOS server" 
-print "Running Update as user: " 
-subprocess.call(shlex.split('sudo id -nu')) 
-subprocess.call(shlex.split('sudo apt-get update -q --force-yes'))
-subprocess.call(shlex.split('sudo apt-get dist-upgrade -q --force-yes'))
-subprocess.call(shlex.split('sudo apt-get install -q --force-yes build-essential gcc g++ automake git-core autoconf make patch libmysql++-dev mysql-server libtool libssl-dev grep binutils zlibc libc6 libbz2-dev cmake'))
-# END Preparation
-
+CI_UPDATE_YN = raw_input('Preform Pre-Install + updates?: [n] ')
+if CI_UPDATE_YN == 'y':
+	print "We will now begin to process all dependencies required to build the MaNGOS server" 
+	print "Running Update as user: " 
+	subprocess.call(shlex.split('sudo id -nu')) 
+	subprocess.call(shlex.split('sudo apt-get update -q --force-yes'))
+	subprocess.call(shlex.split('sudo apt-get dist-upgrade -q --force-yes'))
+	subprocess.call(shlex.split('sudo apt-get install -q --force-yes build-essential gcc g++ automake git-core autoconf make patch libmysql++-dev mysql-server libtool libssl-dev grep binutils zlibc libc6 libbz2-dev cmake'))
+	# END Preparation
+CI_COMPILE_YN = raw_input('Do you want to bypass compile? [n] ')
+if CI_COMPILE_YN == '':
+	CI_COMPILE_YN = 'n'
 subprocess.call('clear') # clear screen and wait for user
 
 logo()#display the logo
 
-#make our code directory
-os.makedirs(os.path.join(SERV_CODE, "SOURCE", "mangos3_ci_code")) #main code directory
-print "Directory paths created for install and compile"
+if CI_COMPILE_YN == 'n':
+	#make our code directory
+	os.makedirs(os.path.join(SERV_CODE)) #main code directory
+	print "Directory paths created for install and compile"
 keep_s_dir = raw_input('Would you like to save source code? [n] ')
 if keep_s_dir == 'n':
 	print "Source code directory will be erased after full install is finished" #only remove /opt/SOURCE/mangos3_ci_code/*
@@ -247,19 +239,20 @@ if SCRDEV2_DATABASE == '':
 
 	# SCriptDev2 Library
 subprocess.call('clear')#clear screen
-print "which script library would you like to install [2]\n"
-print "[1] https://github.com/scriptdev2/scriptdev2-cata.git\n"
-print "[2] https://github.com/mangosthree/scripts.git\n"
-print "[3] https://github.com/CollectiveIndustries/scripts.git\n"
-ScriptDev2_lib = raw_input('ScriptDev2 [2]: ')
-if ScriptDev2_lib == '':
-	ScriptDev2_lib = "https://github.com/mangosthree/scripts.git"
-if ScriptDev2_lib == '1':
-	ScriptDev2_lib = "https://github.com/scriptdev2/scriptdev2-cata.git"
-if ScriptDev2_lib == '2':
-	ScriptDev2_lib = "https://github.com/mangosthree/scripts.git"
-if ScriptDev2_lib == '3':
-	ScriptDev2_lib = "https://github.com/CollectiveIndustries/scripts.git"
+if CI_COMPILE_YN == 'n':
+	print "which script library would you like to install [2]\n"
+	print "[1] https://github.com/scriptdev2/scriptdev2-cata.git\n"
+	print "[2] https://github.com/mangosthree/scripts.git\n"
+	print "[3] https://github.com/CollectiveIndustries/scripts.git\n"
+	ScriptDev2_lib = raw_input('ScriptDev2 [2]: ')
+	if ScriptDev2_lib == '':
+		ScriptDev2_lib = "https://github.com/mangosthree/scripts.git"
+	if ScriptDev2_lib == '1':
+		ScriptDev2_lib = "https://github.com/scriptdev2/scriptdev2-cata.git"
+	if ScriptDev2_lib == '2':
+		ScriptDev2_lib = "https://github.com/mangosthree/scripts.git"
+	if ScriptDev2_lib == '3':
+		ScriptDev2_lib = "https://github.com/CollectiveIndustries/scripts.git"
 	# Account 
 ACC_DATABASE = raw_input('New Account Database: [realmd-account] ')
 if ACC_DATABASE == '':
@@ -296,26 +289,27 @@ CI_MANGOS_REALM_ID = raw_input('RealmID: [1] ')
 if CI_MANGOS_REALM_ID == '':
 	CI_MANGOS_REALM_ID = '1'	
 # TODO open file for configuration of the realmd and mangosd configs and get them ready to place in the config dir
-	
-#TODO SWAP out urls for CI github repo AFTER code clean up and repo creation
-git_api("clone", 'https://github.com/mangosthree/server.git '+SERV_CODE+'/server')
-git_api("clone", 'https://github.com/CollectiveIndustries/Mangos_world_database.git '+SERV_CODE+'/database')
-#Clone ScriptDev2  - execute from within src/bindings directory
-print "Chaging Directory to: "+SERV_CODE+"/server/src/bindings\nINSTALLING: "+ScriptDev2_lib
-with cd(SERV_CODE+"/server/src/bindings"):
-	git_api("clone", ScriptDev2_lib+' ./ScriptDev2')
 
-# tools directory
-git_api("clone", 'https://github.com/mangosthree/tools.git '+SERV_CODE+'/tools')
+if CI_COMPILE_YN == 'n':	
+	#TODO SWAP out urls for CI github repo AFTER code clean up and repo creation
+	git_api("clone", 'https://github.com/mangosthree/server.git '+SERV_CODE+'/server')
+	git_api("clone", 'https://github.com/CollectiveIndustries/Mangos_world_database.git '+SERV_CODE+'/database')
+	#Clone ScriptDev2  - execute from within src/bindings directory
+	print "Chaging Directory to: "+SERV_CODE+"/server/src/bindings\nINSTALLING: "+ScriptDev2_lib
+	with cd(SERV_CODE+"/server/src/bindings"):
+		git_api("clone", ScriptDev2_lib+' ./ScriptDev2')
 
-# START compile and begin install
-os.makedirs(os.path.join(SERV_CODE+"/server/", "objdir")) #main server bin directory
-#change to our compile directory and run the compile
-with cd(SERV_CODE+"/server/objdir"):
-	#print "COMMENTED OUT"
-	subprocess.call(shlex.split('sudo cmake .. -DCMAKE_INSTALL_PREFIX='+INSTALL_DIR+' -DINCLUDE_BINDINGS_DIR=ScriptDev2'))
-	subprocess.call(shlex.split('sudo make'))
-	subprocess.call(shlex.split('sudo make install')) 
+	# tools directory
+	git_api("clone", 'https://github.com/mangosthree/tools.git '+SERV_CODE+'/tools')
+
+	# START compile and begin install
+	os.makedirs(os.path.join(SERV_CODE+"/server/", "objdir")) #main server bin directory
+	#change to our compile directory and run the compile
+	with cd(SERV_CODE+"/server/objdir"):
+		#print "COMMENTED OUT"
+		subprocess.call(shlex.split('sudo cmake .. -DCMAKE_INSTALL_PREFIX='+INSTALL_DIR+' -DINCLUDE_BINDINGS_DIR=ScriptDev2'))
+		subprocess.call(shlex.split('sudo make'))
+		subprocess.call(shlex.split('sudo make install')) 
 
 
 
@@ -386,7 +380,7 @@ print "User and Databases have been created now running MySQL installer for Worl
 #full_db = SERV_CODE + '/database/full_db/*.sql'
 for sql in full_db:
 	print "Adding: " + sql + " ---> " + WORLD_DATABASE
-	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', WORLD_DATABASE, sql)#no host config set up yet 
+	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, CI_MANGOS_DB, WORLD_DATABASE, sql)#no host config set up yet 
 	
 #Install Char DB
 full_db = glob.glob(SERV_CODE + '/database/characters/*.sql')
@@ -396,7 +390,7 @@ print "User and Databases have been created now running MySQL installer for Char
 #full_db = SERV_CODE + '/database/full_db/*.sql'
 for sql in full_db:
 	print "Adding: " + sql + " ---> " + CHAR_DATABASE
-	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', CHAR_DATABASE, sql)#no host config set up yet 
+	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, CI_MANGOS_DB, CHAR_DATABASE, sql) 
 
 #Install SCRDEV2_DATABASE
 full_db = glob.glob(SERV_CODE + '/database/ScriptDev2/*.sql')
@@ -406,7 +400,7 @@ print "User and Databases have been created now running MySQL installer for Char
 #full_db = SERV_CODE + '/database/full_db/*.sql'
 for sql in full_db:
 	print "Adding: " + sql + " ---> " + SCRDEV2_DATABASE
-	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', SCRDEV2_DATABASE, sql)#no host config set up yet
+	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, CI_MANGOS_DB, SCRDEV2_DATABASE, sql)
 
 #Execute `sql\scriptdev2_create_database.sql` ## check file and make sure it matches installer options ##
 #Execute `sql\scriptdev2_create_structure.sql` on SCRDEV2_DATABASE
@@ -423,35 +417,66 @@ print "User and Databases have been created now running MySQL installer for Acco
 #full_db = SERV_CODE + '/database/full_db/*.sql'
 for sql in full_db:
 	print "Adding: " + sql + " ---> " + ACC_DATABASE
-	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, 'localhost', ACC_DATABASE, sql)#no host config set up yet
+	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, CI_ACCOUNT_DB, ACC_DATABASE, sql)#no host config set up yet
 
-#file handles for Realmd, Mangosd, ScriptDev2 Configuration settings
-#FILE_REALMD_CONF = open('/home/'+SYS_USR+'/realmd.conf','w')
-#FILE_MANGOSD_CONF = open('/home/'+SYS_USR+'/mangosd.conf','w')
-#FILE_SCRIPTDEV2_CONF = open('/home/'+SYS_USR+'/scriptdev2.conf','w')
+#print "New Configuration files are being written with these Settings: \n"
 
-# File Formatted Strings
-##realmd.conf
-# LoginDatabaseInfo = "HOST;PORT;USR;PASSWORD;DATABASE"
-# LogsDir = "../logs"
-# WrongPass.MaxCount = 0 
-# WrongPass.BanTime = 600
-# WrongPass.BanType = 0
-# BindIP = "0.0.0.0"
+LoginDatabaseInfo = CI_ACCOUNT_DB+";"+CI_REALM_DB_PORT+";"+CI_MANGOS_USR+";"+CI_MANGOS_USR_PASS+";"+ACC_DATABASE
+WorldDatabaseInfo = CI_MANGOS_DB+";"+CI_MANGOS_DB_PORT+";"+CI_MANGOS_USR+";"+CI_MANGOS_USR_PASS+";"+WORLD_DATABASE
+CharacterDatabaseInfo = CI_MANGOS_DB+";"+CI_MANGOS_DB_PORT+";"+CI_MANGOS_USR+";"+CI_MANGOS_USR_PASS+";"+CHAR_DATABASE
+ScriptDev2DatabaseInfo = CI_MANGOS_DB+";"+CI_MANGOS_DB_PORT+";"+CI_MANGOS_USR+";"+CI_MANGOS_USR_PASS+";"+SCRDEV2_DATABASE
+print "Building Configuration Files"
+#Open the Mangosd CONF file and set our values up and write the file into our install location
+with open('./lib/mangosd.conf','r') as infile:
+	with open(INSTALL_DIR+"etc/mangosd.conf","w") as outfile:
+		for i,line in enumerate(infile):
+			if line[:-1]=="RealmID":
+				outfile.write("RealmID = "+CI_MANGOS_REALM_ID+"\n")
+			elif line[:-1] == "DataDir":
+				outfile.write("DataDir = \""+CI_MANGOS_DATA_DIR+"\"\n")
+			elif line[:-1] == "LogsDir":
+				outfile.write("LogsDir = \""+CI_MANGOS_LOGS_DIR+"\"\n")
+			elif line[:-1] == "LoginDatabaseInfo":
+				outfile.write("LoginDatabaseInfo = \""+LoginDatabaseInfo+"\"\n")
+			elif line[:-1] == "WorldDatabaseInfo":
+				outfile.write("WorldDatabaseInfo = \""+WorldDatabaseInfo+"\"\n")
+			elif line[:-1] == "CharacterDatabaseInfo":
+				outfile.write("CharacterDatabaseInfo = \""+CharacterDatabaseInfo+"\"\n")
+			else:
+				outfile.write(line)
 
-##mangosd.conf
-# RealmID = 1
-# DataDir = "../data"
-# LogsDir = "../logs"
-# LoginDatabaseInfo = "HOST;PORT;USR;PASSWORD;DATABASE"
-# WorldDatabaseInfo = "HOST;PORT;USR;PASSWORD;DATABASE"
-# CharacterDatabaseInfo = "127.0.0.1;3306;mangos;mangos;characters"
-# BindIP = "0.0.0.0"
+#Realmd Account server settings
+with open('./lib/realmd.conf','r') as infile:
+	with open(INSTALL_DIR+"etc/realmd.conf","w") as outfile:
+		for i,line in enumerate(infile):
+			if line[:-1]=="LoginDatabaseInfo":
+				outfile.write("LoginDatabaseInfo = \""+LoginDatabaseInfo+"\"\n")
+			elif line[:-1] == "LogsDir":
+				outfile.write("LogsDir = \""+CI_MANGOS_LOGS_DIR+"\"\n")
+			else:
+				outfile.write(line)
 
-# ADD Map_data to server
-if CI_MANGOS_DATA_DIR == '../data':
-	CI_MANGOS_DATA_DIR = 'data'
-git_api("clone", 'https://github.com/CollectiveIndustries/Maps-VMaps-DBC.git '+INSTALL_DIR+CI_MANGOS_DATA_DIR)
+#AH Bot settings
+with open('./lib/ahbot.conf','r') as infile:
+	with open(INSTALL_DIR+"etc/ahbot.conf","w") as outfile:
+		for i,line in enumerate(infile):
+			outfile.write(line)
+#scriptDev 2 Config settings		
+with open('./lib/scriptdev2.conf','r') as infile:
+	with open(INSTALL_DIR+"etc/scriptdev2.conf","w") as outfile:
+		for i,line in enumerate(infile):
+			if line[:-1] == "ScriptDev2DatabaseInfo":
+				outfile.write("ScriptDev2DatabaseInfo = \""+ScriptDev2DatabaseInfo+"\"\n")
+			elif line[:-1] == "SD2ErrorLogFile":
+				outfile.write("SD2ErrorLogFile = \""+CI_MANGOS_LOGS_DIR+"/SD2Errors.log\"\n")
+			else:
+				outfile.write(line)
+
+if CI_COMPILE_YN == 'n':
+	# ADD Map_data to server
+	if CI_MANGOS_DATA_DIR == '../data':
+		CI_MANGOS_DATA_DIR = 'data'
+	git_api("clone", 'https://github.com/CollectiveIndustries/Maps-VMaps-DBC.git '+INSTALL_DIR+CI_MANGOS_DATA_DIR)
 
 #TODO add rc.local script section
 # add lines to a file for running the mangosd and realmd services

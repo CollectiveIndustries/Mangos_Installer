@@ -20,3 +20,5 @@ TODO
 set up a remote MySQL database installer that will connect your mangos realm (world server) to your realmd (account) server
 set up config file editor to make configuring mangos easier
 also set up a daemon installer to have mangos run in a screen on start up or have the screen be dumped to NULL as there is log files in the logs directory
+
+add an installer for the icinga tool package for server monitoring (python)
