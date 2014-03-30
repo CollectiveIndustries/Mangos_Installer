@@ -13,15 +13,15 @@
 
 ## MYSQL SERVER SETTINGS ##
 #dumps all databases#
-MYSQL_BACK_USR = "admiral"
-MYSQL_BACK_PASS = "stu475r4.0.0.5"
+MYSQL_BACK_USR = "BACKUP"
+MYSQL_BACK_PASS = "mapujaVezitiGI54Huwu8oQIVEsIxA"
 
 ## DIRECTORY LIST TO BACK UP ##
 LOCAL_DIR_LIST = ["/opt/mangos3_ci_server/logs",
 		  "/var/www",
 		  "/home/im-support",
 		  "/home/icinga",
-		  "/var/log",
+#		  "/var/log",
 		  "/var/teamspeak3-server_linux-x86"];
 
 ## DESTINATION FOR BACK-UP ZIP ##
@@ -95,28 +95,32 @@ def zipper(dir, zip_file):#show me that array
 def mysql_bak(usr_name, usr_pass,sql_dump_loc):
 	dump_name = sql_dump_loc+"/"+usr_name+"_ALL_DATABASES_"+HostName()+"_"+TimeStamp()+".sql"
 	print "%s Dumping all databases to --> %s" % (TimeStamp(),dump_name)
-	subprocess.call(shlex.split("mysqldump --user="+usr_name+" --password="+usr_pass+" --all-databases > "+dump_name))
+	subprocess.call(shlex.split("mysqldump --all-databases --user="+usr_name+" --password="+usr_pass+" --result-file="+dump_name))
 	print "%s [DUMPED]" % (TimeStamp())
 
-def PackList():#dump our package list to get backed up
+def PackList(full_dump_name):#dump our package list to get backed up
 	debug("PackageList","DUMPED")
-	subprocess.call(shlex.split("dpkg --get-selections > /tmp/INSTALL_LIST"+TimeStamp()+"_"+HostName()+".lst"))
+	#checkoutput()
+	install_list = subprocess.check_output(["dpkg","--get-selections"])#grab out put of the command and lets get a list ready
+	with open(full_dump_name,"w") as outfile:
+		outfile.write(install_list)
+#	subprocess.call(shlex.split("dpkg --get-selections > /tmp/INSTALL_LIST"+TimeStamp()+"_"+HostName()+".lst"))
 
 def main(): #main function all commands will be called from here
 	subprocess.call(shlex.split('sudo rm -Rf /tmp/*'))#do a full temp wipe before we dump our backups
 	print "Backup started: "+TimeStamp()
-	PackList()
+	PackList("/tmp/INSTALL_LIST"+TimeStamp()+"_"+HostName()+".lst")
 	zip_name = BACKUP_DEST+"/"+TimeStamp()+"_"+HostName()+"_"+UserName()+".zip"
 	mysql_bak(MYSQL_BACK_USR,MYSQL_BACK_PASS,"/tmp") #dump our SQL database to local directory and get it ready to  include in our zipper
 	print "%s [DUMPING] %s" % (TimeStamp(),LOCAL_DIR_LIST)
 	for name in LOCAL_DIR_LIST:
 		sub_zips = "/tmp/"+DirName(name)+"_"+TimeStamp()+"_"+HostName()+"_"+UserName()+".zip"
-		print "%s ZIPPING: $s" % (TimeStamp(), name) #give user a time stamp for each zip file
+		print TimeStamp()+" [ZIPPING] "+name #give user a time stamp for each zip file
 		zipper(name, sub_zips)
-		print "%s ZIP-DONE: %s" (TimeStamp(), name)
+		print TimeStamp()+" [ZIP-DONE] "+name
 	zipper("/tmp",BACKUP_DEST+"/FULL_SERVER_"+HostName()+"_"+TimeStamp()+"_"+UserName()+".zip")
 	print "Backup Ended: "+TimeStamp()
-	print "Wipping /tmp: $s" % (TimeStamp())
+	print "Wipping /tmp: "+TimeStamp()
 	subprocess.call(shlex.split('sudo rm -Rf /tmp/*'))#do a full temp wipe
 	print "your backup is located: "+BACKUP_DEST+"/FULL_SERVER_"+HostName()+"_"+TimeStamp()+"_"+UserName()+".zip"
 
