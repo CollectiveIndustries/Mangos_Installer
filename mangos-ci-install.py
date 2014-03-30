@@ -49,8 +49,8 @@ def INCLUDE(filename):
 # Collective Industries mysql call
 def mysql_call(usr, psw, host, db, sql):
         """Function for Adding sql files to MySQL Host"""
-        os.system("mysql -u " + usr + " -p" + psw + " -h " + host + ' ' + db + "  < " + sql )
-
+        #os.system("mysql -u " + usr + " -p" + psw + " -h " + host + ' ' + db + "  < " + sql )
+	print "mysql_call()"
 # mysql_call()
 
 # Collective Industries git + compile functions
@@ -80,7 +80,7 @@ def mysql_update(update_path, usr_name, usr_pwd, db_list):
                 if db == 'mangos':
                         _DB_ = db_list[2]  #block was for determining the database from the file name and the users input
         mysql_call(usr_name, usr_pwd, 'localhost', _DB_, update_path + x)#no host config set up yet
-		
+#	print "CALLING mysql DB"		
 #INCLUDE('./lib/ci-mangos.py')
 
 # CI MANGOS LOGO HERE
