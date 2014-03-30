@@ -44,7 +44,11 @@ def log2sql(log_file,tmp_sql):
 				#2014-03-27 13:29:26 SQL ERROR: MySQL server has gone away
 				#2014-03-27 13:29:26 SQL: UPDATE realmlist SET realmflags = realmflags | 2 WHERE id = '2'
 				sql_list = line.rsplit(":",1) #chop off the message section and save to a list
-				print sql_list #DEBUG string (prints out list)
+				sql_dt = line.lsplit(" ",2)
+				print sql_list[1] #DEBUG string (prints out list)
+				print sql_dt[1]#DATE
+				print sql_dt[2]#TIME
+				
 ### LOG FILES ###
 #TODO add in a config reader to pull log names from server config
 CHAR_LOGS = 'Char.log'
