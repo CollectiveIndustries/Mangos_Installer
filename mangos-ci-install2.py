@@ -1,4 +1,5 @@
 #!/usr/bin/python
+
 ##################################################################################################
 #
 # Copyright (C) 2013 Collective Industries code provided by Andrew Malone 
@@ -16,9 +17,12 @@ SYS_PASS = ''
 SERV_CODE = 'home/' + SYS_USR + '/server/sql/updates/'
 _LOC_SQL_UPDATES_ = SERV_CODE + '/server/sql/updates/'
 # Menu variables
-CI_UPDATE_YN = 1
-CI_COMPILE_YN = 1
-keep_s_dir = 1
+CI_UPDATE_YN = ''
+CI_COMPILE_YN = ''
+keep_s_dir = ''
+CI_REALM_NAME = ''
+ScriptDev2_lib = ''
+CI_ACCOUNT_DB = 'localhost'
 
 # Importing all our needed function
 from subprocess import call
@@ -26,7 +30,10 @@ import subprocess
 import shlex
 import getpass
 import os
+import os.path
 import urllib2
+import time
+import glob
 import npyscreen
 
 ###########################################
@@ -37,7 +44,7 @@ import npyscreen
 
 # Debug
 def debug(var, msg, DEBUG):
-    if DEBUG == '1':
+    if DEBUG == 1:
         if var == '':
             print msg
         else:
@@ -109,39 +116,14 @@ class cd:
 
     def __exit__(self, etype, value, traceback):
         os.chdir(self.savedPath)
-        
-######################################################################
-#
-# Collective Industries Main Menu
-# 
-######################################################################
-class MangosInstall(npyscreen.NPSApp):
-    def MainMenu(self):
-    
-        # Global Variables
-        global CI_UPDATE_YN
-        global CI_COMPILE_YN
-        global keep_s_dir        
-        
-        mangos = npyscreen.Form(name = 'Collective Industries MaNGOS Insaller') # Creates the form and declarers the type of form
-        
-        CI_UPDATE_YN = mangos.add(npyscreen.TitleSelectOne, max_height=-2, value=[1], name='Preform Pre-Install + updates',
-            values=['Yes', 'No'], scroll_exit=True)
-        CI_COMPILE_YN = mangos.add(npyscreen.TitleSelectOne, max_height=-2, value=[1], name='Bypass compile',
-            values=['Yes', 'No'], scroll_exit=True)
-        keep_s_dir = mangos.add(npyscreen.TitleSelectOne, max_height=-2, value=[1], name='Would you like to save source code',
-            values=['Yes', 'No'], scroll_exit=True)
-         
-        entry()
-######################################################################
-#
-# Script Entry Point
-#
-######################################################################
-def entry():
-    debug('CI_UPDATE_YN', CI_UPDATE_YN, 1)
 
-    if CI_UPDATE_YN == 0:
+##################################################################
+# Main Script Installation
+##################################################################
+def entry():
+    debug('CI_UPDATE_YN', str(CI_UPDATE_YN.get_selected_objects()), 0)
+
+    if CI_UPDATE_YN.get_selected_objects() == ['Yes']:
         print "We will now begin to process all dependencies required to build the MaNGOS server" 
         print "Running Update as user: " 
         subprocess.call(shlex.split('sudo id -nu')) 
@@ -150,26 +132,72 @@ def entry():
         subprocess.call(shlex.split('sudo apt-get install -q --force-yes build-essential gcc g++ automake git-core autoconf make patch libmysql++-dev mysql-server libtool libssl-dev grep binutils zlibc libc6 libbz2-dev cmake'))
         # END Preparation
     
-    if CI_COMPILE_YN == 1:
+    if CI_COMPILE_YN.get_selected_objects() == ['No']:
         #os.makedirs(os.path.join(SERV_CODE)) #main code directory
         print "Directory paths created for install and compile"
     
-    if keep_s_dir == 1:
+    if keep_s_dir.get_selected_objects()  == ['No']:
         print 'Source code directory will be erased after full install is finished' # Only remove /opt/SOURCE/mangos3_ci_code/*
-
-
+        
+######################################################################
+#
+# Collective Industries Main Menu
+# 
+######################################################################
+class MangosInstall(npyscreen.NPSApp):
+    def main(self):
+    
+        # Global Variables
+        global CI_UPDATE_YN
+        global CI_COMPILE_YN
+        global keep_s_dir        
+        global CI_REALM_NAME
+        global ScriptDev2_lib
+        global CI_ACCOUNT_DB
+        
+        mangos = npyscreen.FormMultiPageAction(name = 'Collective Industries MaNGOS Insaller') # Creates the form and declarers the type of form
+        host_name = subprocess.check_output(['uname', '-n'])
+        
+        # Realm Name
+        CI_REALM_NAME = mangos.add(npyscreen.TitleText, name='Realm Name:', value=host_name)
+        # Installs required programs and also updates any programs that need upgrading
+        CI_UPDATE_YN = mangos.add(npyscreen.TitleSelectOne, max_height=4, value = [1,], name="Preform Pre-Install + updates:", 
+                values = ["Yes","No"], scroll_exit=True)       
+        CI_COMPILE_YN = mangos.add(npyscreen.TitleSelectOne, max_height=4, value = [1,], name="Bypass Compile:", 
+                values = ["Yes","No"], scroll_exit=True)
+        keep_s_dir = mangos.add(npyscreen.TitleSelectOne, max_height=4, value = [1,], name="Save Source Code:", 
+                values = ["Yes","No"], scroll_exit=True)
+        #ScriptDev2 Library
+        ScriptDev2_lib = mangos.add(npyscreen.TitleSelectOne, max_height=5, value = [1], name='ScriptDev2 Library:',
+                values = ["https://github.com/scriptdev2/scriptdev2-cata.git", "https://github.com/mangosthree/scripts.git", "https://github.com/CollectiveIndustries/scripts.git"], scroll_exit=True)                        
+        
+        # New Page
+        NewPage = mangos.add_page()
+        mangos.add(npyscreen.TitleText, name='', value='Here is where you will put all the database information. HN = Hostname and DB = Database')
+        CI_ACCOUNT_DB = mangos.add(npyscreen.TitleText, name='Account Hostname', value=CI_ACCOUNT_DB)
+        
+        mangos.edit()
+        
+######################################################################
+#
+# Script Entry Point
+#
+######################################################################
+subprocess.call('clear')
+logo()
 print 'Welcome: ' + getpass.getuser()
 
 if getpass.getuser() == 'root':
     print '/!\\ WARNING: Script is being run as root /!\\\n During this script we will change to root as needed so system files do not get messed up during this install procedure'
 
-override = raw_input('Override root security locks-outs? [n] ')
+override = raw_input('Override root security locks-outs? [n] ' )
+debug('override', override, 0)
+if override == '' or override == 'n':
+	print "Root Security Lockout: ENABLED\nthis script will now terminate"
+	exit(1) # Exit code 1 (debug info for calling scripts or for user need documentation in readme on exit codes)
 
-debug('override', override, 1)
-if override == ' ' or override == 'n':
-    print 'Root Security Lockout: ENABLED\nthis script will now terminate'
-    exit(1)
-
-debug('', 'Menu starting up', 1)
+debug('', 'Menu starting up', 0)
 App = MangosInstall()
-App.run() 
+App.run()
+
+entry()
