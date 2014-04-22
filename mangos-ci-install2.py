@@ -170,10 +170,10 @@ class MangosInstall(npyscreen.NPSApp):
         global mysql_root_ci_usr_pass
         
         mangos = npyscreen.FormMultiPageActionWithMenus(name = 'Collective Industries MaNGOS Insaller') # Creates the form and declarers the type of form
-        host_name = subprocess.check_output(['uname', '-n'])
+        CI_REALM_NAME = subprocess.check_output(['uname', '-n'])
         
         # Realm Name
-        CI_REALM_NAME = mangos.add(npyscreen.TitleText, max_height=3, name='Realm Name:', value=host_name)
+        CI_IN_REALM_NAME = mangos.add(npyscreen.TitleText, max_height=3, name='Realm Name:', value=CI_REALM_NAME)
         # Installs required programs and also updates any programs that need upgrading
         CI_UPDATE_YN = mangos.add(npyscreen.TitleSelectOne, max_height=4, value = [1,], name="Preform Pre-Install + updates:", 
                 values = ["Yes","No"], scroll_exit=True)       
@@ -186,7 +186,7 @@ class MangosInstall(npyscreen.NPSApp):
                 values = ["https://github.com/scriptdev2/scriptdev2-cata.git", "https://github.com/mangosthree/scripts.git", "https://github.com/CollectiveIndustries/scripts.git"], scroll_exit=True)                        
         
         # New Page
-        mangos.add_page()
+        NewPage = mangos.add_page()
         """HN = Hostname   DB = Database"""
         # Account Database Hostname
         CI_ACCOUNT_DB = mangos.add(npyscreen.TitleText, name='Account HN', value=CI_ACCOUNT_DB)
@@ -198,6 +198,9 @@ class MangosInstall(npyscreen.NPSApp):
         CI_MANGOS_USR_PASS = mangos.add(npyscreen.TitleText, name='UN Pass', value=CI_MANGOS_USR_PASS)      
         mysql_root_ci_usr = mangos.add(npyscreen.TitleText, name='DB Admin UN', value=mysql_root_ci_usr)
         mysql_root_ci_usr_pass = mangos.add(npyscreen.TitleText, name='Admin PW', value=mysql_root_ci_usr_pass)
+        WORLD_DATABASE = mangos.add(npyscreen.TitleText, name='World DB Name', value='mangos-' + CI_IN_REALM_NAME)
+        CHAR_DATABASE = mangos.add(npyscreen.TitleText, name='Char DB', value='characters-' + CI_IN_REALM_NAME)
+        SCRDEV2_DATABASE = mangos.add(npyscreen.TitleText, name='ScriptDev2 DB', value='scriptdev2-' + CI_IN_REALM_NAME)
         
         mangos.edit()
         
