@@ -23,6 +23,13 @@ keep_s_dir = ''
 CI_REALM_NAME = ''
 ScriptDev2_lib = ''
 CI_ACCOUNT_DB = 'localhost'
+CI_MANGOS_DB = 'localhost'
+CI_MANGOS_DB_PORT = '3306'
+CI_REALM_DB_PORT = '3306'
+CI_MANGOS_USR = ''
+CI_MANGOS_USR_PASS = ''
+mysql_root_ci_usr = 'root'
+mysql_root_ci_usr_pass = ''
 
 # Importing all our needed function
 from subprocess import call
@@ -154,12 +161,19 @@ class MangosInstall(npyscreen.NPSApp):
         global CI_REALM_NAME
         global ScriptDev2_lib
         global CI_ACCOUNT_DB
+        global CI_MANGOS_DB
+        global CI_MANGOS_DB_PORT
+        global CI_REALM_DB_PORT
+        global CI_MANGOS_USR
+        global CI_MANGOS_USR_PASS
+        global mysql_root_ci_usr
+        global mysql_root_ci_usr_pass
         
-        mangos = npyscreen.FormMultiPageAction(name = 'Collective Industries MaNGOS Insaller') # Creates the form and declarers the type of form
+        mangos = npyscreen.FormMultiPageActionWithMenus(name = 'Collective Industries MaNGOS Insaller') # Creates the form and declarers the type of form
         host_name = subprocess.check_output(['uname', '-n'])
         
         # Realm Name
-        CI_REALM_NAME = mangos.add(npyscreen.TitleText, name='Realm Name:', value=host_name)
+        CI_REALM_NAME = mangos.add(npyscreen.TitleText, max_height=3, name='Realm Name:', value=host_name)
         # Installs required programs and also updates any programs that need upgrading
         CI_UPDATE_YN = mangos.add(npyscreen.TitleSelectOne, max_height=4, value = [1,], name="Preform Pre-Install + updates:", 
                 values = ["Yes","No"], scroll_exit=True)       
@@ -172,9 +186,18 @@ class MangosInstall(npyscreen.NPSApp):
                 values = ["https://github.com/scriptdev2/scriptdev2-cata.git", "https://github.com/mangosthree/scripts.git", "https://github.com/CollectiveIndustries/scripts.git"], scroll_exit=True)                        
         
         # New Page
-        NewPage = mangos.add_page()
-        mangos.add(npyscreen.TitleText, name='', value='Here is where you will put all the database information. HN = Hostname and DB = Database')
-        CI_ACCOUNT_DB = mangos.add(npyscreen.TitleText, name='Account Hostname', value=CI_ACCOUNT_DB)
+        mangos.add_page()
+        """HN = Hostname   DB = Database"""
+        # Account Database Hostname
+        CI_ACCOUNT_DB = mangos.add(npyscreen.TitleText, name='Account HN', value=CI_ACCOUNT_DB)
+        #
+        CI_MANGOS_DB = mangos.add(npyscreen.TitleText, name='MaNGOS HN', value=CI_MANGOS_DB)
+        CI_MANGOS_DB_PORT = mangos.add(npyscreen.TitleText, name='MaNGOS Port', value=CI_MANGOS_DB_PORT)
+        CI_REALM_DB_PORT = mangos.add(npyscreen.TitleText, name='Realm Port', value=CI_REALM_DB_PORT)
+        CI_MANGOS_USR = mangos.add(npyscreen.TitleText, name='MySQL UN', value=CI_MANGOS_USR)
+        CI_MANGOS_USR_PASS = mangos.add(npyscreen.TitleText, name='UN Pass', value=CI_MANGOS_USR_PASS)      
+        mysql_root_ci_usr = mangos.add(npyscreen.TitleText, name='DB Admin UN', value=mysql_root_ci_usr)
+        mysql_root_ci_usr_pass = mangos.add(npyscreen.TitleText, name='Admin PW', value=mysql_root_ci_usr_pass)
         
         mangos.edit()
         
@@ -196,8 +219,12 @@ if override == '' or override == 'n':
 	print "Root Security Lockout: ENABLED\nthis script will now terminate"
 	exit(1) # Exit code 1 (debug info for calling scripts or for user need documentation in readme on exit codes)
 
+    
+####################################
+# Calls the Menu and starts it up
+####################################
 debug('', 'Menu starting up', 0)
 App = MangosInstall()
 App.run()
 
-entry()
+entry() # Takes all the information gathered in the menu and puts it in the proper locations and downloads and compiles MaNGOS
