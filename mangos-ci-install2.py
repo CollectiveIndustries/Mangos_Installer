@@ -16,6 +16,10 @@ host_name = ''
 SYS_PASS = ''
 SERV_CODE = 'home/' + SYS_USR + '/server/sql/updates/'
 _LOC_SQL_UPDATES_ = SERV_CODE + '/server/sql/updates/'
+CI_IN_REALM_NAME = ''
+wdb = ''
+cdb = ''
+scd2db = ''
 # Menu variables
 CI_UPDATE_YN = ''
 CI_COMPILE_YN = ''
@@ -145,7 +149,20 @@ def entry():
     
     if keep_s_dir.get_selected_objects()  == ['No']:
         print 'Source code directory will be erased after full install is finished' # Only remove /opt/SOURCE/mangos3_ci_code/*
-        
+ 
+def setrn():
+    global CI_REALM_NAME
+    global wdb
+    global cdb
+    global scd2db
+    CI_REALM_NAME = subprocess.check_output(['uname', '-n'])
+    wdb = 'mangos-' + CI_REALM_NAME
+    cdb = 'characters-' + CI_REALM_NAME
+    scd2db = 'scriptdev2-' + CI_REALM_NAME
+    debug('wdb', wdb, 1)
+    debug('cdb', cdb, 1)
+    debug('scd2db', scd2db, 1)
+    
 ######################################################################
 #
 # Collective Industries Main Menu
@@ -170,7 +187,6 @@ class MangosInstall(npyscreen.NPSApp):
         global mysql_root_ci_usr_pass
         
         mangos = npyscreen.FormMultiPageActionWithMenus(name = 'Collective Industries MaNGOS Insaller') # Creates the form and declarers the type of form
-        CI_REALM_NAME = subprocess.check_output(['uname', '-n'])
         
         # Realm Name
         CI_IN_REALM_NAME = mangos.add(npyscreen.TitleText, max_height=3, name='Realm Name:', value=CI_REALM_NAME)
@@ -198,9 +214,12 @@ class MangosInstall(npyscreen.NPSApp):
         CI_MANGOS_USR_PASS = mangos.add(npyscreen.TitleText, name='UN Pass', value=CI_MANGOS_USR_PASS)      
         mysql_root_ci_usr = mangos.add(npyscreen.TitleText, name='DB Admin UN', value=mysql_root_ci_usr)
         mysql_root_ci_usr_pass = mangos.add(npyscreen.TitleText, name='Admin PW', value=mysql_root_ci_usr_pass)
-        WORLD_DATABASE = mangos.add(npyscreen.TitleText, name='World DB Name', value='mangos-' + CI_IN_REALM_NAME)
-        CHAR_DATABASE = mangos.add(npyscreen.TitleText, name='Char DB', value='characters-' + CI_IN_REALM_NAME)
-        SCRDEV2_DATABASE = mangos.add(npyscreen.TitleText, name='ScriptDev2 DB', value='scriptdev2-' + CI_IN_REALM_NAME)
+        
+        WORLD_DATABASE = mangos.add(npyscreen.TitleText, name='World DB', value=wdb)
+        
+        CHAR_DATABASE = mangos.add(npyscreen.TitleText, name='Char DB', value=cdb)
+        
+        SCRDEV2_DATABASE = mangos.add(npyscreen.TitleText, name='ScriptDev2', value=scd2db)
         
         mangos.edit()
         
@@ -211,6 +230,7 @@ class MangosInstall(npyscreen.NPSApp):
 ######################################################################
 subprocess.call('clear')
 logo()
+setrn()
 print 'Welcome: ' + getpass.getuser()
 
 if getpass.getuser() == 'root':
@@ -221,8 +241,7 @@ debug('override', override, 0)
 if override == '' or override == 'n':
 	print "Root Security Lockout: ENABLED\nthis script will now terminate"
 	exit(1) # Exit code 1 (debug info for calling scripts or for user need documentation in readme on exit codes)
-
-    
+ 
 ####################################
 # Calls the Menu and starts it up
 ####################################
