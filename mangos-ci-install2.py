@@ -34,6 +34,7 @@ CI_MANGOS_USR = ''
 CI_MANGOS_USR_PASS = ''
 mysql_root_ci_usr = 'root'
 mysql_root_ci_usr_pass = ''
+ACC_DATABASE = 'realmd-account'
 
 # Importing all our needed function
 from subprocess import call
@@ -61,7 +62,25 @@ def debug(var, msg, DEBUG):
         else:
             print var + ' = ' + msg
         raw_input('(Press any key to continue)')
-        
+
+# Sets Realm Name, World DB name, Character DB name, and ScriptDev2 DB name
+def setrn():
+    global CI_REALM_NAME
+    global wdb
+    global cdb
+    global scd2db
+    CI_REALM_NAME = subprocess.check_output(['uname', '-n'])
+    wdb = 'mangos-' + CI_REALM_NAME
+    cdb = 'characters-' + CI_REALM_NAME
+    scd2db = 'scriptdev2-' + CI_REALM_NAME
+    debug('wdb', wdb, 1)
+    debug('cdb', cdb, 1)
+    debug('scd2db', scd2db, 1)
+
+# Handles git commands    
+def git_api(command, args):
+    subprocess.call(shlex.split('sudo git ' + command + ' ' + args))
+            
 # CI MANGOS LOGO HERE
 # Idea by Levi Modl
 # adapted to work with Python by Andrew Malone
@@ -92,10 +111,10 @@ def logo():
 	print ""
 # END LOGO
 
-###############################################
-# backport for ubuntu 10
-# (check_output was introduced in python 2.7)
-###############################################
+###################################################
+##  backport for ubuntu 10                       ##
+##  (check_output was introduced in python 2.7)  ##
+###################################################
 if "check_output" not in dir( subprocess ): # duck punch it in!
     def f(*popenargs, **kwargs):
         if 'stdout' in kwargs:
@@ -111,11 +130,11 @@ if "check_output" not in dir( subprocess ): # duck punch it in!
         return output
     subprocess.check_output = f
     
-###################################################################
-# change directory
-# class provided by
-# http://stackoverflow.com/questions/431684/how-do-i-cd-in-python
-###################################################################
+#######################################################################
+##  change directory                                                 ##
+##  class provided by                                                ##
+##  http://stackoverflow.com/questions/431684/how-do-i-cd-in-python  ##
+#######################################################################
 class cd:
     """Context manager for changing the current working directory"""
     def __init__(self, newPath):
@@ -127,41 +146,6 @@ class cd:
 
     def __exit__(self, etype, value, traceback):
         os.chdir(self.savedPath)
-
-##################################################################
-# Main Script Installation
-##################################################################
-def entry():
-    debug('CI_UPDATE_YN', str(CI_UPDATE_YN.get_selected_objects()), 0)
-
-    if CI_UPDATE_YN.get_selected_objects() == ['Yes']:
-        print "We will now begin to process all dependencies required to build the MaNGOS server" 
-        print "Running Update as user: " 
-        subprocess.call(shlex.split('sudo id -nu')) 
-        subprocess.call(shlex.split('sudo apt-get update -q --force-yes'))
-        subprocess.call(shlex.split('sudo apt-get dist-upgrade -q --force-yes'))
-        subprocess.call(shlex.split('sudo apt-get install -q --force-yes build-essential gcc g++ automake git-core autoconf make patch libmysql++-dev mysql-server libtool libssl-dev grep binutils zlibc libc6 libbz2-dev cmake'))
-        # END Preparation
-    
-    if CI_COMPILE_YN.get_selected_objects() == ['No']:
-        #os.makedirs(os.path.join(SERV_CODE)) #main code directory
-        print "Directory paths created for install and compile"
-    
-    if keep_s_dir.get_selected_objects()  == ['No']:
-        print 'Source code directory will be erased after full install is finished' # Only remove /opt/SOURCE/mangos3_ci_code/*
- 
-def setrn():
-    global CI_REALM_NAME
-    global wdb
-    global cdb
-    global scd2db
-    CI_REALM_NAME = subprocess.check_output(['uname', '-n'])
-    wdb = 'mangos-' + CI_REALM_NAME
-    cdb = 'characters-' + CI_REALM_NAME
-    scd2db = 'scriptdev2-' + CI_REALM_NAME
-    debug('wdb', wdb, 1)
-    debug('cdb', cdb, 1)
-    debug('scd2db', scd2db, 1)
     
 ######################################################################
 #
@@ -185,6 +169,7 @@ class MangosInstall(npyscreen.NPSApp):
         global CI_MANGOS_USR_PASS
         global mysql_root_ci_usr
         global mysql_root_ci_usr_pass
+        global ACC_DATABASE
         
         mangos = npyscreen.FormMultiPageActionWithMenus(name = 'Collective Industries MaNGOS Insaller') # Creates the form and declarers the type of form
         
@@ -213,14 +198,11 @@ class MangosInstall(npyscreen.NPSApp):
         CI_MANGOS_USR = mangos.add(npyscreen.TitleText, name='MySQL UN', value=CI_MANGOS_USR)
         CI_MANGOS_USR_PASS = mangos.add(npyscreen.TitleText, name='UN Pass', value=CI_MANGOS_USR_PASS)      
         mysql_root_ci_usr = mangos.add(npyscreen.TitleText, name='DB Admin UN', value=mysql_root_ci_usr)
-        mysql_root_ci_usr_pass = mangos.add(npyscreen.TitleText, name='Admin PW', value=mysql_root_ci_usr_pass)
-        
-        WORLD_DATABASE = mangos.add(npyscreen.TitleText, name='World DB', value=wdb)
-        
-        CHAR_DATABASE = mangos.add(npyscreen.TitleText, name='Char DB', value=cdb)
-        
+        mysql_root_ci_usr_pass = mangos.add(npyscreen.TitleText, name='Admin PW', value=mysql_root_ci_usr_pass)        
+        WORLD_DATABASE = mangos.add(npyscreen.TitleText, name='World DB', value=wdb)        
+        CHAR_DATABASE = mangos.add(npyscreen.TitleText, name='Char DB', value=cdb)        
         SCRDEV2_DATABASE = mangos.add(npyscreen.TitleText, name='ScriptDev2', value=scd2db)
-        
+        ACC_DATABASE = mangos.add(npyscreen.TitleText, name='Account DB', value=ACC_DATABASE)
         mangos.edit()
         
 ######################################################################
@@ -230,7 +212,7 @@ class MangosInstall(npyscreen.NPSApp):
 ######################################################################
 subprocess.call('clear')
 logo()
-setrn()
+setrn() # Sets the Realm Name, World Database name, Character Database name, and the Scriptdev2 Database name
 print 'Welcome: ' + getpass.getuser()
 
 if getpass.getuser() == 'root':
@@ -242,11 +224,105 @@ if override == '' or override == 'n':
 	print "Root Security Lockout: ENABLED\nthis script will now terminate"
 	exit(1) # Exit code 1 (debug info for calling scripts or for user need documentation in readme on exit codes)
  
-####################################
-# Calls the Menu and starts it up
-####################################
+######################################
+##  Calls the Menu and starts it up ##
+######################################
 debug('', 'Menu starting up', 0)
 App = MangosInstall()
 App.run()
 
-entry() # Takes all the information gathered in the menu and puts it in the proper locations and downloads and compiles MaNGOS
+################################
+##  Main Script Installation  ##
+################################
+debug('CI_UPDATE_YN', str(CI_UPDATE_YN.get_selected_objects()), 0)
+
+if CI_UPDATE_YN.get_selected_objects() == ['Yes']:
+    print "We will now begin to process all dependencies required to build the MaNGOS server" 
+    print "Running Update as user: " 
+    subprocess.call(shlex.split('sudo id -nu')) 
+    subprocess.call(shlex.split('sudo apt-get update -q --force-yes'))
+    subprocess.call(shlex.split('sudo apt-get dist-upgrade -q --force-yes'))
+    subprocess.call(shlex.split('sudo apt-get install -q --force-yes build-essential gcc g++ automake git-core autoconf make patch libmysql++-dev mysql-server libtool libssl-dev grep binutils zlibc libc6 libbz2-dev cmake'))
+    # END Preparation
+ 
+if CI_COMPILE_YN.get_selected_objects() == ['No']:
+    # TODO: Swap out urls for CI github repo AFTER code clean up and repo creation
+    git_api("clone", 'https://github.com/mangosthree/server.git '+SERV_CODE+'/server')
+	git_api("clone", 'https://github.com/CollectiveIndustries/Mangos_world_database.git '+SERV_CODE+'/database')
+    # Clone ScriptDev2 - execute from within src/bindings directory
+    print 'Changing Directory to: ' + SERV_CODE + '/server/src/bindings\nINSTALLING ' + ScriptDev2_lib
+    with cd(SERV_CODE + '/server/objdir'):
+        git_api('clone', ScriptDev2_lib + ' ./ScriptDev2')
+        
+    # Tools directory
+    git_api('clone', 'https://github.com/mangosthree/tools.git ' + SERV_CODE + '/tools')
+    # START compile and begin install
+    os.makedirs(os.path.join(SERV_CODE + '/server/', 'objdir'))
+    # Change to our compile directory and run the compile
+    with cd(SERV_CODE + '/server/objdir'):
+        subprocess.call(shlex.split('sudo cmake .. -DCMAKE_INSTALL_PREFIX=' + INSTALL_DIR + ' -DINCLUDE_BINDINGS_DIR=ScriptDev2'))
+        subprocess.call(shlex.split('sudo make'))
+        subprocess.call(shlex.split('sudo make install'))
+
+#######################
+##  Database String  ##
+#######################
+
+### TODO: Change all DB strings to DROP IF EXIST then CREATE
+
+# CREATE DATABASE `mangos` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+ADD_MANGOS_MYSQL = ('CREATE DATABASE `' + CHAR_DATABASE + '` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;\n\n')
+mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
+
+# CREATE DATABASE `characters` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+ADD_MANGOS_MYSQL = ('CREATE DATABASE `' + CHAR_DATABASE + '` DEFAULT CHARACTER utf8 COLLATE utf8_general_ci;\n\n')
+mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
+
+# CREATE DATABASE `realmd` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+ADD_MANGOS_MYSQL = ('CREATE DATABASE `' + ACC_DATABASE + '` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;\n\n')
+mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
+
+# CREATE DATABASE `scriptdev2` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+ADD_MANGOS_MYSQL = ('CREATE DATABASE `' + SCRDEV2_DATABASE + '` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;\n\n')
+mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
+
+# CREATE USER 'mangos'@'localhost' IDENTIFIED BY 'mangos';
+ADD_MANGOS_MYSQL = ('CREATE USR ' + CI_MANGOS_USR + '@localhost ' + 'IDENTIFIED BY ' + CI_MANGOS_USR_PASS + ';\n\n')
+mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
+
+# GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES ON `mangos`.* TO 'mangos'@'localhost';
+ADD_MANGOS_MYSQL = ('GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES ON `' + WORLD_DATABASE + '`.* TO ' + CI_MANGOS_USR + '@localhost:\n\n')
+mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
+
+# GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES ON `characters`.* TO 'mangos'@'localhost';
+ADD_MANGOS_MYSQL = ('GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES ON `'+CHAR_DATABASE+'`.* TO '+ CI_MANGOS_USR + '@localhost;\n\n')
+mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
+
+# GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES ON `realmd`.* TO 'mangos'@'localhost';
+ADD_MANGOS_MYSQL = ('GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES ON `'+ACC_DATABASE+'`.* TO '+ CI_MANGOS_USR + '@localhost;\n\n')
+mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
+
+# GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES ON `realmd`.* TO 'mangos'@'localhost';
+ADD_MANGOS_MYSQL = ('GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, LOCK TABLES ON `'+SCRDEV2_DATABASE+'`.* TO '+ CI_MANGOS_USR + '@localhost;\n\n')
+mangos_ci_sql_inst.write(ADD_MANGOS_MYSQL)
+
+# Setup realm-list and with iser input
+# INSERT INTO `realmlist` VALUES ('MaNGOS', '127.0.0.1', 8085, 0, 2, 0, 0, 0, '');
+# TODO: Setup User input Section + loop for manual install of realms to account server
+# Finalize the SQL file
+mangos_ci_sql_inst.close()
+print 'SQL file for MaNGOS DB install has been written to your home directory: [' + "/home/" + SYS_USR + "/mangos-ci-usr.sql" + ']'
+
+# Run the upload
+MYSQL_FILE_LOC = '/home/' + SYS_USR + '/mangos.sql'
+# TODO: Get MySQL syntax for port number
+# Edit -h for configurable host by DB NAME (realmd and mangosd)
+# IDEA: Setup host/port for each database (Could be useful in multi server platform) (ENTERPRISE INSTALLER)
+
+# DEPRECIATED os.system('mysql -u ' + mysql_root_ci_usr + ' -p' + mysql_root_ci_usr_pass + ' -h localhost' + ' < ' + MYSQL_FILE_LOC) 
+# TODO: Add in -h CONFIG
+
+
+if keep_s_dir.get_selected_objects()  == ['No']:
+    print 'Source code directory will be erased after full install is finished' # Only remove /opt/SOURCE/mangos3_ci_code/*
+ 
