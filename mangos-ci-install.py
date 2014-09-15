@@ -13,7 +13,7 @@
 
 INSTALL_DIR = '/opt/mangos3_ci_server/'
 SYS_USR = 'mangos'
-ScriptDev2_lib = 'https://github.com/mangosthree/scripts.git'
+ScriptDev2_lib = 'https://github.com/CollectiveIndustries/scripts.git'
 # DO NOT EDIT BELOW LINE
 #-----------------------------------------------------------------------------------------------#
 
@@ -245,13 +245,11 @@ if CI_COMPILE_YN == 'n':
 	print "[2] https://github.com/mangosthree/scripts.git\n"
 	print "[3] https://github.com/CollectiveIndustries/scripts.git\n"
 	ScriptDev2_lib = raw_input('ScriptDev2 [2]: ')
-	if ScriptDev2_lib == '':
-		ScriptDev2_lib = "https://github.com/mangosthree/scripts.git"
 	if ScriptDev2_lib == '1':
 		ScriptDev2_lib = "https://github.com/scriptdev2/scriptdev2-cata.git"
 	if ScriptDev2_lib == '2':
 		ScriptDev2_lib = "https://github.com/mangosthree/scripts.git"
-	if ScriptDev2_lib == '3':
+	if ScriptDev2_lib == '3' or ScriptDev2_lib == '':
 		ScriptDev2_lib = "https://github.com/CollectiveIndustries/scripts.git"
 	# Account 
 ACC_DATABASE = raw_input('New Account Database: [realmd-account] ')
@@ -292,7 +290,7 @@ if CI_MANGOS_REALM_ID == '':
 
 if CI_COMPILE_YN == 'n':	
 	#TODO SWAP out urls for CI github repo AFTER code clean up and repo creation
-	git_api("clone", 'https://github.com/mangosthree/server.git '+SERV_CODE+'/server')
+	git_api("clone", 'https://github.com/CollectiveIndustries/server.git '+SERV_CODE+'/server')
 	git_api("clone", 'https://github.com/CollectiveIndustries/Mangos_world_database.git '+SERV_CODE+'/database')
 	#Clone ScriptDev2  - execute from within src/bindings directory
 	print "Chaging Directory to: "+SERV_CODE+"/server/src/bindings\nINSTALLING: "+ScriptDev2_lib
@@ -300,7 +298,7 @@ if CI_COMPILE_YN == 'n':
 		git_api("clone", ScriptDev2_lib+' ./ScriptDev2')
 
 	# tools directory
-	git_api("clone", 'https://github.com/mangosthree/tools.git '+SERV_CODE+'/tools')
+	git_api("clone", 'https://github.com/CollectiveIndustries/tools.git '+SERV_CODE+'/tools')
 
 	# START compile and begin install
 	os.makedirs(os.path.join(SERV_CODE+"/server/", "objdir")) #main server bin directory
