@@ -110,6 +110,7 @@ INSTALLER_SETTINGS = {	"realm_name": 	"",
 			"m_db_host": 	"localhost",
 			"m_db_port": 	"3306",
 			"m_sys_usr": 	SYS_USR,
+			"m_sys_pass":	"",#this has to be passed to the configuration scripts
 			"w_db": 	"world-",
 			"c_db":         "characters-",
 			"sd2_db":       "scriptdev2-",
@@ -117,6 +118,7 @@ INSTALLER_SETTINGS = {	"realm_name": 	"",
 			"ver":		"4",
 			"rid":		"1", # default realm 1
 			"install_path":	INSTALL_DIR
+			## DATABASE USERS AND PASSWORDS ##
 			}
 
 def prt_dict(stuff):
@@ -162,6 +164,12 @@ def main():
 	reset_scrn()
         cur_pos(1,26,"New Characters Database: ["+INSTALLER_SETTINGS["c_db"]+INSTALLER_SETTINGS["realm_name"]+"]")
         set_option("c_db",raw_input("CHAR DB: "),INSTALLER_SETTINGS["c_db"]+INSTALLER_SETTINGS["realm_name"])	
+	reset_scrn()
+	cur_pos(1,26,"New System User: ["+INSTALLER_SETTINGS["m_sys_usr"]+"]")
+        set_option("m_sys_usr",raw_input("USER NAME: "),INSTALLER_SETTINGS["m_sys_usr"])
+	reset_scrn()
+        cur_pos(1,26,INSTALLER_SETTINGS["m_sys_usr"]+" System Password: ["+INSTALLER_SETTINGS["m_sys_pass"]+"]")
+        set_option("m_sys_pass",raw_input("PASSWORD: "),INSTALLER_SETTINGS["m_sys_pass"])
 
 	prt_dict(INSTALLER_SETTINGS)
 		
