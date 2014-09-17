@@ -9,7 +9,9 @@
 # TITLE: Mangos Installer
 #
 # PURPOSE: Sets up the Mangos installation environment, configures databases, sets up realms
+# also builds all the code and installs game maps
 #
+# CREDITS: William Baggett for color scheme, Levi Modl for Logo Idea,
 #
 ##################################################################################################
 
@@ -17,6 +19,8 @@
 INSTALL_DIR = '/opt/ci_mangos3/'
 SYS_USR = 'mangos'
 
+
+## DO NOT CHANGE BELOW THIS LINE ##
 
 ## INCLUDES ##
 from subprocess import call
@@ -29,20 +33,25 @@ import time
 import urllib2 
 import os.path
 import glob
-import CI_COLORS
+import CI_COLORS # COLOR CODES
 import datetime
 
-## DO NOT CHANGE BELOW THIS LINE ##
+## SCRIPT GLOBALS ##
 _DEBUG_ = False
 SERV_CODE = '/home/' + SYS_USR + '/SOURCE/mangos3_ci_code' #will be used to clone all the code and compile the software (can be removed after the install)
 SQL_USR_INST = 'mangos-ci-usr.sql'
 _LOC_SQL_UPDATES_ = SERV_CODE + '/server/sql/updates/'
 
-## Function Definitions ##
+##################################### Function Definitions #####################################
+
+
+## DEBUG FUNCTION ##
 def debug(string,value):
 	if _DEBUG_ is True:
 		print "%s DEBUG: %s %s" % (TimeStamp(), string, value)
 		
+
+## reset cursor postion in terminal ##
 def cur_pos(x_pos,y_pos,MSG,color):
 	"""Function to set cursor position"""
 	if not _DEBUG_:
@@ -53,41 +62,52 @@ def cur_pos(x_pos,y_pos,MSG,color):
 # CI MANGOS LOGO HERE
 # Idea by Levi Modl
 # adapted to work with Python by Andrew Malone
-# color implimented 9-15-2014
-def logo():
-	print "\x1b[0;92;40m" #bright green on black no formatting
-	print " CCCCC       IIIIIIIII"
-	print "CCC CCC         III"
-	print "CCC CCC         III"
-	print "CCC             III"
-	print "CCC     ====    III"
-	print "CCC     ====    III"
-	print "CCC             III"
-	print "CCC CCC         III"
-	print "CCC CCC         III"
-	print " CCCCC       IIIIIIIII     \x1b[0mhttp://ci-main.no-ip.org/"
-	print "\x1b[0;91;44m" ## MANGOS LOGO COLORING ##
-	print "MM   MM         NN   NN  GGGGG   OOOO   SSSSS "
-	print "MM   MM         NN   NN GGG GGG OO  OO SSS SSS"
-	print "MMM MMM         NNN  NN GGG GGG OO  OO SSS    "
-	print "MM M MM         NNNN NN GGG     OO  OO  SSS   "
-	print "MM M MM  AAAAA  NN NNNN GGG     OO  OO   SSS  "
-	print "MM M MM A   AAA NN  NNN GGGGGGG OO  OO    SSS "
-	print "MM   MM     AAA NN   NN GG  GGG OO  OO     SSS"
-	print "MM   MM AAAAAAA NN   NN GGG GGG OO  OO SSS SSS"
-	print "MM   MM AA  AAA NN   NN  GGGGGG  OOOO   SSSSS "
-	print "        AA  AAA                               "
-	print "        AAAAAA                                "
-	print "\x1b[0m                            http://www.getmangos.co.uk/"
+# color implimented 9-15-2014 sugestted by William Baggett 
+def logo():                                                                              ## PRINTS OUT WHITE BOARDER ##
+	print "\x1b[0;92;40m                                                              \x1b[0;32;47m  \x1b[0m" #bright green on black no formatting
+	print "\x1b[0;92;40m CCCCC       IIIIIIIII                                        \x1b[0;32;47m  \x1b[0m"
+	print "\x1b[0;92;40mCCC CCC         III                                           \x1b[0;32;47m  \x1b[0m"
+	print "\x1b[0;92;40mCCC CCC         III                                           \x1b[0;32;47m  \x1b[0m"
+	print "\x1b[0;92;40mCCC             III                                           \x1b[0;32;47m  \x1b[0m"
+	print "\x1b[0;92;40mCCC     ====    III                                           \x1b[0;32;47m  \x1b[0m"
+	print "\x1b[0;92;40mCCC     ====    III                                           \x1b[0;32;47m  \x1b[0m"
+	print "\x1b[0;92;40mCCC             III                                           \x1b[0;32;47m  \x1b[0m"
+	print "\x1b[0;92;40mCCC CCC         III                                           \x1b[0;32;47m  \x1b[0m"
+	print "\x1b[0;92;40mCCC CCC         III                                           \x1b[0;32;47m  \x1b[0m"
+	print "\x1b[0;92;40m CCCCC       IIIIIIIII     \x1b[0mhttp://ci-main.no-ip.org/          \x1b[0;32;47m  \x1b[0m"
+	print "\x1b[0;91;44m                                                              \x1b[0;32;47m  \x1b[0m" ## MANGOS LOGO COLORING ##
+	print "\x1b[0;91;44mMM   MM         NN   NN  GGGGG   OOOO   SSSSS                 \x1b[0;32;47m  \x1b[0m"
+	print "\x1b[0;91;44mMM   MM         NN   NN GGG GGG OO  OO SSS SSS                \x1b[0;32;47m  \x1b[0m"
+	print "\x1b[0;91;44mMMM MMM         NNN  NN GGG GGG OO  OO SSS                    \x1b[0;32;47m  \x1b[0m"
+	print "\x1b[0;91;44mMM M MM         NNNN NN GGG     OO  OO  SSS                   \x1b[0;32;47m  \x1b[0m"
+	print "\x1b[0;91;44mMM M MM  AAAAA  NN NNNN GGG     OO  OO   SSS                  \x1b[0;32;47m  \x1b[0m"
+	print "\x1b[0;91;44mMM M MM A   AAA NN  NNN GGGGGGG OO  OO    SSS                 \x1b[0;32;47m  \x1b[0m"
+	print "\x1b[0;91;44mMM   MM     AAA NN   NN GG  GGG OO  OO     SSS                \x1b[0;32;47m  \x1b[0m"
+	print "\x1b[0;91;44mMM   MM AAAAAAA NN   NN GGG GGG OO  OO SSS SSS                \x1b[0;32;47m  \x1b[0m"
+	print "\x1b[0;91;44mMM   MM AA  AAA NN   NN  GGGGGG  OOOO   SSSSS                 \x1b[0;32;47m  \x1b[0m"
+	print "\x1b[0;91;44m        AA  AAA                                               \x1b[0;32;47m  \x1b[0m"
+	print "\x1b[0;91;44m        AAAAAA                                                \x1b[0;32;47m  \x1b[0m"
+	print "\x1b[0m                            http://www.getmangos.co.uk/       \x1b[0;32;47m  \x1b[0m"
 	print ""
+	(width, height) = getTerminalSize()
+	print "\x1b[0;32;47m" #White block border #
+	for x in range(0,65):
+		print "\033[%s;%sH " % (25,x)
+	print "\x1b[0m"
 # END LOGO
+
+## Builds the Text based GUI ##
 def reset_scrn():
 	os.system('cls' if os.name == 'nt' else 'clear')
         logo()
+	prt_dict(INSTALLER_SETTINGS,10)
 	
+
+## Returns a formatted Time Stamp ##
 def TimeStamp():
 	return datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
 
+## host name of system ##
 def HostName():
 	hostname = subprocess.check_output(["uname", "-n"])
 	if hostname[-1] == '\n':
@@ -95,8 +115,41 @@ def HostName():
 		hostname = hostname[:-1]
 	return hostname #return only the host name no New line
 
+## CONSOLE SIZE ##
+def getTerminalSize():
+    import os
+    env = os.environ
+    def ioctl_GWINSZ(fd):
+        try:
+            import fcntl, termios, struct, os
+            cr = struct.unpack('hh', fcntl.ioctl(fd, termios.TIOCGWINSZ,
+        '1234'))
+        except:
+            return
+        return cr
+    cr = ioctl_GWINSZ(0) or ioctl_GWINSZ(1) or ioctl_GWINSZ(2)
+    if not cr:
+        try:
+            fd = os.open(os.ctermid(), os.O_RDONLY)
+            cr = ioctl_GWINSZ(fd)
+            os.close(fd)
+        except:
+            pass
+    if not cr:
+        cr = (env.get('LINES', 25), env.get('COLUMNS', 80))
+
+        ### Use get(key[, default]) instead of a try/catch
+        #try:
+        #    cr = (env['LINES'], env['COLUMNS'])
+        #except:
+        #    cr = (25, 80)
+    return int(cr[1]), int(cr[0])
+
+
+## setts a new value to the Settings List ##
 def set_option(k,v,defualt):
 	"""sets a new value for a KEY (k) passed to the function"""
+	#width of console EX 157	
 	for key in INSTALLER_SETTINGS.keys():
         	if key == k:
 			if v == '':
@@ -129,28 +182,24 @@ INSTALLER_SETTINGS = {	"realm_name": 		"",
 #			"
 			}
 
-def prt_dict(stuff):
+## print out the Settings List ##
+def prt_dict(stuff,start):
 	"""prints out key value pairs on seprate lines"""
+	(width, height) = getTerminalSize()
+	x_pos = width - 50
+	y_pos = start
+	print "\x1b[4;32;40m"
+	print "\033[%s;%sH%s" % (start,x_pos,"-=/\=-    MaNGOS Install Options    -=/\=-")
+	print "\x1b[0m"
 	for k,v in stuff.items():
-		print k,v
-
-## COLOR TABLES ##
-def print_format_table():
-    """prints table of formatted text format options"""
-    for style in xrange(8):
-        for fg in xrange(30,38):
-            s1 = ''
-            for bg in xrange(40,48):
-                format = ';'.join([str(style), str(fg), str(bg)])
-                s1 += '\x1b[%sm %s \x1b[0m' % (format, format)
-            print s1
-        print '\n'
-
+		y_pos += 1
+		print "\033[%s;%sH     %s" % (y_pos,x_pos,k)
+		print "\033[%s;%sH%s" % (y_pos,x_pos+26,v)
 
 ## START OF MAIN PROGRAM ##
 def main():
 	reset_scrn()
-	cur_pos(1,26,"Welcome to the MaNGOS installer durring this script we will figure out how you want your MaNGOS server set up","0;0;0")
+	cur_pos(1,26,"Welcome to the MaNGOS installer.\nDurring this script we will figure out how you want your MaNGOS server set up","0;0;0")
 	raw_input("Press Enter to initilize installer....")
 	reset_scrn()
 	cur_pos(1,26,"Host name for account DB [\x1b[1;31;40m"+INSTALLER_SETTINGS["r_db_host"]+"\x1b[4;32;40m]?","4;32;40")
@@ -193,12 +242,12 @@ def main():
         set_option("m_sys_pass",raw_input("PASSWORD: "),INSTALLER_SETTINGS["m_sys_pass"])
 	
 	## Configuration Files ##
-	
+
 
 	## DATABASE QUESTION ##
 	
 	## Print out settings for debug info ##
-	prt_dict(INSTALLER_SETTINGS)
+#	prt_dict(INSTALLER_SETTINGS,26)
 #	print_format_table()		
 if __name__ == '__main__':
     main()
