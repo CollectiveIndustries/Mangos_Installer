@@ -192,7 +192,7 @@ INSTALLER_SETTINGS = {	"realm_name": 		"",
 def prt_dict(stuff,start):
 	"""prints out key value pairs on seprate lines"""
 	(width, height) = getTerminalSize()
-	x_pos = width - 70
+	x_pos = width - 80
 	y_pos = start
 	print "\x1b[4;32;40m"
 	print "\033[%s;%sH%s" % (start,x_pos,"-=/\=-    MaNGOS Install Options    -=/\=-")
@@ -273,16 +273,19 @@ def main():
 	reset_scrn()
 	cur_pos(1,28,"CLONING REPOSITORY TO "+INSTALLER_SETTINGS["GIT_REPO_CI_SERVER"],"1;31;40")
 	git_server_handle = Repo.clone_from("https://github.com/CollectiveIndustries/server.git",INSTALLER_SETTINGS["GIT_REPO_CI_SERVER"])
-	reset_scrn()
-	cur_pos(1,28,"CLONING REPOSITORY TO "+INSTALLER_SETTINGS["GIT_REPO_CI_DBS"],"1;31;40")
+	#reset_scrn()
+	cur_pos(1,29,"CLONING REPOSITORY TO "+INSTALLER_SETTINGS["GIT_REPO_CI_DBS"],"1;31;40")
 	git_database_handle = Repo.clone_from("https://github.com/CollectiveIndustries/Mangos_world_database.git",INSTALLER_SETTINGS["GIT_REPO_CI_DBS"])
-	reset_scrn()
-	cur_pos(1,28,"CLONING REPOSITORY TO "+INSTALLER_SETTINGS["GIT_REPO_CI_SD2"],"1;31;40")
+	#reset_scrn()
+	cur_pos(1,30,"CLONING REPOSITORY TO "+INSTALLER_SETTINGS["GIT_REPO_CI_SD2"],"1;31;40")
 	git_maps_handle = Repo.clone_from("https://github.com/CollectiveIndustries/scripts.git",INSTALLER_SETTINGS["GIT_REPO_CI_SD2"])
-	reset_scrn()
-	cur_pos(1,28,"CLONING REPOSITORY TO "+INSTALLER_SETTINGS["GIT_REPO_CI_WEB"],"1;31;40")
+	#reset_scrn()
+	cur_pos(1,31,"CLONING REPOSITORY TO "+INSTALLER_SETTINGS["GIT_REPO_CI_WEB"],"1;31;40")
 	git_web_handle = Repo.clone_from("https://github.com/CollectiveIndustries/mangos-enhanced.git",INSTALLER_SETTINGS["GIT_REPO_CI_WEB"])
-
+	#reset_scrn()
+	cur_pos(1,32,"CLONING REPOSITORY TO "+INSTALLER_SETTINGS["GIT_REPO_CI_TOOLS"],"1;31;40")
+	git_tools_handle = Repo.clone_from("https://github.com/CollectiveIndustries/tools",INSTALLER_SETTINGS["GIT_REPO_CI_TOOLS"])
+	
 	## change owner of directories ##
 	subprocess.call(shlex.split('sudo chown -R '+UserName()+':'+INSTALLER_SETTINGS["m_sys_usr"]+' '+CODE_BASE))## set the owner of the directory so we can leave ROOT
 		
