@@ -11,7 +11,7 @@
 # PURPOSE: Sets up the Mangos installation environment, configures databases, sets up realms
 # also builds all the code and installs game maps
 #
-# CREDITS: William Baggett for color scheme, Levi Modl for Logo Idea,
+# CREDITS: William Baggett for color scheme, Levi Modl for Logo Idea, see the README for more
 #
 ##################################################################################################
 
@@ -42,7 +42,7 @@ from git import * #for our git tools and bindings
 
 import MySQLdb ## import the MySQLdb Connector API
 
-## ManGos install Library ##
+## ManGOS install Library ##
 from MaNGOS_core import settings ## we need our settings or this will fail
 
 

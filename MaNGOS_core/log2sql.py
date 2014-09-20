@@ -3,7 +3,8 @@
 #
 # Copyright (C) 2013 Collective Industries code provided by Andrew Malone 
 # python code for parsing CI-MANGOS logs and writting them to SQL entrys
-#
+# 
+# NOT COMPLETED
 ##################################################################################################
 
 #### USER GLOBALS ####
