@@ -22,6 +22,9 @@ SYS_USR = 'mangos'
 
 ## DO NOT CHANGE BELOW THIS LINE ##
 
+_DEBUG_ = False
+
+
 ## INCLUDES ##
 from subprocess import call
 import datetime
@@ -37,12 +40,12 @@ import CI_COLORS # COLOR CODES
 import datetime
 from git import * #for our git tools and bindings
 
-## SCRIPT GLOBALS ##
-_DEBUG_ = False
-SERV_HOME = '/home/' + SYS_USR
-CODE_BASE = SERV_HOME + '/SOURCE' #will be used to clone all the code and compile the software (can be removed after the install)
-SQL_USR_INST = 'mangos-ci-usr.sql'
-## _LOC_SQL_UPDATES_ = SERV_CODE + '/server/sql/updates/'
+import MySQLdb ## import the MySQLdb Connector API
+
+## ManGos install Library ##
+from MaNGOS_core import settings ## we need our settings or this will fail
+
+
 
 ##################################### Function Definitions #####################################
 
@@ -102,7 +105,7 @@ def logo():                                                                     
 def reset_scrn():
 	os.system('cls' if os.name == 'nt' else 'clear')
         logo()
-	prt_dict(INSTALLER_SETTINGS,10)
+	prt_dict(INSTALLER_SETTINGS,5)
 	
 ## Returns a formatted Time Stamp ##
 def TimeStamp():
@@ -147,47 +150,6 @@ def getTerminalSize():
     return int(cr[1]), int(cr[0])
 
 
-## setts a new value to the Settings List ##
-def set_option(k,v,defualt):
-	"""sets a new value for a KEY (k) passed to the function"""
-	#width of console EX 157	
-	for key in INSTALLER_SETTINGS.keys():
-        	if key == k:
-			if v == '':
-				INSTALLER_SETTINGS[key] = defualt
-			else:
-	            		INSTALLER_SETTINGS[key] = v
-
-##### settings Dictionary #####
-INSTALLER_SETTINGS = {	"realm_name": 		"",
-			"r_db_host": 		"localhost",
-			"r_db_port":		"3306",
-			"m_db_host": 		"localhost",
-			"m_db_port": 		"3306",
-			"m_sys_usr": 		SYS_USR,
-			"m_sys_pass":		"",#this has to be passed to the configuration scripts
-			"w_db": 		"world-",
-			"c_db":         	"characters-",
-			"sd2_db":       	"scriptdev2-",
-			"a_db":         	"realmd-account",
-			"ver":			"4",
-			"rid":			"1", # default realm 1
-			"install_path":		INSTALL_DIR,
-			## DATABASE USERS AND PASSWORDS ##
-			"mysql_root_ci_usr":	"root",
-			"mysql_root_ci_pass":	"",
-			## GIT CODE LOCATIONS ##
-			"GIT_REPO_CI_SERVER":	CODE_BASE+"/server",
-			"GIT_REPO_CI_DBS":	CODE_BASE+"/database",
-			"GIT_REPO_CI_SD2":	CODE_BASE+"/server/src/bindings/ScriptDev2", ## SCRIPT DEV LIBARAY DESTINATION
-			"GIT_REPO_CI_TOOLS":	CODE_BASE+"/tools",
-			"GIT_REPO_CI_WEB":	CODE_BASE+"/web",			
-			## FILE STRUCTURE ##
-			"MANGOS_LOGS_DIR": 	"logs",# Path is relitave to the INSTALL_DIR
-			"MANGOS_DATA_DIR":	"data" # Path is relitave to the INSTALL_DIR
-#			"
-			}
-
 ## print out the Settings List ##
 def prt_dict(stuff,start):
 	"""prints out key value pairs on seprate lines"""
@@ -195,12 +157,14 @@ def prt_dict(stuff,start):
 	x_pos = width - 80
 	y_pos = start
 	print "\x1b[4;32;40m"
-	print "\033[%s;%sH%s" % (start,x_pos,"-=/\=-    MaNGOS Install Options    -=/\=-")
+	print "\033[%s;%sH%s" % (start,x_pos,"-=/\=-          MaNGOS Install Options          -=/\=-")
 	print "\x1b[0m"
-	for k,v in stuff.items():
+	for k,v in stuff.iteritems():## FIX THIS currantly prints out full options WITH extended atributes ##
 		y_pos += 1
 		print "\033[%s;%sH     %s" % (y_pos,x_pos,k)
-		print "\033[%s;%sH%s" % (y_pos,x_pos+26,v)
+		print "\033[%s;%sH%s" % (y_pos,x_pos+30,v)
+
+## Grab currant System User ##
 def UserName():
 	return getpass.getuser()
 
@@ -220,59 +184,59 @@ def clean_dir(path):
 
 ## START OF MAIN PROGRAM ##
 def main():
+	## TODO rebuild Q + A section with a loop to dynamicly load values from the settings dictionary ##
 	reset_scrn()
 	cur_pos(1,26,"Welcome to the MaNGOS installer.\nDurring this script we will figure out how you want your MaNGOS server set up","0;0;0")
 	raw_input("Press Enter to initilize installer....")
 	reset_scrn()
-	cur_pos(1,26,"Host name for account DB [\x1b[1;31;40m"+INSTALLER_SETTINGS["r_db_host"]+"\x1b[4;32;40m]?","4;32;40")
-	set_option("r_db_host",raw_input("HOST NAME: "),INSTALLER_SETTINGS["r_db_host"])
+	cur_pos(1,26,"Host name for account DB [\x1b[1;31;40m"+INSTALLER_SETTINGS["REALM_DB_HOST"]+"\x1b[4;32;40m]?","4;32;40")
+	set_option("REALM_DB_HOST",raw_input("REALM_DB_HOST: "),INSTALLER_SETTINGS["REALM_DB_HOST"])
 	reset_scrn()
-	cur_pos(1,26,"Port number for account DB [\x1b[1;31;40m"+INSTALLER_SETTINGS["r_db_port"]+"\x1b[4;32;40m]?","4;32;40")
-	set_option("r_db_port",raw_input("PORT NUMBER: "),INSTALLER_SETTINGS["r_db_port"])
+	cur_pos(1,26,"Port number for account DB [\x1b[1;31;40m"+INSTALLER_SETTINGS["ACCOUNT_DB_PORT"]+"\x1b[4;32;40m]?","4;32;40")
+	set_option("ACCOUNT_DB_PORT",raw_input("ACCOUNT_DB_PORT: "),INSTALLER_SETTINGS["ACCOUNT_DB_PORT"])
 	reset_scrn()
-        cur_pos(1,26,"Host name for world DB [\x1b[1;31;40m"+INSTALLER_SETTINGS["m_db_host"]+"\x1b[4;32;40m]?","4;32;40")
-        set_option("m_db_host",raw_input("HOST NAME: "),INSTALLER_SETTINGS["m_db_host"])
+        cur_pos(1,26,"Host name for world DB [\x1b[1;31;40m"+INSTALLER_SETTINGS["M_DB_HOST"]+"\x1b[4;32;40m]?","4;32;40")
+        set_option("M_DB_HOST",raw_input("M_DB_HOST: "),INSTALLER_SETTINGS["M_DB_HOST"])
 	reset_scrn()
-	cur_pos(1,26,"Port number for world DB [\x1b[1;31;40m"+INSTALLER_SETTINGS["m_db_port"]+"\x1b[4;32;40m]?","4;32;40")
-	set_option("m_db_port",raw_input("PORT NUMBER: "),INSTALLER_SETTINGS["m_db_port"])
+	cur_pos(1,26,"Port number for world DB [\x1b[1;31;40m"+INSTALLER_SETTINGS["M_DB_PORT"]+"\x1b[4;32;40m]?","4;32;40")
+	set_option("M_DB_PORT",raw_input("M_DB_PORT: "),INSTALLER_SETTINGS["M_DB_PORT"])
 	reset_scrn()
-        cur_pos(1,26,"MaNGOS version (1 vanilla - 5 MoP)[\x1b[1;31;40m"+INSTALLER_SETTINGS["ver"]+"\x1b[4;32;40m]?","4;32;40")
-        set_option("ver",raw_input("VER: "),INSTALLER_SETTINGS["ver"])
+        cur_pos(1,26,"MaNGOS version (1 vanilla - 5 MoP)[\x1b[1;31;40m"+INSTALLER_SETTINGS["SRV_VER"]+"\x1b[4;32;40m]?","4;32;40")
+        set_option("SRV_VER",raw_input("SRV_VER: "),INSTALLER_SETTINGS["SRV_VER"])
 	reset_scrn()
-        cur_pos(1,26,"RealmID Number [\x1b[1;31;40m"+INSTALLER_SETTINGS["rid"]+"\x1b[4;32;40m]?","4;32;40")
-        set_option("rid",raw_input("RID: "),INSTALLER_SETTINGS["rid"])
+        cur_pos(1,26,"RealmID Number [\x1b[1;31;40m"+INSTALLER_SETTINGS["REALM_ID"]+"\x1b[4;32;40m]?","4;32;40")
+        set_option("REALM_ID",raw_input("REAM_VER: "),INSTALLER_SETTINGS["REALM_ID"])
 	reset_scrn()
 	cur_pos(1,26,"Realm Name [\x1b[1;31;40m"+HostName()+"\x1b[4;32;40m]","4;32;40")
-	set_option("realm_name",raw_input("REALM: "),HostName())## use system host name for realm name by defualt
+	set_option("REALM_NAME",raw_input("REALM_NAME: "),HostName())## use system host name for realm name by defualt
 	reset_scrn()
-	cur_pos(1,26,"New Account Database: [\x1b[1;31;40m"+INSTALLER_SETTINGS["a_db"]+"\x1b[4;32;40m]","4;32;40")
-	set_option("a_db",raw_input("ACCOUNT DB: "),INSTALLER_SETTINGS["a_db"])
+	cur_pos(1,26,"New Account Database: [\x1b[1;31;40m"+INSTALLER_SETTINGS["ACCOUNT_DB"]+"\x1b[4;32;40m]","4;32;40")
+	set_option("ACCOUNT_DB",raw_input("ACCOUNT_DB: "),INSTALLER_SETTINGS["ACCOUNT_DB"])
 	reset_scrn()
-        cur_pos(1,26,"New World Database: [\x1b[1;31;40m"+INSTALLER_SETTINGS["w_db"]+INSTALLER_SETTINGS["realm_name"]+"\x1b[4;32;40m]","4;32;40")
-        set_option("w_db",raw_input("WORLD DB: "),INSTALLER_SETTINGS["w_db"]+INSTALLER_SETTINGS["realm_name"])
+        cur_pos(1,26,"New World Database: [\x1b[1;31;40m"+INSTALLER_SETTINGS["WORLD_DB"]+INSTALLER_SETTINGS["REALM_NAME"]+"\x1b[4;32;40m]","4;32;40")
+        set_option("WORLD_DB",raw_input("WORLD_DB: "),INSTALLER_SETTINGS["WORLD_DB"]+INSTALLER_SETTINGS["REALM_NAME"])
 	reset_scrn()
-        cur_pos(1,26,"New ScriptDev2 Database: [\x1b[1;31;40m"+INSTALLER_SETTINGS["sd2_db"]+INSTALLER_SETTINGS["realm_name"]+"\x1b[4;32;40m]","4;32;40")
-        set_option("sd2_db",raw_input("SCRIPTS DB: "),INSTALLER_SETTINGS["sd2_db"]+INSTALLER_SETTINGS["realm_name"])
+        cur_pos(1,26,"New ScriptDev2 Database: [\x1b[1;31;40m"+INSTALLER_SETTINGS["SCRIPTS_DB"]+INSTALLER_SETTINGS["REALM_NAME"]+"\x1b[4;32;40m]","4;32;40")
+        set_option("SCRIPTS_DB",raw_input("SCRIPTS_DB: "),INSTALLER_SETTINGS["SCRIPTS_DB"]+INSTALLER_SETTINGS["REALM_NAME"])
 	reset_scrn()
-        cur_pos(1,26,"New Characters Database: [\x1b[1;31;40m"+INSTALLER_SETTINGS["c_db"]+INSTALLER_SETTINGS["realm_name"]+"\x1b[4;32;40m]","4;32;40")
-        set_option("c_db",raw_input("CHAR DB: "),INSTALLER_SETTINGS["c_db"]+INSTALLER_SETTINGS["realm_name"])
+        cur_pos(1,26,"New Characters Database: [\x1b[1;31;40m"+INSTALLER_SETTINGS["CHAR_DB"]+INSTALLER_SETTINGS["REALM_NAME"]+"\x1b[4;32;40m]","4;32;40")
+        set_option("CHAR_DB",raw_input("CHAR_DB: "),INSTALLER_SETTINGS["CHAR_DB"]+INSTALLER_SETTINGS["REALM_NAME"])
 	reset_scrn()
-	cur_pos(1,26,"New System User: [\x1b[1;31;40m"+INSTALLER_SETTINGS["m_sys_usr"]+"\x1b[4;32;40m]","4;32;40")
-        set_option("m_sys_usr",raw_input("USER NAME: "),INSTALLER_SETTINGS["m_sys_usr"])
+	cur_pos(1,26,"New System User: [\x1b[1;31;40m"+INSTALLER_SETTINGS["MANGOS_USR"]+"\x1b[4;32;40m]","4;32;40")
+        set_option("MANGOS_USR",raw_input("MANGOS_USR: "),INSTALLER_SETTINGS["MANGOS_USR"])
 	reset_scrn()
-        cur_pos(1,26,"\x1b[1;31;40m"+INSTALLER_SETTINGS["m_sys_usr"]+"\x1b[4;32;40m System Password: [\x1b[1;31;40m"+INSTALLER_SETTINGS["m_sys_pass"]+"\x1b[4;32;40m]","4;32;40")
-        set_option("m_sys_pass",raw_input("PASSWORD: "),INSTALLER_SETTINGS["m_sys_pass"])
-
+        cur_pos(1,26,"\x1b[1;31;40m"+INSTALLER_SETTINGS["MANGOS_USR"]+"\x1b[4;32;40m System Password: [\x1b[1;31;40m"+INSTALLER_SETTINGS["MANGOS_PASS"]+"\x1b[4;32;40m]","4;32;40")
+        set_option("MANGOS_PASS",raw_input("MANGOS_PASS: "),INSTALLER_SETTINGS["MANGOS_PASS"])
 
 	## BUILD PATH ##
 	subprocess.call(shlex.split('sudo rm -Rf '+SERV_HOME))
-	subprocess.call(shlex.split('sudo groupadd --system '+INSTALLER_SETTINGS["m_sys_usr"]))
+	subprocess.call(shlex.split('sudo groupadd --system '+INSTALLER_SETTINGS["MANGOS_USR"]))
 	subprocess.call(shlex.split('sudo mkdir -p '+CODE_BASE))
-	subprocess.call(shlex.split('sudo chown -R '+UserName()+':'+INSTALLER_SETTINGS["m_sys_usr"]+' '+CODE_BASE))## set perms for user to clone ##
+	subprocess.call(shlex.split('sudo chown -R '+UserName()+':'+INSTALLER_SETTINGS["MANGOS_USR"]+' '+CODE_BASE))## set perms for user to clone ##
 	## Initilize Repository ##
 	reset_scrn()
 	cur_pos(1,28,"CLONING REPOSITORY TO "+INSTALLER_SETTINGS["GIT_REPO_CI_SERVER"],"1;31;40")
-	git_server_handle = Repo.clone_from("https://github.com/CollectiveIndustries/server.git",INSTALLER_SETTINGS["GIT_REPO_CI_SERVER"])
+	git_serSRV_VER_handle = Repo.clone_from("https://github.com/CollectiveIndustries/serSRV_VER.git",INSTALLER_SETTINGS["GIT_REPO_CI_SERVER"])
 	#reset_scrn()
 	cur_pos(1,29,"CLONING REPOSITORY TO "+INSTALLER_SETTINGS["GIT_REPO_CI_DBS"],"1;31;40")
 	git_database_handle = Repo.clone_from("https://github.com/CollectiveIndustries/Mangos_world_database.git",INSTALLER_SETTINGS["GIT_REPO_CI_DBS"])
@@ -287,15 +251,18 @@ def main():
 	git_tools_handle = Repo.clone_from("https://github.com/CollectiveIndustries/tools",INSTALLER_SETTINGS["GIT_REPO_CI_TOOLS"])
 	
 	## change owner of directories ##
-	subprocess.call(shlex.split('sudo chown -R '+UserName()+':'+INSTALLER_SETTINGS["m_sys_usr"]+' '+CODE_BASE))## set the owner of the directory so we can leave ROOT
+	subprocess.call(shlex.split('sudo chown -R '+UserName()+':'+INSTALLER_SETTINGS["MANGOS_USR"]+' '+CODE_BASE))## set the owner of the directory so we can leave ROOT
 		
 	## Configuration Files ##
 	
 
 	## DATABASE QUESTION ##
 	
-	## Print out settings for debug info ##
-#	prt_dict(INSTALLER_SETTINGS,26)
-#	print_format_table()		
+
 if __name__ == '__main__':
-    main()
+	
+	## Initilize the Settings Dictionary ##
+	INSTALLER_SETTINGS = settings.BuildSettings(settings.INSTALLER_LST)
+	
+	## Enter Main Program ##
+	main()
