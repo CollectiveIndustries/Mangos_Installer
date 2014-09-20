@@ -38,6 +38,13 @@ from MaNGOS_core import gui			## Custom GUI tools
 
 
 ##################################### Function Definitions #####################################
+def DefSettings(stuff):
+	"""fucntion interacts with the user and defines all settings based on the dictionary we built"""
+	for key in stuff.keys():
+		gui.reset_scrn(stuff)
+		gui.cur_pos(1,26,stuff[key][0],"4;32;40")## print out info ##
+		if stuff[key][1] is 0: ## this is a user input feild
+			stuff = settings.set_option(key,raw_input(key+"[\x1b[1;31;40m"+stuff[key][2]+"\x1b[0m]: "),stuff[key][2],stuff)## get input from user and place back into our settings
 
 
 
@@ -45,6 +52,10 @@ from MaNGOS_core import gui			## Custom GUI tools
 def main():
 	## TODO rebuild Q + A section with a loop to dynamicly load values from the settings dictionary ##
 	gui.reset_scrn(INSTALLER_SETTINGS)
+	gui.cur_pos(1,26,"Welcome to the MaNGOS installer.\nDurring this script we will figure out how you want your MaNGOS server set up","0;0;0")
+	raw_input("Press Enter to initilize installer....")
+	## BUILD OPTIONS WITH USER INPUT ##
+	DefSettings(INSTALLER_SETTINGS)
 
 	## BUILD PATH ##
 	subprocess.call(shlex.split('sudo rm -Rf '+settings.SERV_HOME))

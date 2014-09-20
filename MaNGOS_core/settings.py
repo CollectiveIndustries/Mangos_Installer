@@ -8,6 +8,11 @@ CODE_BASE = SERV_HOME + '/SOURCE'
 
 			## /!\ WARNING: ADVANCED SETTINGS /!\ ##
 
+
+## incorectly setting ANY of the following settings will render the installer useless ##
+## please be carefull when adjusting these settings ##
+## This means you Marvy Snuffleson of Kansass City, MO!!!!!
+## not exactly sure who that is O_e
 INSTALLER_LST      = [  ("REALM_NAME",			"Realm Name? "),
 			("REALM_NAME",			0),
 			("REALM_NAME",			""),
@@ -18,7 +23,7 @@ INSTALLER_LST      = [  ("REALM_NAME",			"Realm Name? "),
 
 			("ACCOUNT_DB_PORT",		"Port number for account DB? "),
 			("ACCOUNT_DB_PORT",		0),
-			("ACCOUNT_DB_PORT",		3306),
+			("ACCOUNT_DB_PORT",		"3306"),
 
                         ("M_DB_HOST",			"Host name for WORLD DB? "),
 			("M_DB_HOST",			0),
@@ -26,7 +31,7 @@ INSTALLER_LST      = [  ("REALM_NAME",			"Realm Name? "),
 
                         ("M_DB_PORT",			"Port number for WORLD DB?"),
 			("M_DB_PORT",			0),
-			("M_DB_PORT",			3306),
+			("M_DB_PORT",			"3306"),
 
                         ("WORLD_DB",			"New World Database: "),
 			("WORLD_DB",			0),
@@ -46,11 +51,11 @@ INSTALLER_LST      = [  ("REALM_NAME",			"Realm Name? "),
 
                         ("SRV_VER",			"MaNGOS version (1 vanilla - 5 MoP) "),
 			("SRV_VER",			0),
-			("SRV_VER",			4),
+			("SRV_VER",			"4"),
 
                         ("REALM_ID",			"RealmID Number "),
 			("REALM_ID",			0),
-			("REALM_ID",			1), # default realm 1
+			("REALM_ID",			"1"), # default realm 1
 
                         ("INSTALL_DIR",			"Instalation Destination: "),
 			("INSTALL_DIR",			0),
@@ -128,12 +133,12 @@ def BuildSettings( lst_input ):
 	return list_to_dictionary #return the entire thing back to the main process
 
 ## setts a new value to the Settings List ##
-def set_option(k,v,defualt):
-        """sets a new value for a KEY (k) passed to the function"""
-        #width of console EX 157
-        for key in INSTALLER_SETTINGS.keys():
+def set_option(k,v,defualt,struct):
+        """sets a new value (v) for KEY (k) passed to the function if value (v) is empty use defualt"""
+        for key in struct.keys():
                 if key == k:
-                        if v == '':
-                                INSTALLER_SETTINGS[key] = defualt
+                        if v == '': ## taking into account the items above the value we want is going to be [2] in our Dictionary of Lists
+                                struct[key][2] = defualt
                         else:
-                                INSTALLER_SETTINGS[key] = v
+                                struct[key][2] = v
+	return struct ## return the newly written values ##
