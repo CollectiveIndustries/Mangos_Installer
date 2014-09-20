@@ -12,19 +12,21 @@
 #
 ##################################################################################################
 
+## Install Libraries ##
+import debug as bugs
+
+## OS Imports ##
+import getpass
 
 ## Function Definitions ##
-def debug(string,value):
-	if _DEBUG_ is True:
-		print "%s DEBUG: %s %s" % (TimeStamp(), string, value)
-		
+
 def TimeStamp():
 	return datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
 
 def HostName():
 	hostname = subprocess.check_output(["uname", "-n"])
 	if hostname[-1] == '\n':
-		debug("HostName() []:",hostname[:-1])
+		bugs.debug("HostName() []:",hostname[:-1])
 		hostname = hostname[:-1]
 	return hostname #return only the host name no New line
 	

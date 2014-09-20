@@ -12,12 +12,19 @@
 #
 ##################################################################################################
 
-from lib import colors ## COLOR definitions ##
+## MANGOS Installer libraries ##
+from mlib import colors ## COLOR definitions ##
+import environment as env
+import settings
+import debug as bugs
+
+## standard OS Libraries ##
+import os
 
 ## reset cursor postion in terminal ##
 def cur_pos(x_pos,y_pos,MSG,color):
 	"""Function to set cursor position"""
-	if not _DEBUG_:
+	if not bugs._DEBUG_:
 		print "\033[%s;%sH\x1b[%sm %s \x1b[0m" % (y_pos,x_pos,color,MSG) #set cursor to X,Y pos and print MSG
 	else:
 		print "%s" % (MSG)
@@ -52,7 +59,7 @@ def logo():                                                                     
 	print "\x1b[0;91;44m        AAAAAA                                                \x1b[0;32;47m  \x1b[0m"
 	print "\x1b[0;91;44m                           http://www.getmangos.co.uk/        \x1b[0;32;47m  \x1b[0m"
 	print ""
-	(width, height) = getTerminalSize()
+	(width, height) = env.getTerminalSize()
 	print "\x1b[0;32;47m" # White block border #
 	for x in range(0,65):
 		print "\033[%s;%sH " % (25,x)
@@ -60,15 +67,15 @@ def logo():                                                                     
 # END LOGO
 
 ## Builds the Text based GUI ##
-def reset_scrn():
+def reset_scrn(options):
 	os.system('cls' if os.name == 'nt' else 'clear')
         logo()
-	prt_dict(INSTALLER_SETTINGS,5)
+	prt_dict(options,5)
 
 ## print out the Settings List ##
 def prt_dict(stuff,start):
 	"""prints out key value pairs on seprate lines"""
-	(width, height) = getTerminalSize()
+	(width, height) = env.getTerminalSize()
 	x_pos = width - 80
 	y_pos = start
 	print "\x1b[4;32;40m"
@@ -77,5 +84,5 @@ def prt_dict(stuff,start):
 	for k,v in stuff.iteritems():## FIX THIS currently prints out full options WITH extended attributes ##
 		y_pos += 1
 		print "\033[%s;%sH     %s" % (y_pos,x_pos,k)
-		print "\033[%s;%sH%s" % (y_pos,x_pos+30,v)
+		print "\033[%s;%sH%s" % (y_pos,x_pos+30,v[2])
 
