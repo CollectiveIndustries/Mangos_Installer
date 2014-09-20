@@ -35,19 +35,19 @@ INSTALLER_LST      = [  ("REALM_NAME",			"Realm Name? "),
 
                         ("WORLD_DB",			"New World Database: "),
 			("WORLD_DB",			0),
-			("WORLD_DB",			"world-"),
+			("WORLD_DB",			"world"),
 
 			("CHAR_DB",			"New Chaharacters Database: "),
 			("CHAR_DB",			0),
-			("CHAR_DB",			"characters-"),
+			("CHAR_DB",			"characters"),
 
                         ("SCRIPTS_DB",			"New ScriptDev2 Database: "),
 			("SCRIPTS_DB",			0),
-			("SCRIPTS_DB",			"scriptdev2-"),
+			("SCRIPTS_DB",			"scriptdev2"),
 
                         ("ACCOUNT_DB",			"New Account Database: "),
 			("ACCOUNT_DB",			0),
-			("ACCOUNT_DB",			"realmd-account"),
+			("ACCOUNT_DB",			"realmd-accounts"),
 
                         ("SRV_VER",			"MaNGOS version (1 vanilla - 5 MoP) "),
 			("SRV_VER",			0),
@@ -60,6 +60,15 @@ INSTALLER_LST      = [  ("REALM_NAME",			"Realm Name? "),
                         ("INSTALL_DIR",			"Instalation Destination: "),
 			("INSTALL_DIR",			0),
 			("INSTALL_DIR",			INSTALL_DIR),
+
+			("MANGOS_SYS_GROUP",		"New System Group for MaNGOS"),
+			("MANGOS_SYS_GROUP",		0),
+			("MANGOS_SYS_GROUP",		"mangosd"),
+
+			("REALMD_SYS_GROUP",		"New System Group for RealmD"),
+			("REALMD_SYS_GROUP",		0),
+			("REALMD_SYS_GROUP",		"realmd"),
+
                         ## DATABASE USERS AND PASSWORDS ##
                         ("MYSQL_MANGOS_ADMIN_USR",	"MySQL ADMIN user for the MANGOSD host: "),
 			("MYSQL_MANGOS_ADMIN_USR",	0),

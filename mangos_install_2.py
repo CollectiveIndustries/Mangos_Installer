@@ -42,9 +42,12 @@ def DefSettings(stuff):
 	"""fucntion interacts with the user and defines all settings based on the dictionary we built"""
 	for key in stuff.keys():
 		gui.reset_scrn(stuff)
-		gui.cur_pos(1,26,stuff[key][0],"4;32;40")## print out info ##
+		gui.cur_pos(1,27,stuff[key][0],"4;32;40")## print out info ##
 		if stuff[key][1] is 0: ## this is a user input feild
 			stuff = settings.set_option(key,raw_input(key+"[\x1b[1;31;40m"+stuff[key][2]+"\x1b[0m]: "),stuff[key][2],stuff)## get input from user and place back into our settings
+		else: ## this is just information so give the user some time to read it 
+			gui.cur_pos(1,27,stuff[key][0]+": \x1b[1;31;40m"+stuff[key][2],"1;32;40")## GREEN with RED option
+			raw_input("Press Enter to continue installation....")
 
 
 
@@ -52,16 +55,16 @@ def DefSettings(stuff):
 def main():
 	## TODO rebuild Q + A section with a loop to dynamicly load values from the settings dictionary ##
 	gui.reset_scrn(INSTALLER_SETTINGS)
-	gui.cur_pos(1,26,"Welcome to the MaNGOS installer.\nDurring this script we will figure out how you want your MaNGOS server set up","0;0;0")
+	gui.cur_pos(1,27,"Welcome to the MaNGOS installer.\nDurring this script we will figure out how you want your MaNGOS server set up","0;0;0")
 	raw_input("Press Enter to initilize installer....")
 	## BUILD OPTIONS WITH USER INPUT ##
 	DefSettings(INSTALLER_SETTINGS)
 
 	## BUILD PATH ##
 	subprocess.call(shlex.split('sudo rm -Rf '+settings.SERV_HOME))
-	subprocess.call(shlex.split('sudo groupadd --system '+INSTALLER_SETTINGS["MYSQL_MANGOS_USR"][2]))
+	subprocess.call(shlex.split('sudo groupadd --system '+INSTALLER_SETTINGS["MANGOS_SYS_GROUP"][2]))
 	subprocess.call(shlex.split('sudo mkdir -p '+settings.CODE_BASE))
-	subprocess.call(shlex.split('sudo chown -R '+env.UserName()+':'+INSTALLER_SETTINGS["MYSQL_MANGOS_USR"][2]+' '+settings.CODE_BASE))## set perms for user to clone ##
+	subprocess.call(shlex.split('sudo chown -R '+env.UserName()+':'+INSTALLER_SETTINGS["MANGOS_SYS_GROUP"][2]+' '+settings.CODE_BASE))## set perms for user to clone ##
 	## Initilize Repository ##
 	gui.reset_scrn(INSTALLER_SETTINGS)
 	gui.cur_pos(1,28,"CLONING REPOSITORY TO "+INSTALLER_SETTINGS["GIT_REPO_CI_SERVER"][2],"1;31;40")
@@ -80,7 +83,7 @@ def main():
 	git_tools_handle = Repo.clone_from("https://github.com/CollectiveIndustries/tools",INSTALLER_SETTINGS["GIT_REPO_CI_TOOLS"][2])
 	
 	## change owner of directories ##
-	subprocess.call(shlex.split('sudo chown -R '+env.UserName()+':'+INSTALLER_SETTINGS["MYSQL_MANGOS_USR"][2]+' '+settings.CODE_BASE))## set the owner of the directory so we can leave ROOT
+	subprocess.call(shlex.split('sudo chown -R '+env.UserName()+':'+INSTALLER_SETTINGS["MANGOS_SYS_GROUP"][2]+' '+settings.CODE_BASE))## set the owner of the directory so we can leave ROOT
 		
 	## Configuration Files ##
 	
