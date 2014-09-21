@@ -1,33 +1,27 @@
 #!/usr/bin/python
 ##################################################################################################
 #
-# Copyright (C) 2013 Collective Industries code provided by Andrew Malone python code for 
-# installing MaNGOS db updates from the SQL/Updates Dir
+# Copyright (C) 2014 Collective Industries code provided by Andrew Malone
+#  
+# PURPPOSE: Installing MaNGOS db updates and Installing Primary Databases
 #
 ##################################################################################################
 
-# our variables we need later
-_LOC_SQL_UPDATES_ = "./server/sql/updates/"
-_FILE_TEMP_RAW_ = "./server/sql_updates.tmp"
-_FILE_TEMP_SORT_ = "./server/sql_updates_sort.tmp"
-
-# variables starting with _IN_ are user defined 
-# other global variables for running the updates are listed at bottom
-# _IN_MYSQL_USR_
-# _IN_MYSQL_PASS_
-# _IN_MYSQL_HOST_
-# _IN_MYSQL_DB_MANGOS_
-# _IN_MYSQL_DB_CHAR_
-# _IN_MYSQL_DB_REALM_
-#
-# _DB_
-
+# the variables we need are defined in the settings.py module
 # import all of our needed libraries
 import os 
 import sys
 import glob
+
 ## need to write a I/O plugin for displaying feed back ##
-# import 
+import gui 
+
+
+## Function to patch DB With new/existing updates
+
+## This makes use of the pre-existing mysql bianary files this may cause a problem on systems that dont include MySQL
+## possible solution is to rewrite this with the MySQL connector Library so we can connect to and patch a remote server
+## this would allow for a "thin-server" environment for MaNGOSD/RealmD with a database on a seprate server
 
 def patch_db(_LOC_SQL_UPDATES_,_DB_LST_,_DB_CREDS_)
 	""" This function takes 2 lists as its input and a file path
