@@ -61,12 +61,15 @@ def main():
 	gui.cur_pos(1,27,"Welcome to the MaNGOS installer.\nDurring this script we will figure out how you want your MaNGOS server set up","0;0;0")
 	raw_input("Press Enter to initilize installer....")
 	## BUILD OPTIONS WITH USER INPUT ##
-	DefSettings(INSTALLER_SETTINGS)
+	DefSettings(INSTALLER_SETTINGS) ## Interact with user to define MaNGOS Environment Settings ##
 
 	## BUILD PATH ##
 	subprocess.call(shlex.split('sudo rm -Rf '+settings.SERV_HOME))
-	subprocess.call(shlex.split('sudo groupadd --system '+INSTALLER_SETTINGS["MANGOS_SYS_GROUP"][2]))
+	subprocess.call(shlex.split('sudo rm -Rf '+INSTALLER_SETTINGS["INSTALL_DIR"][2])) ## We end up recompiling the server and reconfiguring it during an install ##
+	subprocess.call(shlex.split('sudo groupadd --system '+INSTALLER_SETTINGS["MANGOS_SYS_GROUP"][2])) ## it is ideal to run bolth services on there own group
+	subprocess.call(shlex.split('sudo groupadd --system '+INSTALLER_SETTINGS["REALMD_SYS_GROUP"][2])) ## this is to stick with the *IX standard way of things
 	subprocess.call(shlex.split('sudo mkdir -p '+settings.CODE_BASE))
+	subprocess.call(shlex.split('sudo mkdir -p '+INSTALLER_SETTINGS["INSTALL_DIR"][2])) ## build the install directory and get it ready to go
 	subprocess.call(shlex.split('sudo chown -R '+env.UserName()+':'+INSTALLER_SETTINGS["MANGOS_SYS_GROUP"][2]+' '+settings.CODE_BASE))## set perms for user to clone ##
 	## Initilize Repository ##
 	gui.reset_scrn(INSTALLER_SETTINGS)
@@ -87,12 +90,13 @@ def main():
 	
 	## change owner of directories ##
 	subprocess.call(shlex.split('sudo chown -R '+env.UserName()+':'+INSTALLER_SETTINGS["MANGOS_SYS_GROUP"][2]+' '+settings.CODE_BASE))## set the owner of the directory so we can leave ROOT
-		
-	## Configuration Files ##
-	
 
-	## DATABASE QUESTION ##
-	
+	## start the MySQL Install ##
+
+
+	## Configuration Files ##
+
+
 
 if __name__ == '__main__':
 	
