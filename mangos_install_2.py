@@ -38,9 +38,12 @@ from MaNGOS_core import gui			## Custom GUI tools
 
 
 ##################################### Function Definitions #####################################
+##
+## for key, value in sorted(myDict.items(), key=lambda e: e[1][2]):
+
 def DefSettings(stuff):
 	"""fucntion interacts with the user and defines all settings based on the dictionary we built"""
-	for key in stuff.keys():
+	for key,value in sorted(stuff.items(), key=lambda e: e[1][3]):##sort the dictionary OF lists based on 3rd entry
 		gui.reset_scrn(stuff)
 		gui.cur_pos(1,27,stuff[key][0],"4;32;40")## print out info ##
 		if stuff[key][1] is 0: ## this is a user input feild

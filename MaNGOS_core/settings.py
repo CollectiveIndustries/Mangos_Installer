@@ -17,27 +17,27 @@ INSTALLER_LST = [       ## option_name                  ## VALUES [MSG, (0 = inp
 			("REALM_NAME",			"Realm Name? "),
 			("REALM_NAME",			0),
 			("REALM_NAME",			""),
-			("REALM_NAME",			0),
+			("REALM_NAME",			100),
 			
 		        ("REALM_DB_HOST",		"Host name for account DB? "),
 			("REALM_DB_HOST",		0),
 			("REALM_DB_HOST",		"localhost"),
-			("REALM_DB_HOST",		0),
+			("REALM_DB_HOST",		198),
 			
 			("ACCOUNT_DB_PORT",		"Port number for account DB? "),
 			("ACCOUNT_DB_PORT",		0),
 			("ACCOUNT_DB_PORT",		"3306"),
-			("ACCOUNT_DB_PORT",		0),
+			("ACCOUNT_DB_PORT",		199),
 			
             		("M_DB_HOST",			"Host name for WORLD DB? "),
 			("M_DB_HOST",			0),
 			("M_DB_HOST",			"localhost"),
-			("M_DB_HOST",			0),
+			("M_DB_HOST",			196),
 			
             		("M_DB_PORT",			"Port number for WORLD DB?"),
 			("M_DB_PORT",			0),
 			("M_DB_PORT",			"3306"),
-			("M_DB_PORT",			0),
+			("M_DB_PORT",			197),
 			
             		("WORLD_DB",			"New World Database: "),
 			("WORLD_DB",			0),
@@ -160,8 +160,8 @@ INSTALLER_LST = [       ## option_name                  ## VALUES [MSG, (0 = inp
 			
             		("MANGOS_DATA_DIR",		"Data Directory (relitive to INSTALL_DIR) "),
 			("MANGOS_DATA_DIR",		0),
-			("MANGOS_DATA_DIR",		"data") # Path is relitave to the INSTALL_DIR
-            		("MANGOS_DATA_DIR",		900)
+			("MANGOS_DATA_DIR",		"data"), # Path is relitave to the INSTALL_DIR
+            		("MANGOS_DATA_DIR",		900),
 			]
 ## build the dictionary for the installer >..< why we have to do it this way is beyond me ##
 
@@ -173,10 +173,10 @@ def BuildSettings( lst_input ):
 
 ## setts a new value to the Settings List ##
 def set_option(k,v,defualt,struct):
-        """sets a new value (v) for KEY (k) passed to the function if value (v) is empty use defualt"""
-        for key in struct.keys():
-                if key == k:
-                        if v == '': ## taking into account the items above the value we want is going to be [2] in our Dictionary of Lists
+	"""sets a new value (v) for KEY (k) passed to the function if value (v) is empty use defualt"""
+	for key in struct.keys():
+        	if key == k:
+                	if v == '': ## taking into account the items above the value we want is going to be [2] in our Dictionary of Lists
                                 struct[key][2] = defualt
                         else:
                                 struct[key][2] = v

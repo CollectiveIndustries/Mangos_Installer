@@ -81,8 +81,8 @@ def prt_dict(stuff,start):
 	print "\x1b[4;32;40m"
 	print "\033[%s;%sH%s" % (start,x_pos,"-=/\=-          MaNGOS Install Options          -=/\=-")
 	print "\x1b[0m"
-	for k,v in stuff.iteritems():## FIX THIS currently prints out full options WITH extended attributes ##
+	for key,value in sorted(stuff.items(), key=lambda e: e[1][3]): ## Sort the list for the display ##	
 		y_pos += 1
-		print "\033[%s;%sH     %s" % (y_pos,x_pos,k)
-		print "\033[%s;%sH%s" % (y_pos,x_pos+30,v[2])
+		print "\033[%s;%sH     %s" % (y_pos,x_pos,key)
+		print "\033[%s;%sH%s" % (y_pos,x_pos+30,value[2])
 
