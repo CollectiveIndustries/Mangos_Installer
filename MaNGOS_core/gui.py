@@ -70,7 +70,7 @@ def logo():                                                                     
 def reset_scrn(options):
 	os.system('cls' if os.name == 'nt' else 'clear')
         logo()
-	prt_dict(options,5)
+	prt_dict(options,4)
 
 ## print out the Settings List ##
 def prt_dict(stuff,start):

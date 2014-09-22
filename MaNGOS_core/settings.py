@@ -166,6 +166,7 @@ INSTALLER_LST = [       ## option_name                  ## VALUES [MSG, (0 = inp
 ## build the dictionary for the installer >..< why we have to do it this way is beyond me ##
 
 def BuildSettings( lst_input ):
+	"""builds a dictionary of lists for the hudge mess of a matrix above"""
 	list_to_dictionary = defaultdict(list)
 	for k, v in lst_input:
         	list_to_dictionary[k].append(v)

@@ -22,7 +22,6 @@ SYS_USR = 'mangos'
 
 ## DO NOT CHANGE BELOW THIS LINE ##
 
-_DEBUG_ = False
 
 
 ## INCLUDES ##
@@ -92,7 +91,7 @@ def main():
 	subprocess.call(shlex.split('sudo chown -R '+env.UserName()+':'+INSTALLER_SETTINGS["MANGOS_SYS_GROUP"][2]+' '+settings.CODE_BASE))## set the owner of the directory so we can leave ROOT
 
 	## start the MySQL Install ##
-
+	gui.reset_scrn(INSTALLER_SETTINGS)
 
 	## Configuration Files ##
 
