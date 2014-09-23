@@ -34,7 +34,7 @@ import shlex
 from MaNGOS_core import settings 		## we need our settings or this will fail
 from MaNGOS_core import environment as env	## Environment API calls
 from MaNGOS_core import gui			## Custom GUI tools
-
+from MaNGOS_core import libdb			## database library for Mangos_installer
 
 ##################################### Function Definitions #####################################
 ##
@@ -92,7 +92,11 @@ def main():
 
 	## start the MySQL Install ##
 	gui.reset_scrn(INSTALLER_SETTINGS)
-
+	_realm_db_ = MySQLdb.connect(host=INSTALLER_SETTINGS["REALM_DB_HOST"][2],
+				     user=INSTALLER_SETTINGS["MYSQL_REALMD_ADMIN_USR"][2],
+				     passwd=INSTALLER_SETTINGS["MYSQL_REALMD_ADMIN_PASS"][2])## pull the connection settings out and pass to the MySQL Connection
+	_realm_db_cur_ = _realm_db_.cursor() ## set up our cursor so we can comunicate with the database
+	_realm_db_cur_.execute('CREATE USER '+INSTALLER_SETTINGS["MYSQL_REALMD_USR"][2]+'@'+INSTALLER_SETTINGS["REALM_DB_HOST"][2]+' IDENTIFIED BY '+INSTALLER_SETTINGS["MYSQL_REALMD_PASS"][2])## NO TRAILING ';'
 	## Configuration Files ##
 
 

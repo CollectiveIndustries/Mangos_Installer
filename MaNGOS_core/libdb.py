@@ -23,7 +23,7 @@ import gui
 ## possible solution is to rewrite this with the MySQL connector Library so we can connect to and patch a remote server
 ## this would allow for a "thin-server" environment for MaNGOSD/RealmD with a database on a seprate server
 
-def patch_db(_LOC_SQL_UPDATES_,_DB_LST_,_DB_CREDS_)
+def patch_db(_LOC_SQL_UPDATES_,_DB_LST_,_DB_CREDS_):
 	""" This function takes 2 lists as its input and a file path
 	the file path is for the SQL updates for the mangos updates
 	the first list is for the databases (this should be built and
@@ -33,7 +33,7 @@ def patch_db(_LOC_SQL_UPDATES_,_DB_LST_,_DB_CREDS_)
 
 	patches = glob.glob(_LOC_SQL_UPDATES_ + '*.sql')
 	patches = sorted(patches) ## this step is important the order of the patches matter on the server
-	 "Starting Patching Process"
+
 	_DB_ = ''
 	
 	for x in patches: #set up a loop to run through the current working directory
