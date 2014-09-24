@@ -1,4 +1,5 @@
-Mangos Installer
+[![Build Status](https://travis-ci.org/CollectiveIndustries/Mangos_Installer.svg?branch=master)](https://travis-ci.org/CollectiveIndustries/Mangos_Installer)
+Mangos Installer 
 ================
 
 Collective Industries is proud to present the new Unified MaNGOS Installer.
