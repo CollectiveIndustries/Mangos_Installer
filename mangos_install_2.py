@@ -96,7 +96,7 @@ def main():
 				     user=INSTALLER_SETTINGS["MYSQL_REALMD_ADMIN_USR"][2],
 				     passwd=INSTALLER_SETTINGS["MYSQL_REALMD_ADMIN_PASS"][2])## pull the connection settings out and pass to the MySQL Connection
 	_realm_db_cur_ = _realm_db_.cursor() ## set up our cursor so we can comunicate with the database
-	_realm_db_cur_.execute('CREATE USER '+INSTALLER_SETTINGS["MYSQL_REALMD_USR"][2]+'@'+INSTALLER_SETTINGS["REALM_DB_HOST"][2]+' IDENTIFIED BY '+INSTALLER_SETTINGS["MYSQL_REALMD_PASS"][2])## NO TRAILING ';'
+	_realm_db_cur_.execute("CREATE USER "+INSTALLER_SETTINGS["MYSQL_REALMD_USR"][2]+"@"+INSTALLER_SETTINGS["REALM_DB_HOST"][2]+" IDENTIFIED BY \'"+INSTALLER_SETTINGS["MYSQL_REALMD_PASS"][2]+"\';")## NO TRAILING ';'
 	## Configuration Files ##
 
 
