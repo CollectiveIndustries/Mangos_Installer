@@ -69,7 +69,7 @@ def main():
 	subprocess.call(shlex.split('sudo groupadd --system '+INSTALLER_SETTINGS["REALMD_SYS_GROUP"][2])) ## this is to stick with the *IX standard way of things
 	subprocess.call(shlex.split('sudo mkdir -p '+settings.CODE_BASE))
 	subprocess.call(shlex.split('sudo mkdir -p '+INSTALLER_SETTINGS["INSTALL_DIR"][2])) ## build the install directory and get it ready to go
-	subprocess.call(shlex.split('sudo chown -R '+env.UserName()+':'+INSTALLER_SETTINGS["MANGOS_SYS_GROUP"][2]+' '+settings.CODE_BASE))## set perms for user to clone ##
+	subprocess.call(shlex.split('sudo chown -R '+env.UserName()+':'+INSTALLER_SETTINGS["MANGOS_SYS_GROUP"][2]+' '+settings.CODE_BASE)) ## set perms for user to clone ##
 	## Initilize Repository ##
 	gui.reset_scrn(INSTALLER_SETTINGS)
 	gui.cur_pos(1,28,"CLONING REPOSITORY TO "+INSTALLER_SETTINGS["GIT_REPO_CI_SERVER"][2],"1;31;40")
@@ -86,7 +86,7 @@ def main():
 	#reset_scrn()
 	gui.cur_pos(1,32,"CLONING REPOSITORY TO "+INSTALLER_SETTINGS["GIT_REPO_CI_TOOLS"][2],"1;31;40")
 	git_tools_handle = Repo.clone_from("https://github.com/CollectiveIndustries/tools",INSTALLER_SETTINGS["GIT_REPO_CI_TOOLS"][2])
-	
+
 	## change owner of directories ##
 	subprocess.call(shlex.split('sudo chown -R '+env.UserName()+':'+INSTALLER_SETTINGS["MANGOS_SYS_GROUP"][2]+' '+settings.CODE_BASE))## set the owner of the directory so we can leave ROOT
 
@@ -97,14 +97,15 @@ def main():
 				     passwd=INSTALLER_SETTINGS["MYSQL_REALMD_ADMIN_PASS"][2])## pull the connection settings out and pass to the MySQL Connection
 	_realm_db_cur_ = _realm_db_.cursor() ## set up our cursor so we can comunicate with the database
 	_realm_db_cur_.execute("CREATE USER "+INSTALLER_SETTINGS["MYSQL_REALMD_USR"][2]+"@"+INSTALLER_SETTINGS["REALM_DB_HOST"][2]+" IDENTIFIED BY \'"+INSTALLER_SETTINGS["MYSQL_REALMD_PASS"][2]+"\';")## NO TRAILING ';'
+	
 	## Configuration Files ##
 
 
 
 if __name__ == '__main__':
-	
+
 	## Initilize the Settings Dictionary ##
 	INSTALLER_SETTINGS = settings.BuildSettings(settings.INSTALLER_LST)
-	
+
 	## Enter Main Program ##
 	main()
