@@ -11,8 +11,14 @@ CODE_BASE = SERV_HOME + '/SOURCE'
 
 ## incorectly setting ANY of the following settings will render the installer useless ##
 ## please be carefull when adjusting these settings ##
-## This means you Marvy Snuffleson of Kansass City, MO!!!!!
-## not exactly sure who that is O_e
+## TODO: readme needs to be written for these settings these should be fully customizable and not so hard to understand
+
+## quick rundown of options
+## MSG is the message displayed to the end-user surring the install
+## the next value either a 0 or 1 represents input needed or or if its just info
+## OPTIOn_VALUE is the defualt displayed to the user durring install thus can be changed during the install process
+## PRIORITY is where this entry is in the list of displayed options this is important b/c several options depend on previus options
+
 INSTALLER_LST = [       ## option_name                  ## VALUES [MSG, (0 = input, 1 = info), OPTION_VALUE, PRIORITY] 
 			("REALM_NAME",			"Realm Name? "),
 			("REALM_NAME",			0),
@@ -163,6 +169,7 @@ INSTALLER_LST = [       ## option_name                  ## VALUES [MSG, (0 = inp
 			("MANGOS_DATA_DIR",		"data"), # Path is relitave to the INSTALL_DIR
             		("MANGOS_DATA_DIR",		900),
 			]
+
 ## build the dictionary for the installer >..< why we have to do it this way is beyond me ##
 
 def BuildSettings( lst_input ):

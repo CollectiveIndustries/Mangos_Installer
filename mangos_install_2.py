@@ -25,12 +25,38 @@ SYS_USR = 'mangos'
 
 
 ## INCLUDES ##
-from git import * #for our git tools and bindings
-import MySQLdb ## import the MySQLdb Connector API
+import imp
 import subprocess
 import shlex
 
+## install includes that are not from the standard library ##
+# for some reason or another these will install however this script AFTER there install still crashes but the second run will include the library
+# this is a known bug
+
+try:
+    imp.find_module('git')
+    from git import * #for our git tools and bindings
+except ImportError:
+    print 'Module `git` not found: [ \x1b[0;92;40mINSTALLING\x1b[0m ]'
+    subprocess.call(shlex.split('sudo apt-get install python-setuptools'))
+    subprocess.call(shlex.split('sudo easy_install GitPython')) ## not found lets not crash the script just fix the issue and keep going
+    from git import * #for our git tools and bindings
+
+try:
+    imp.find_module('MySQLdb')
+    import MySQLdb #for our git tools and bindings
+except ImportError:
+    print 'Module `MySQLdb` not found: [ \x1b[1;31;40mINSTALLING\x1b[0m ]'
+    subprocess.call(shlex.split('sudo apt-get install build-essential python-dev libmysqlclient-dev python-pip'))
+    subprocess.call(shlex.split('sudo pip install MySQL-python')) ## not found lets not crash the script just fix the issue and keep going
+    import MySQLdb ## import the MySQLdb Connector API
+
 ## ManGOS install Library ##
+#
+# Provided by: Andrew Malone
+#
+# Purpose: Used to hold standard MaNGOS core functions for the installer and all of its settings
+#
 from MaNGOS_core import settings 		## we need our settings or this will fail
 from MaNGOS_core import environment as env	## Environment API calls
 from MaNGOS_core import gui			## Custom GUI tools
@@ -52,13 +78,14 @@ def DefSettings(stuff):
 			raw_input("Press Enter to continue installation....")
 
 
-
 ## START OF MAIN PROGRAM ##
 def main():
 	## TODO rebuild Q + A section with a loop to dynamicly load values from the settings dictionary ##
+	## dynamic Q + A section finished DefSettings(STUFF)
 	gui.reset_scrn(INSTALLER_SETTINGS)
 	gui.cur_pos(1,27,"Welcome to the MaNGOS installer.\nDurring this script we will figure out how you want your MaNGOS server set up","0;0;0")
 	raw_input("Press Enter to initilize installer....")
+	
 	## BUILD OPTIONS WITH USER INPUT ##
 	DefSettings(INSTALLER_SETTINGS) ## Interact with user to define MaNGOS Environment Settings ##
 
@@ -99,7 +126,6 @@ def main():
 	_realm_db_cur_.execute("CREATE USER "+INSTALLER_SETTINGS["MYSQL_REALMD_USR"][2]+"@"+INSTALLER_SETTINGS["REALM_DB_HOST"][2]+" IDENTIFIED BY \'"+INSTALLER_SETTINGS["MYSQL_REALMD_PASS"][2]+"\';")## NO TRAILING ';'
 	
 	## Configuration Files ##
-
 
 
 if __name__ == '__main__':
