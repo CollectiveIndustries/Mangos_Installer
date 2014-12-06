@@ -90,6 +90,7 @@ def main():
 	DefSettings(INSTALLER_SETTINGS) ## Interact with user to define MaNGOS Environment Settings ##
 
 	## BUILD PATH ##
+	gui.cur_pos(1,27,"Elivating Permissions to clean out old directory and install new user (this is completly safe as we are only erasing the mangos home folder)","0;0;0")
 	subprocess.call(shlex.split('sudo rm -Rf '+settings.SERV_HOME))
 	subprocess.call(shlex.split('sudo rm -Rf '+INSTALLER_SETTINGS["INSTALL_DIR"][2])) ## We end up recompiling the server and reconfiguring it during an install ##
 	subprocess.call(shlex.split('sudo groupadd --system '+INSTALLER_SETTINGS["MANGOS_SYS_GROUP"][2])) ## it is ideal to run bolth services on there own group
@@ -97,6 +98,8 @@ def main():
 	subprocess.call(shlex.split('sudo mkdir -p '+settings.CODE_BASE))
 	subprocess.call(shlex.split('sudo mkdir -p '+INSTALLER_SETTINGS["INSTALL_DIR"][2])) ## build the install directory and get it ready to go
 	subprocess.call(shlex.split('sudo chown -R '+env.UserName()+':'+INSTALLER_SETTINGS["MANGOS_SYS_GROUP"][2]+' '+settings.CODE_BASE)) ## set perms for user to clone ##
+	subprocess.call(shlex.split('sudo mkdir -p '+INSTALLER_SETTINGS["GIT_REPO_CI_WEB"][2])) ## we need to add the web directory before configurin it
+	subprocess.call(shlex.split('sudo chown -R '+env.UserName()+':'+INSTALLER_SETTINGS["MANGOS_SYS_GROUP"][2]+' '+INSTALLER_SETTINGS["GIT_REPO_CI_WEB"][2])) ## change owner of the web directory ready for installing the webpage
 	## Initilize Repository ##
 	gui.reset_scrn(INSTALLER_SETTINGS)
 	gui.cur_pos(1,28,"CLONING REPOSITORY TO "+INSTALLER_SETTINGS["GIT_REPO_CI_SERVER"][2],"1;31;40")
@@ -115,6 +118,7 @@ def main():
 	git_tools_handle = Repo.clone_from("https://github.com/CollectiveIndustries/tools",INSTALLER_SETTINGS["GIT_REPO_CI_TOOLS"][2])
 
 	## change owner of directories ##
+	gui.cur_pos(1,32,"Changing directory permissions on: "+settings.CODE_BASE,"1;31;40")
 	subprocess.call(shlex.split('sudo chown -R '+env.UserName()+':'+INSTALLER_SETTINGS["MANGOS_SYS_GROUP"][2]+' '+settings.CODE_BASE))## set the owner of the directory so we can leave ROOT
 
 	## start the MySQL Install ##

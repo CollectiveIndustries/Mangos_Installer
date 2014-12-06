@@ -2,10 +2,10 @@ from collections import defaultdict
 
 ## Global Settings ##
 INSTALL_DIR = '/opt/ci_mangos3/'
-SYS_USR = 'mangos'
+SYS_USR = 'mangos' # by defualt this user will be used for bolth the MaNGOS and RealmD server
 SERV_HOME = '/home/' + SYS_USR
 CODE_BASE = SERV_HOME + '/SOURCE'
-
+WEB_ROOT = '/var/www/html'
 			## /!\ WARNING: ADVANCED SETTINGS /!\ ##
 
 
@@ -154,7 +154,7 @@ INSTALLER_LST = [       ## option_name                  ## VALUES [MSG, (0 = inp
 			
             		("GIT_REPO_CI_WEB",		"LOCAL github repository:[Web Site] "),
 			("GIT_REPO_CI_WEB",		1),
-			("GIT_REPO_CI_WEB",		CODE_BASE+"/web"),
+			("GIT_REPO_CI_WEB",		WEB_ROOT+"/mangos"),
 			("GIT_REPO_CI_WEB",		900),
 			
             		## FILE STRUCTURE ##
