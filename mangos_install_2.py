@@ -109,7 +109,7 @@ def main():
 	git_database_handle = Repo.clone_from("https://github.com/CollectiveIndustries/Mangos_world_database.git",INSTALLER_SETTINGS["GIT_REPO_CI_DBS"][2])
 	#reset_scrn()
 	gui.cur_pos(1,30,"CLONING REPOSITORY TO "+INSTALLER_SETTINGS["GIT_REPO_CI_SD2"][2],"1;31;40")
-	git_maps_handle = Repo.clone_from("https://github.com/CollectiveIndustries/scripts.git",INSTALLER_SETTINGS["GIT_REPO_CI_SD2"][2])
+	git_maps_handle = Repo.clone_from("https://github.com/CollectiveIndustries/scriptdev2-cata.git",INSTALLER_SETTINGS["GIT_REPO_CI_SD2"][2])
 	#reset_scrn()
 	gui.cur_pos(1,31,"CLONING REPOSITORY TO "+INSTALLER_SETTINGS["GIT_REPO_CI_WEB"][2],"1;31;40")
 	git_web_handle = Repo.clone_from("https://github.com/CollectiveIndustries/mangos-enhanced.git",INSTALLER_SETTINGS["GIT_REPO_CI_WEB"][2])

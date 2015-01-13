@@ -144,7 +144,7 @@ INSTALLER_LST = [       ## option_name                  ## VALUES [MSG, (0 = inp
 			
             		("GIT_REPO_CI_SD2",		"LOCAL github repository:[ScriptDev Library] "),
 			("GIT_REPO_CI_SD2",		1),
-			("GIT_REPO_CI_SD2",		CODE_BASE+"/server/src/bindings/ScriptDev2"), ## SCRIPT DEV LI$
+			("GIT_REPO_CI_SD2",		CODE_BASE+"/server/src/bindings/ScriptDev2"), ## SCRIPT DEV Library Bindings
 			("GIT_REPO_CI_SD2",		900),
 			
             		("GIT_REPO_CI_TOOLS",		"LOCAL github repository:[Extra Tools] "),
