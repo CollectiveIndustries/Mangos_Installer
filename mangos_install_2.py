@@ -22,6 +22,12 @@ SYS_USR = 'mangos'
 
 ## DO NOT CHANGE BELOW THIS LINE ##
 
+COMPILE_ONLY = True ## changes the Download options for the Map
+
+## I have this set up because i have a SLOW (3 MB/s) Network connection to the world as i run all of these compiles on my own equitment,
+## I set this up to turn off the bulky data transfer as i ONLY need the base code to run a compile
+# True will ONLY pull the source code and build the application
+# False will do a FULL run pulling Source Code Database files and Maps to set up a fully working server
 
 
 ## INCLUDES ##
@@ -109,13 +115,19 @@ def main():
 	git_database_handle = Repo.clone_from("https://github.com/CollectiveIndustries/Mangos_world_database.git",INSTALLER_SETTINGS["GIT_REPO_CI_DBS"][2])
 	#reset_scrn()
 	gui.cur_pos(1,30,"CLONING REPOSITORY TO "+INSTALLER_SETTINGS["GIT_REPO_CI_SD2"][2],"1;31;40")
-	git_maps_handle = Repo.clone_from("https://github.com/CollectiveIndustries/scriptdev2-cata.git",INSTALLER_SETTINGS["GIT_REPO_CI_SD2"][2])
-	#reset_scrn()
-	gui.cur_pos(1,31,"CLONING REPOSITORY TO "+INSTALLER_SETTINGS["GIT_REPO_CI_WEB"][2],"1;31;40")
-	git_web_handle = Repo.clone_from("https://github.com/CollectiveIndustries/mangos-enhanced.git",INSTALLER_SETTINGS["GIT_REPO_CI_WEB"][2])
+	git_scriptdev2_handle = Repo.clone_from("https://github.com/CollectiveIndustries/scriptdev2-cata.git",INSTALLER_SETTINGS["GIT_REPO_CI_SD2"][2])
 	#reset_scrn()
 	gui.cur_pos(1,32,"CLONING REPOSITORY TO "+INSTALLER_SETTINGS["GIT_REPO_CI_TOOLS"][2],"1;31;40")
 	git_tools_handle = Repo.clone_from("https://github.com/CollectiveIndustries/tools",INSTALLER_SETTINGS["GIT_REPO_CI_TOOLS"][2])
+	
+	## check and see if we are making a dry run on the compile ##
+	if COMPILE_ONLY == False:
+		#reset_scrn()
+		gui.cur_pos(1,31,"CLONING REPOSITORY TO "+INSTALLER_SETTINGS["GIT_REPO_CI_WEB"][2],"1;31;40")
+		git_web_handle = Repo.clone_from("https://github.com/CollectiveIndustries/mangos-enhanced.git",INSTALLER_SETTINGS["GIT_REPO_CI_WEB"][2])
+		#reset_scrn()
+		gui.cur_pos(1,32,"CLONING REPOSITORY TO "+settings.INSTALL_DIR+INSTALLER_SETTINGS["MANGOS_DATA_DIR"][2],"1;31;40")
+		git_tools_handle = Repo.clone_from("https://github.com/CollectiveIndustries/Maps-VMaps-DBC.git",settings.INSTALL_DIR+INSTALLER_SETTINGS["MANGOS_DATA_DIR"][2])
 
 	## change owner of directories ##
 	gui.cur_pos(1,32,"Changing directory permissions on: "+settings.CODE_BASE,"1;31;40")
@@ -136,6 +148,10 @@ if __name__ == '__main__':
 
 	## Initilize the Settings Dictionary ##
 	INSTALLER_SETTINGS = settings.BuildSettings(settings.INSTALLER_LST)
-
+	
 	## Enter Main Program ##
-	main()
+	if env.os_chk():# ONLY if we are running a known version
+		main()
+	else:
+		print "Im sorry i dont know what %s is, as a result i cannot allow this script to continue. :("
+		sys.exit(503) # toss the user a Service Unavalibe error :P i know thats an HTTP code but it made sense to me

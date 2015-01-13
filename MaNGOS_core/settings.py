@@ -156,7 +156,7 @@ INSTALLER_LST = [       ## option_name                  ## VALUES [MSG, (0 = inp
 			("GIT_REPO_CI_WEB",		1),
 			("GIT_REPO_CI_WEB",		WEB_ROOT+"/mangos"),
 			("GIT_REPO_CI_WEB",		900),
-			
+						
             		## FILE STRUCTURE ##
 
             		("MANGOS_LOGS_DIR",		"Logs Directory (relitive to INSTALL_DIR) "),

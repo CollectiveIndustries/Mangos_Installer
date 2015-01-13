@@ -7,13 +7,14 @@
 #  
 # TITLE: Environment
 #
-# PURPOSE: environmetn related code for MaNGOS Installer
+# PURPOSE: environment related code for MaNGOS Installer
 #
 #
 ##################################################################################################
 
 ## Install Libraries ##
 import debug as bugs
+import distros # supported OS list
 
 ## OS Imports ##
 import getpass
@@ -77,3 +78,15 @@ def clean_dir(path):
 				cur_pos(1,26,TimeStamp()+" Removing Directory Tree: "+file_path)
 		except Exception, e:
 			print e
+
+def os_chk():
+	"""Function for grabbing the release info of the OS environment and then cross refrancing against a list of TESTED OS's """
+	## SYSTEM sanity Check
+	# we need to determine what environment we have ( Debian or RHEL)
+	# command structure is difrent for these and so we need to reconfigure our command structure accordingly
+	r_inf = platform.linux_distribution()
+	# return true or false to the main function we dont really care about version at the moment
+	# just need to see if the platform is our list or not
+	# TODO:
+	# for dependency resolving we will care if its RHEL or DEBIAN (yum vs. apt-get)
+	return r_inf[0] in distros.debian or r_inf[0] in distros.rhel
