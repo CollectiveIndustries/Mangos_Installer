@@ -22,6 +22,7 @@ as of right now the installation instructions are Ubuntu based.
 + RPM based Distro (ClearOS) will be used for this guide 
 + also plans for a ClearOS Module and LDAP account integration are on the white board so adding a realm would be as simple as logging into the ClearOS back end and setting up the settings for the realm
 + all account based information (names + passwords + email + UUID) should be kept in LDAP while all other details be kept in MySQL 
+
 ##NOTES
 some things have changed in the newer version of MaNGOS.
 + during compile you no longer to need to APPLY Patches for the SD2 Library. this means you longer need to use the (git am src/bindings/ScriptDev2/pathces/MaNGOS-*) commands
