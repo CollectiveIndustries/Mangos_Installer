@@ -8,8 +8,8 @@
 ##################################################################################################
 
 # configurable globals also can be set using the full install option these are defualt values
-#TODO: write an user input section to set variables or have the option to use all defaults
-#TODO add in a system user creation section
+#TODO: Write a user input section to set variables or have the option to use all defaults
+#TODO: Add in a system user creation section
 
 INSTALL_DIR = '/opt/mangos3_ci_server/'
 SYS_USR = 'mangos'
@@ -18,19 +18,19 @@ ScriptDev2_lib = 'https://github.com/CollectiveIndustries/scripts.git'
 #-----------------------------------------------------------------------------------------------#
 
 host_name = ''#will be set using uname and check_output
-SYS_PASS = '' #will be set using RAW_INPUT 
+SYS_PASS = '' #will be set using RAW_INPUT
 SERV_CODE = '/home/' + SYS_USR + '/SOURCE/mangos3_ci_code' #will be used to clone all the code and compile the software (can be removed after the install)
 SQL_USR_INST = 'mangos-ci-usr.sql'
 _LOC_SQL_UPDATES_ = SERV_CODE + '/server/sql/updates/'
 
 # import all of our needed functions
-from subprocess import call 
-import os 
-import subprocess 
-import shlex 
-import getpass 
-import time 
-import urllib2 
+from subprocess import call
+import os
+import subprocess
+import shlex
+import getpass
+import time
+import urllib2
 import os.path
 import glob
 
@@ -68,7 +68,7 @@ def mysql_update(update_path, usr_name, usr_pwd, db_list):
                 if db == 'mangos':
                         _DB_ = db_list[2]  #block was for determining the database from the file name and the users input
         mysql_call(usr_name, usr_pwd, 'localhost', _DB_, update_path + x)#no host config set up yet
-#	print "CALLING mysql DB"		
+#	print "CALLING mysql DB"
 #INCLUDE('./lib/ci-mangos.py')
 
 # CI MANGOS LOGO HERE
@@ -146,8 +146,8 @@ if "check_output" not in dir( subprocess ): # duck punch it in!
     subprocess.check_output = f
 
 # SCRIPT ENTRY POINT
-subprocess.call('clear') 
-print "Welcome: " + getpass.getuser() 
+subprocess.call('clear')
+print "Welcome: " + getpass.getuser()
 
 if getpass.getuser() == 'root':
 	print "/!\\ WARNING: Script is being run as root /!\\\nDurring this script we will change to root as needed so system files do not get messed up durrning this install procedure"
@@ -160,9 +160,9 @@ if override == 'n':
 
 CI_UPDATE_YN = raw_input('Preform Pre-Install + updates?: [n] ')
 if CI_UPDATE_YN == 'y':
-	print "We will now begin to process all dependencies required to build the MaNGOS server" 
-	print "Running Update as user: " 
-	subprocess.call(shlex.split('sudo id -nu')) 
+	print "We will now begin to process all dependencies required to build the MaNGOS server"
+	print "Running Update as user: "
+	subprocess.call(shlex.split('sudo id -nu'))
 	subprocess.call(shlex.split('sudo apt-get update -q --force-yes'))
 	subprocess.call(shlex.split('sudo apt-get dist-upgrade -q --force-yes'))
 	subprocess.call(shlex.split('sudo apt-get install -q --force-yes build-essential gcc g++ automake git-core autoconf make patch libmysql++-dev mysql-server libtool libssl-dev grep binutils zlibc libc6 libbz2-dev cmake'))
@@ -213,7 +213,7 @@ CI_REALM_DB_PORT = raw_input('Port number for MySQL Server on Realm_DB (' + CI_A
 if CI_REALM_DB_PORT == '':
 	CI_REALM_DB_PORT = '3306'
 	#USR and password for NEW MANGOS USER
-CI_MANGOS_USR = raw_input('Name of the MaNGOS mysql user you wish to use: ') 
+CI_MANGOS_USR = raw_input('Name of the MaNGOS mysql user you wish to use: ')
 CI_MANGOS_USR_PASS = raw_input('Password for new user: ')
 
 print "Before we can set-up the new MaNGOS user we need to log into mysql as root or another administrators account"
@@ -232,7 +232,7 @@ CHAR_DATABASE = raw_input('New Character Database: [characters-' + CI_IN_REALM_N
 if CHAR_DATABASE == '':
 	CHAR_DATABASE = 'characters-'+CI_IN_REALM_NAME
 
-	# ScriptDev2	
+	# ScriptDev2
 SCRDEV2_DATABASE = raw_input('New ScriptDev2 Database: [scriptdev2-' + CI_IN_REALM_NAME + '] ')
 if SCRDEV2_DATABASE == '':
 	SCRDEV2_DATABASE = 'scriptdev2-'+CI_IN_REALM_NAME
@@ -251,7 +251,7 @@ if CI_COMPILE_YN == 'n':
 		ScriptDev2_lib = "https://github.com/mangosthree/scripts.git"
 	if ScriptDev2_lib == '3' or ScriptDev2_lib == '':
 		ScriptDev2_lib = "https://github.com/CollectiveIndustries/scripts.git"
-	# Account 
+	# Account
 ACC_DATABASE = raw_input('New Account Database: [realmd-account] ')
 if ACC_DATABASE == '':
 	ACC_DATABASE = 'realmd-account'
@@ -281,14 +281,14 @@ CI_MANGOS_DATA_DIR = raw_input('data directory for maps: [../data] ')
 if CI_MANGOS_DATA_DIR == '':
 	CI_MANGOS_DATA_DIR = '../data'
 
-	# RealmID 
+	# RealmID
 print "Please enter the Realm ID below (if first realm installed use default)"
 CI_MANGOS_REALM_ID = raw_input('RealmID: [1] ')
 if CI_MANGOS_REALM_ID == '':
-	CI_MANGOS_REALM_ID = '1'	
+	CI_MANGOS_REALM_ID = '1'
 # TODO open file for configuration of the realmd and mangosd configs and get them ready to place in the config dir
 
-if CI_COMPILE_YN == 'n':	
+if CI_COMPILE_YN == 'n':
 	#TODO SWAP out urls for CI github repo AFTER code clean up and repo creation
 	git_api("clone", 'https://github.com/CollectiveIndustries/server.git '+SERV_CODE+'/server')
 	git_api("clone", 'https://github.com/CollectiveIndustries/Mangos_world_database.git '+SERV_CODE+'/database')
@@ -307,7 +307,7 @@ if CI_COMPILE_YN == 'n':
 		#print "COMMENTED OUT"
 		subprocess.call(shlex.split('sudo cmake .. -DCMAKE_INSTALL_PREFIX='+INSTALL_DIR+' -DINCLUDE_BINDINGS_DIR=ScriptDev2'))
 		subprocess.call(shlex.split('sudo make'))
-		subprocess.call(shlex.split('sudo make install')) 
+		subprocess.call(shlex.split('sudo make install'))
 
 
 
@@ -363,8 +363,8 @@ print "SQL file for MaNGOS DB install has been written to your home directory: [
 
 # run the upload
 MYSQL_FILE_LOC = '/home/'+SYS_USR+'/mangos-ci-usr.sql'
-#TODO get MySQL syntax for port number 
-#edit -h for configurable host by DB NAME (realmd and mangosd) 
+#TODO get MySQL syntax for port number
+#edit -h for configurable host by DB NAME (realmd and mangosd)
 #IDEA set up host/port for each database (could be usefull in a multi server platform) (ENTERPRISE INSTALLER)
 
 # DEPRECIATED os.system("mysql -u " + mysql_root_ci_usr + " -p" + mysql_root_ci_pass + " -h localhost" + " < " + MYSQL_FILE_LOC )#TODO add in -h CONFIG OPTION for REMOTE upload
@@ -378,8 +378,8 @@ print "User and Databases have been created now running MySQL installer for Worl
 #full_db = SERV_CODE + '/database/full_db/*.sql'
 for sql in full_db:
 	print "Adding: " + sql + " ---> " + WORLD_DATABASE
-	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, CI_MANGOS_DB, WORLD_DATABASE, sql)#no host config set up yet 
-	
+	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, CI_MANGOS_DB, WORLD_DATABASE, sql)#no host config set up yet
+
 #Install Char DB
 full_db = glob.glob(SERV_CODE + '/database/characters/*.sql')
 full_db = sorted(full_db)
@@ -388,7 +388,7 @@ print "User and Databases have been created now running MySQL installer for Char
 #full_db = SERV_CODE + '/database/full_db/*.sql'
 for sql in full_db:
 	print "Adding: " + sql + " ---> " + CHAR_DATABASE
-	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, CI_MANGOS_DB, CHAR_DATABASE, sql) 
+	mysql_call(mysql_root_ci_usr, mysql_root_ci_pass, CI_MANGOS_DB, CHAR_DATABASE, sql)
 
 #Install SCRDEV2_DATABASE
 full_db = glob.glob(SERV_CODE + '/database/ScriptDev2/*.sql')
@@ -405,7 +405,7 @@ for sql in full_db:
 #Add content to ScriptDev2-Database::
 #Execute `sql\scriptdev2_script_full.sql` on SCRDEV2_DATABASE
 #Update ScriptNames::
-#Execute `sql\mangos_scriptname_full.sql` on WORLD_DATABASE	
+#Execute `sql\mangos_scriptname_full.sql` on WORLD_DATABASE
 
 #Install RealmD database
 full_db = glob.glob(SERV_CODE + '/database/realmd/*.sql')
@@ -459,7 +459,7 @@ with open('./lib/ahbot.conf','r') as infile:
 	with open(INSTALL_DIR+"etc/ahbot.conf","w") as outfile:
 		for i,line in enumerate(infile):
 			outfile.write(line)
-#scriptDev 2 Config settings		
+#scriptDev 2 Config settings
 with open('./lib/scriptdev2.conf','r') as infile:
 	with open(INSTALL_DIR+"etc/scriptdev2.conf","w") as outfile:
 		for i,line in enumerate(infile):
